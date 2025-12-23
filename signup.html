@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<html lang="en">
+
+  <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sign Up - Veriss Payments</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://unpkg.com/vue@3/dist/vue.global.prod.js"></script>
+    <link rel="stylesheet" href="assets/css/app.css">
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <script src="assets/js/auth.js"></script>
+  </head>
+
+  <body class="bg-neutral-50">
+    <div id="app" class="min-h-screen flex items-center justify-center py-12 px-4 sm:px-6 lg:px-8">
+      <div class="max-w-md w-full">
+        <div class="modern-card">
+          <div class="text-center mb-8">
+            <div class="inline-flex items-center justify-center w-16 h-16 rounded-full bg-success-100 text-success-600 mb-4">
+              <i data-lucide="user-plus" class="w-8 h-8"></i>
+            </div>
+            <h2 class="text-3xl font-bold text-neutral-900 mb-2">Create your account</h2>
+            <p class="text-neutral-600">Join Veriss Payments today</p>
+          </div>
+          
+          <form class="space-y-6" @submit.prevent="handleSubmit">
+            <div>
+              <label class="block text-sm font-medium text-neutral-700 mb-3">Account Type</label>
+              <div class="grid grid-cols-2 gap-3">
+                <label class="relative flex items-center p-4 border-2 rounded-lg cursor-pointer transition-all" 
+                       :class="formData.role === 'org' ? 'border-primary-500 bg-primary-50' : 'border-neutral-300 hover:border-neutral-400'">
+                  <input v-model="formData.role" type="radio" value="org" class="sr-only">
+                  <div class="flex items-center gap-3">
+                    <i data-lucide="building-2" class="w-5 h-5" :class="formData.role === 'org' ? 'text-primary-600' : 'text-neutral-400'"></i>
+                    <span class="font-medium" :class="formData.role === 'org' ? 'text-primary-700' : 'text-neutral-700'">Organization</span>
+                  </div>
+                </label>
+                <label class="relative flex items-center p-4 border-2 rounded-lg cursor-pointer transition-all"
+                       :class="formData.role === 'user' ? 'border-primary-500 bg-primary-50' : 'border-neutral-300 hover:border-neutral-400'">
+                  <input v-model="formData.role" type="radio" value="user" class="sr-only">
+                  <div class="flex items-center gap-3">
+                    <i data-lucide="user" class="w-5 h-5" :class="formData.role === 'user' ? 'text-primary-600' : 'text-neutral-400'"></i>
+                    <span class="font-medium" :class="formData.role === 'user' ? 'text-primary-700' : 'text-neutral-700'">Member</span>
+                  </div>
+                </label>
+              </div>
+            </div>
+
+            <div class="space-y-4">
+              <div>
+                <label for="name" class="block text-sm font-medium text-neutral-700 mb-2">Full Name</label>
+                <div class="relative">
+                  <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                    <i data-lucide="user" class="w-5 h-5 text-neutral-400"></i>
+                  </div>
+                  <input v-model="formData.name" id="name" name="name" type="text" required
+                    class="modern-input pl-10"
+                    placeholder="John Doe">
+                </div>
+              </div>
+              <div>
+                <label for="email" class="block text-sm font-medium text-neutral-700 mb-2">Email address</label>
+                <div class="relative">
+                  <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                    <i data-lucide="mail" class="w-5 h-5 text-neutral-400"></i>
+                  </div>
+                  <input v-model="formData.email" id="email" name="email" type="email" required
+                    class="modern-input pl-10"
+                    placeholder="you@example.com">
+                </div>
+              </div>
+              <div>
+                <label for="password" class="block text-sm font-medium text-neutral-700 mb-2">Password</label>
+                <div class="relative">
+                  <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                    <i data-lucide="lock" class="w-5 h-5 text-neutral-400"></i>
+                  </div>
+                  <input v-model="formData.password" id="password" name="password" type="password" required
+                    class="modern-input pl-10"
+                    placeholder="Create a password">
+                </div>
+              </div>
+            </div>
+
+            <div v-if="formData.role === 'org'" class="modern-card-compact bg-primary-50 border-primary-200">
+              <h3 class="text-lg font-semibold text-neutral-900 mb-4 flex items-center gap-2">
+                <i data-lucide="building-2" class="w-5 h-5 text-primary-600"></i>
+                Organization Details
+              </h3>
+              <div>
+                <label for="orgName" class="block text-sm font-medium text-neutral-700 mb-2">Organization Name</label>
+                <input v-model="formData.orgName" id="orgName" name="orgName" type="text"
+                  class="modern-input"
+                  placeholder="Your Organization Name">
+              </div>
+            </div>
+
+            <div>
+              <button type="submit" class="btn btn-primary w-full text-base py-3">
+                <i data-lucide="user-plus" class="w-5 h-5"></i>
+                Sign up
+              </button>
+            </div>
+
+            <div class="text-center">
+              <a href="login.html" class="modern-link">Already have an account? Sign in</a>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+
+    <script>
+      const { createApp } = Vue;
+
+      createApp({
+        data() {
+          return {
+            formData: {
+              role: 'user',
+              name: '',
+              email: '',
+              password: '',
+              orgName: ''
+            }
+          }
+        },
+        mounted() {
+          lucide.createIcons();
+        },
+        updated() {
+          lucide.createIcons();
+        },
+        methods: {
+          handleSubmit() {
+            const result = signup(this.formData);
+            if (result.success) {
+              if (this.formData.role === 'org') {
+                window.location.href = 'org-setup.html';
+              } else {
+                window.location.href = 'user-dashboard.html';
+              }
+            } else {
+              alert('Signup failed');
+            }
+          }
+        }
+      }).mount('#app');
+    </script>
+  </body>
+
+</html>

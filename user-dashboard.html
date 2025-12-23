@@ -1,0 +1,157 @@
+<!DOCTYPE html>
+<html lang="en">
+
+  <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Member Dashboard - Veriss Payments</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://unpkg.com/vue@3/dist/vue.global.prod.js"></script>
+    <link rel="stylesheet" href="assets/css/app.css">
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <script src="assets/js/auth.js"></script>
+    <script src="assets/js/user.js"></script>
+  </head>
+
+  <body class="bg-neutral-50">
+    <div id="app" class="min-h-screen">
+      <header class="modern-header" style="background: linear-gradient(135deg, #16a34a 0%, #15803d 100%);">
+        <div class="modern-container flex justify-between items-center">
+          <h1 class="text-2xl font-bold text-white flex items-center gap-2">
+            <i data-lucide="layout-dashboard" class="w-6 h-6"></i>
+            Member Dashboard
+          </h1>
+          <div class="flex items-center gap-4">
+            <span class="text-white/90 font-medium">Welcome, {{ currentUser.name }}</span>
+            <button @click="logout" class="btn btn-outline text-white border-white hover:bg-white/10">
+              <i data-lucide="log-out" class="w-4 h-4"></i>
+              Logout
+            </button>
+          </div>
+        </div>
+      </header>
+
+      <main class="modern-container py-8">
+        <div class="modern-grid modern-grid-3 mb-8">
+          <div class="stat-card">
+            <h3 class="text-sm font-medium text-neutral-600 mb-2 uppercase tracking-wide">Outstanding Payments</h3>
+            <p class="stat-value text-error-600">{{ outstandingPayments.length }}</p>
+            <div class="mt-2 flex items-center gap-1 text-error-600">
+              <i data-lucide="alert-circle" class="w-4 h-4"></i>
+              <span class="text-sm">Requires attention</span>
+            </div>
+          </div>
+          <div class="stat-card">
+            <h3 class="text-sm font-medium text-neutral-600 mb-2 uppercase tracking-wide">Paid This Month</h3>
+            <p class="stat-value text-success-600">{{ paidThisMonth }}</p>
+            <div class="mt-2 flex items-center gap-1 text-success-600">
+              <i data-lucide="check-circle" class="w-4 h-4"></i>
+              <span class="text-sm">On track</span>
+            </div>
+          </div>
+          <div class="stat-card">
+            <h3 class="text-sm font-medium text-neutral-600 mb-2 uppercase tracking-wide">Total Paid</h3>
+            <p class="stat-value text-primary-600">₦{{ totalPaid.toLocaleString() }}</p>
+            <div class="mt-2 flex items-center gap-1 text-primary-600">
+              <i data-lucide="trending-up" class="w-4 h-4"></i>
+              <span class="text-sm">All time</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="modern-card mb-8">
+          <div class="flex items-center justify-between mb-6">
+            <h2 class="text-2xl font-bold text-neutral-900 flex items-center gap-2">
+              <i data-lucide="clock" class="w-6 h-6 text-warning-600"></i>
+              Outstanding Payments
+            </h2>
+          </div>
+          <div v-if="outstandingPayments.length === 0" class="empty-state">
+            <i data-lucide="check-circle" class="w-16 h-16 text-success-500 mx-auto mb-4"></i>
+            <p class="text-lg font-medium text-neutral-700">No outstanding payments</p>
+            <p class="text-neutral-500">You're all caught up!</p>
+          </div>
+          <div v-else class="space-y-4">
+            <div v-for="payment in outstandingPayments"
+              class="modern-card-compact border-l-4 border-warning-500 flex justify-between items-center hover:shadow-md transition-all">
+              <div class="flex-1">
+                <h3 class="font-semibold text-neutral-900 mb-1">{{ payment.dueTitle || 'Monthly Due' }}</h3>
+                <p class="text-neutral-600 mb-2">Amount: <span class="font-semibold text-neutral-900">₦{{ payment.amount.toLocaleString() }}</span></p>
+                <span class="status-badge status-pending">{{ payment.status }}</span>
+              </div>
+              <a :href="'make-payment.html?id=' + payment.id" class="btn btn-primary ml-4">
+                <i data-lucide="credit-card" class="w-4 h-4"></i>
+                Pay Now
+              </a>
+            </div>
+          </div>
+        </div>
+
+        <div class="modern-card">
+          <h2 class="text-2xl font-bold text-neutral-900 mb-6 flex items-center gap-2">
+            <i data-lucide="zap" class="w-6 h-6 text-primary-600"></i>
+            Quick Actions
+          </h2>
+          <div class="modern-grid modern-grid-2">
+            <a href="make-payment.html" class="btn btn-success text-center py-4">
+              <i data-lucide="wallet" class="w-5 h-5"></i>
+              Make a Payment
+            </a>
+            <a href="payment-records.html" class="btn btn-primary text-center py-4" style="background: linear-gradient(135deg, #9333ea 0%, #7e22ce 100%);">
+              <i data-lucide="file-text" class="w-5 h-5"></i>
+              View Payment Records
+            </a>
+          </div>
+        </div>
+      </main>
+    </div>
+
+    <script>
+      const { createApp } = Vue;
+
+      createApp({
+        data() {
+          return {
+            currentUser: null,
+            payments: [],
+            outstandingPayments: [],
+            paidThisMonth: 0,
+            totalPaid: 0
+          }
+        },
+        mounted() {
+          lucide.createIcons();
+          this.currentUser = getCurrentUser();
+          if (this.currentUser && this.currentUser.role === 'user') {
+            this.loadPayments();
+          } else {
+            window.location.href = 'login.html';
+          }
+        },
+        updated() {
+          lucide.createIcons();
+        },
+        methods: {
+          logout() {
+            logout();
+            window.location.href = 'index.html';
+          },
+          loadPayments() {
+            this.payments = getUserPayments(this.currentUser.id);
+            this.outstandingPayments = this.payments.filter(p => p.status === 'pending');
+            this.totalPaid = this.payments.filter(p => p.status === 'paid').reduce((sum, p) => sum + p.amount, 0);
+            this.paidThisMonth = this.payments.filter(p => p.status === 'paid' && p.paymentDate && p.paymentDate.startsWith(new Date().toISOString().slice(0, 7))).length;
+          },
+          getStatusClass(status) {
+            return {
+              'paid': 'status-paid',
+              'pending': 'status-pending',
+              'failed': 'status-failed'
+            }[status] || 'bg-neutral-100 text-neutral-800';
+          }
+        }
+      }).mount('#app');
+    </script>
+  </body>
+
+</html>

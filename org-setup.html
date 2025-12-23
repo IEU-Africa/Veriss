@@ -1,0 +1,250 @@
+<!DOCTYPE html>
+<html lang="en">
+
+  <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Organization Setup - Veriss Payments</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://unpkg.com/vue@3/dist/vue.global.prod.js"></script>
+    <link rel="stylesheet" href="assets/css/app.css">
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <script src="assets/js/auth.js"></script>
+    <script src="assets/js/org.js"></script>
+  </head>
+
+  <body class="bg-neutral-50">
+    <div id="app" class="min-h-screen py-12 px-4 sm:px-6 lg:px-8">
+      <div class="max-w-3xl mx-auto">
+        <div class="text-center mb-8">
+          <div class="inline-flex items-center justify-center w-16 h-16 rounded-full bg-primary-100 text-primary-600 mb-4">
+            <i data-lucide="settings" class="w-8 h-8"></i>
+          </div>
+          <h1 class="text-3xl font-bold text-neutral-900 mb-2">Organization Setup</h1>
+          <p class="text-neutral-600">Complete your organization profile to get started</p>
+        </div>
+
+        <div class="modern-card">
+          <!-- Progress Indicator -->
+          <div class="mb-10">
+            <div class="flex justify-between items-center">
+              <div v-for="(step, index) in steps" :key="step" class="flex items-center flex-1">
+                <div class="flex items-center">
+                  <div
+                    :class="['w-10 h-10 rounded-full flex items-center justify-center text-sm font-semibold transition-all',
+                              currentStep > index ? 'bg-success-600 text-white' : currentStep === index ? 'bg-primary-600 text-white shadow-lg scale-110' : 'bg-neutral-200 text-neutral-500']">
+                    <i v-if="currentStep > index" data-lucide="check" class="w-5 h-5"></i>
+                    <span v-else>{{ index + 1 }}</span>
+                  </div>
+                  <span class="ml-3 text-sm font-medium hidden sm:block" :class="currentStep >= index ? 'text-neutral-900' : 'text-neutral-500'">{{ step }}</span>
+                </div>
+                <div v-if="index < steps.length - 1" class="flex-1 h-1 mx-2 sm:mx-4 rounded-full"
+                  :class="currentStep > index ? 'bg-success-500' : 'bg-neutral-200'"></div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Step 1: Payment Types -->
+          <div v-if="currentStep === 0">
+            <h2 class="text-xl font-semibold mb-6 flex items-center gap-2 text-neutral-900">
+              <i data-lucide="credit-card" class="w-5 h-5 text-primary-600"></i>
+              Select Payment Types
+            </h2>
+            <div class="space-y-3">
+              <label v-for="type in paymentTypeOptions" 
+                     class="flex items-center p-4 border-2 rounded-lg cursor-pointer transition-all hover:bg-neutral-50"
+                     :class="setupData.paymentTypes.includes(type.value) ? 'border-primary-500 bg-primary-50' : 'border-neutral-300'">
+                <input v-model="setupData.paymentTypes" :value="type.value" type="checkbox" class="sr-only">
+                <div class="flex items-center gap-3 flex-1">
+                  <div class="w-5 h-5 rounded border-2 flex items-center justify-center"
+                       :class="setupData.paymentTypes.includes(type.value) ? 'border-primary-600 bg-primary-600' : 'border-neutral-300'">
+                    <i v-if="setupData.paymentTypes.includes(type.value)" data-lucide="check" class="w-3 h-3 text-white"></i>
+                  </div>
+                  <span class="font-medium" :class="setupData.paymentTypes.includes(type.value) ? 'text-primary-700' : 'text-neutral-700'">{{ type.label }}</span>
+                </div>
+              </label>
+            </div>
+          </div>
+
+          <!-- Step 2: Banking Details -->
+          <div v-if="currentStep === 1">
+            <h2 class="text-xl font-semibold mb-6 flex items-center gap-2 text-neutral-900">
+              <i data-lucide="building" class="w-5 h-5 text-primary-600"></i>
+              Banking Details
+            </h2>
+            <div class="space-y-4">
+              <div>
+                <label class="block text-sm font-medium text-neutral-700 mb-2">Account Number</label>
+                <div class="relative">
+                  <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                    <i data-lucide="hash" class="w-5 h-5 text-neutral-400"></i>
+                  </div>
+                  <input v-model="setupData.bankingDetails.accountNumber" type="text"
+                    class="modern-input pl-10"
+                    placeholder="Enter account number">
+                </div>
+              </div>
+              <div>
+                <label class="block text-sm font-medium text-neutral-700 mb-2">Bank Name</label>
+                <div class="relative">
+                  <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                    <i data-lucide="building" class="w-5 h-5 text-neutral-400"></i>
+                  </div>
+                  <input v-model="setupData.bankingDetails.bankName" type="text"
+                    class="modern-input pl-10"
+                    placeholder="Enter bank name">
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Step 3: Admin Officer Details -->
+          <div v-if="currentStep === 2">
+            <h2 class="text-xl font-semibold mb-6 flex items-center gap-2 text-neutral-900">
+              <i data-lucide="user" class="w-5 h-5 text-primary-600"></i>
+              Admin Officer Details
+            </h2>
+            <div class="space-y-4">
+              <div>
+                <label class="block text-sm font-medium text-neutral-700 mb-2">Full Name</label>
+                <div class="relative">
+                  <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                    <i data-lucide="user" class="w-5 h-5 text-neutral-400"></i>
+                  </div>
+                  <input v-model="setupData.adminOfficer.name" type="text"
+                    class="modern-input pl-10"
+                    placeholder="Enter full name">
+                </div>
+              </div>
+              <div>
+                <label class="block text-sm font-medium text-neutral-700 mb-2">Email</label>
+                <div class="relative">
+                  <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                    <i data-lucide="mail" class="w-5 h-5 text-neutral-400"></i>
+                  </div>
+                  <input v-model="setupData.adminOfficer.email" type="email"
+                    class="modern-input pl-10"
+                    placeholder="Enter email address">
+                </div>
+              </div>
+              <div>
+                <label class="block text-sm font-medium text-neutral-700 mb-2">Phone</label>
+                <div class="relative">
+                  <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                    <i data-lucide="phone" class="w-5 h-5 text-neutral-400"></i>
+                  </div>
+                  <input v-model="setupData.adminOfficer.phone" type="tel"
+                    class="modern-input pl-10"
+                    placeholder="Enter phone number">
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Step 4: Review and Submit -->
+          <div v-if="currentStep === 3">
+            <h2 class="text-xl font-semibold mb-6 flex items-center gap-2 text-neutral-900">
+              <i data-lucide="check-circle" class="w-5 h-5 text-primary-600"></i>
+              Review and Submit
+            </h2>
+            <div class="space-y-6">
+              <div class="modern-card-compact bg-primary-50 border-primary-200">
+                <h3 class="font-semibold text-neutral-900 mb-2 flex items-center gap-2">
+                  <i data-lucide="credit-card" class="w-4 h-4 text-primary-600"></i>
+                  Payment Types:
+                </h3>
+                <p class="text-neutral-700">{{ setupData.paymentTypes.join(', ') || 'None selected' }}</p>
+              </div>
+              <div class="modern-card-compact bg-primary-50 border-primary-200">
+                <h3 class="font-semibold text-neutral-900 mb-2 flex items-center gap-2">
+                  <i data-lucide="building" class="w-4 h-4 text-primary-600"></i>
+                  Banking Details:
+                </h3>
+                <p class="text-neutral-700">Account: {{ setupData.bankingDetails.accountNumber || 'Not provided' }}</p>
+                <p class="text-neutral-700">Bank: {{ setupData.bankingDetails.bankName || 'Not provided' }}</p>
+              </div>
+              <div class="modern-card-compact bg-primary-50 border-primary-200">
+                <h3 class="font-semibold text-neutral-900 mb-2 flex items-center gap-2">
+                  <i data-lucide="user" class="w-4 h-4 text-primary-600"></i>
+                  Admin Officer:
+                </h3>
+                <p class="text-neutral-700">{{ setupData.adminOfficer.name || 'Not provided' }} - {{ setupData.adminOfficer.email || 'Not provided' }}</p>
+              </div>
+            </div>
+          </div>
+
+          <!-- Navigation Buttons -->
+          <div class="mt-8 flex justify-between gap-4">
+            <button v-if="currentStep > 0" @click="prevStep" class="btn btn-secondary">
+              <i data-lucide="arrow-left" class="w-4 h-4"></i>
+              Previous
+            </button>
+            <div></div>
+            <button v-if="currentStep < steps.length - 1" @click="nextStep" class="btn btn-primary">
+              Next
+              <i data-lucide="arrow-right" class="w-4 h-4"></i>
+            </button>
+            <button v-if="currentStep === steps.length - 1" @click="submitSetup" class="btn btn-success">
+              <i data-lucide="check" class="w-4 h-4"></i>
+              Complete Setup
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <script>
+      const { createApp } = Vue;
+
+      createApp({
+        data() {
+          return {
+            currentStep: 0,
+            steps: ['Payment Types', 'Banking Details', 'Admin Officer', 'Review'],
+            paymentTypeOptions: [
+              { value: 'dues', label: 'Monthly Dues' },
+              { value: 'fines', label: 'Fines' },
+              { value: 'contributions', label: 'Special Contributions' }
+            ],
+            setupData: {
+              paymentTypes: [],
+              bankingDetails: { accountNumber: '', bankName: '' },
+              adminOfficer: { name: '', email: '', phone: '' }
+            }
+          }
+        },
+        mounted() {
+          lucide.createIcons();
+        },
+        updated() {
+          lucide.createIcons();
+        },
+        methods: {
+          nextStep() {
+            if (this.currentStep < this.steps.length - 1) {
+              this.currentStep++;
+            }
+          },
+          prevStep() {
+            if (this.currentStep > 0) {
+              this.currentStep--;
+            }
+          },
+          submitSetup() {
+            const user = getCurrentUser();
+            if (user) {
+              const orgData = {
+                name: user.orgName || 'New Organization',
+                ...this.setupData,
+                members: []
+              };
+              createOrganization(orgData);
+              window.location.href = 'org-dashboard.html';
+            }
+          }
+        }
+      }).mount('#app');
+    </script>
+  </body>
+
+</html>

@@ -1,0 +1,233 @@
+<!DOCTYPE html>
+<html lang="en">
+
+  <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Manage Payments - Veriss Payments</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://unpkg.com/vue@3/dist/vue.global.prod.js"></script>
+    <link rel="stylesheet" href="assets/css/app.css">
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <script src="assets/js/auth.js"></script>
+    <script src="assets/js/org.js"></script>
+  </head>
+
+  <body class="bg-neutral-50">
+    <div id="app" class="min-h-screen">
+      <header class="modern-header">
+        <div class="modern-container flex justify-between items-center">
+          <h1 class="text-2xl font-bold text-white flex items-center gap-2">
+            <i data-lucide="settings" class="w-6 h-6"></i>
+            Manage Payments
+          </h1>
+          <a href="org-dashboard.html" class="btn btn-outline text-white border-white hover:bg-white/10">
+            <i data-lucide="arrow-left" class="w-4 h-4"></i>
+            Back to Dashboard
+          </a>
+        </div>
+      </header>
+
+      <main class="modern-container py-8">
+        <div class="modern-card mb-8">
+          <h2 class="text-2xl font-semibold mb-6 flex items-center gap-2 text-neutral-900">
+            <i data-lucide="plus-circle" class="w-6 h-6 text-primary-600"></i>
+            Create New Due
+          </h2>
+          <form @submit.prevent="createDue" class="space-y-6">
+            <div class="modern-grid modern-grid-2">
+              <div>
+                <label class="block text-sm font-medium text-neutral-700 mb-2">Due Title</label>
+                <div class="relative">
+                  <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                    <i data-lucide="file-text" class="w-5 h-5 text-neutral-400"></i>
+                  </div>
+                  <input v-model="newDue.title" type="text" required
+                    class="modern-input pl-10"
+                    placeholder="e.g., Monthly Dues">
+                </div>
+              </div>
+              <div>
+                <label class="block text-sm font-medium text-neutral-700 mb-2">Base Amount (₦)</label>
+                <div class="relative">
+                  <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                    <i data-lucide="dollar-sign" class="w-5 h-5 text-neutral-400"></i>
+                  </div>
+                  <input v-model.number="newDue.amount" type="number" required
+                    class="modern-input pl-10"
+                    placeholder="0">
+                </div>
+              </div>
+            </div>
+
+            <div class="modern-card-compact bg-neutral-50">
+              <h3 class="text-lg font-semibold mb-4 flex items-center gap-2 text-neutral-900">
+                <i data-lucide="list" class="w-5 h-5 text-primary-600"></i>
+                Sub-Deductions
+              </h3>
+              <div v-for="(sub, index) in newDue.subDeductions" :key="index" class="flex items-center gap-3 mb-3">
+                <div class="flex-1 relative">
+                  <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                    <i data-lucide="tag" class="w-4 h-4 text-neutral-400"></i>
+                  </div>
+                  <input v-model="sub.name" placeholder="Name" class="modern-input pl-10">
+                </div>
+                <div class="relative w-32">
+                  <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                    <i data-lucide="dollar-sign" class="w-4 h-4 text-neutral-400"></i>
+                  </div>
+                  <input v-model.number="sub.amount" placeholder="Amount" type="number"
+                    class="modern-input pl-10">
+                </div>
+                <button @click="removeSubDeduction(index)" type="button" class="btn btn-secondary px-3">
+                  <i data-lucide="trash-2" class="w-4 h-4"></i>
+                </button>
+              </div>
+              <button @click="addSubDeduction" type="button" class="btn btn-success">
+                <i data-lucide="plus" class="w-4 h-4"></i>
+                Add Sub-Deduction
+              </button>
+            </div>
+
+            <div class="p-4 bg-primary-50 rounded-lg border border-primary-200">
+              <label class="block text-sm font-semibold text-primary-900">Total Amount: <span class="text-2xl">₦{{ calculateTotal().toLocaleString() }}</span></label>
+            </div>
+
+            <div>
+              <label class="block text-sm font-medium text-neutral-700 mb-2">Member Emails (one per line or comma-separated)</label>
+              <textarea v-model="memberEmails" placeholder="email1@example.com&#10;email2@example.com" rows="5"
+                class="modern-input"></textarea>
+            </div>
+
+            <div v-if="organization?.members?.length" class="modern-card-compact bg-neutral-50">
+              <h3 class="text-lg font-semibold mb-4 flex items-center gap-2 text-neutral-900">
+                <i data-lucide="users" class="w-5 h-5 text-primary-600"></i>
+                Exclude Members
+              </h3>
+              <div class="space-y-2">
+                <label v-for="member in organization.members" 
+                       class="flex items-center p-3 rounded-lg hover:bg-white cursor-pointer transition-colors"
+                       :class="newDue.excludedMembers.includes(member.id) ? 'bg-primary-50 border-2 border-primary-200' : 'border-2 border-transparent'">
+                  <input :id="'exclude-' + member.id" v-model="newDue.excludedMembers" :value="member.id" type="checkbox"
+                    class="sr-only">
+                  <div class="w-5 h-5 rounded border-2 flex items-center justify-center mr-3"
+                       :class="newDue.excludedMembers.includes(member.id) ? 'border-primary-600 bg-primary-600' : 'border-neutral-300'">
+                    <i v-if="newDue.excludedMembers.includes(member.id)" data-lucide="check" class="w-3 h-3 text-white"></i>
+                  </div>
+                  <div>
+                    <span class="font-medium text-neutral-900">{{ member.name }}</span>
+                    <span class="text-sm text-neutral-500 ml-2">({{ member.email }})</span>
+                  </div>
+                </label>
+              </div>
+            </div>
+
+            <button type="submit" class="btn btn-primary w-full py-4 text-lg">
+              <i data-lucide="check" class="w-5 h-5"></i>
+              Create Due
+            </button>
+          </form>
+        </div>
+
+        <div class="modern-card">
+          <h2 class="text-2xl font-semibold mb-6 flex items-center gap-2 text-neutral-900">
+            <i data-lucide="file-text" class="w-6 h-6 text-primary-600"></i>
+            Existing Dues
+          </h2>
+          <div v-if="!organization?.dues || organization.dues.length === 0" class="empty-state">
+            <i data-lucide="file-x" class="w-16 h-16 text-neutral-400 mx-auto mb-4"></i>
+            <p class="text-lg font-medium text-neutral-700">No dues created yet</p>
+            <p class="text-neutral-500">Create your first due above</p>
+          </div>
+          <div v-else class="space-y-4">
+            <div v-for="due in organization.dues" class="modern-card-compact border-l-4 border-primary-500">
+              <div class="flex justify-between items-start mb-4">
+                <div class="flex-1">
+                  <h3 class="font-semibold text-lg text-neutral-900 mb-1">{{ due.title }}</h3>
+                  <p class="text-neutral-600 mb-1">Total: <span class="font-semibold text-neutral-900">₦{{ due.amount?.toLocaleString() || 0 }}</span></p>
+                  <p class="text-sm text-neutral-500">Created: {{ due.createdAt || 'N/A' }}</p>
+                </div>
+                <div class="flex gap-2">
+                  <button class="btn btn-secondary px-3">
+                    <i data-lucide="edit" class="w-4 h-4"></i>
+                  </button>
+                  <button class="btn px-3" style="background: #ef4444; color: white;">
+                    <i data-lucide="trash-2" class="w-4 h-4"></i>
+                  </button>
+                </div>
+              </div>
+              <div v-if="due.subDeductions && due.subDeductions.length" class="mt-4 pt-4 border-t border-neutral-200">
+                <h4 class="font-semibold text-neutral-900 mb-2 flex items-center gap-2">
+                  <i data-lucide="list" class="w-4 h-4 text-primary-600"></i>
+                  Sub-Deductions:
+                </h4>
+                <ul class="space-y-1">
+                  <li v-for="sub in due.subDeductions" class="text-sm text-neutral-600 flex justify-between">
+                    <span>{{ sub.name }}</span>
+                    <span class="font-medium">₦{{ sub.amount?.toLocaleString() || 0 }}</span>
+                  </li>
+                </ul>
+              </div>
+            </div>
+          </div>
+        </div>
+      </main>
+    </div>
+
+    <script>
+      const { createApp } = Vue;
+
+      createApp({
+        data() {
+          return {
+            organization: null,
+            newDue: {
+              title: '',
+              amount: 0,
+              subDeductions: [],
+              excludedMembers: []
+            },
+            memberEmails: ''
+          }
+        },
+        mounted() {
+          lucide.createIcons();
+          const user = getCurrentUser();
+          if (user && user.role === 'org') {
+            this.organization = getOrganization(user.orgId);
+          } else {
+            window.location.href = 'login.html';
+          }
+        },
+        updated() {
+          lucide.createIcons();
+        },
+        methods: {
+          addSubDeduction() {
+            this.newDue.subDeductions.push({ name: '', amount: 0 });
+          },
+          removeSubDeduction(index) {
+            this.newDue.subDeductions.splice(index, 1);
+          },
+          calculateTotal() {
+            const subTotal = this.newDue.subDeductions.reduce((sum, sub) => sum + (sub.amount || 0), 0);
+            return this.newDue.amount + subTotal;
+          },
+          createDue() {
+            const dueData = {
+              ...this.newDue,
+              amount: this.calculateTotal()
+            };
+            const user = getCurrentUser();
+            createDue(user.orgId, dueData);
+            this.organization = getOrganization(user.orgId);
+            this.newDue = { title: '', amount: 0, subDeductions: [], excludedMembers: [] };
+            this.memberEmails = '';
+            alert('Due created successfully!');
+          }
+        }
+      }).mount('#app');
+    </script>
+  </body>
+
+</html>
