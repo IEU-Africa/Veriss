@@ -1,11 +1,5 @@
-// Mock user data and functions for Veriss Payments
+// (REMOVED: This file previously held mock user data and functions, now replaced by live API - see services/member/controller.js)
 
-const mockPayments = [
-  {
-    id: 1,
-    userId: 1,
-    orgId: 1,
-    serviceId: 1,
     serviceTitle: 'Annual Dues 2025',
     amount: 2000,
     status: 'paid',
@@ -18,8 +12,6 @@ const mockPayments = [
   },
   {
     id: 2,
-    userId: 1,
-    orgId: 1,
     serviceId: 2,
     serviceTitle: 'Workshop Registration',
     amount: 5000,
@@ -33,9 +25,6 @@ const mockPayments = [
   },
   {
     id: 3,
-    userId: 1,
-    orgId: 1,
-    serviceId: 1,
     serviceTitle: 'Annual Dues 2025',
     amount: 2000,
     status: 'pending',
@@ -45,8 +34,6 @@ const mockPayments = [
   },
   {
     id: 4,
-    userId: 1,
-    orgId: 1,
     serviceId: 3,
     serviceTitle: 'License Renewal 2024',
     amount: 3000,
@@ -60,8 +47,6 @@ const mockPayments = [
   },
   {
     id: 5,
-    userId: 1,
-    orgId: 1,
     serviceId: 4,
     serviceTitle: 'Conference Registration 2024',
     amount: 7500,
@@ -75,8 +60,6 @@ const mockPayments = [
   },
   {
     id: 6,
-    userId: 1,
-    orgId: 1,
     serviceId: 5,
     serviceTitle: 'Professional Development Course',
     amount: 4500,
@@ -93,8 +76,6 @@ const mockPayments = [
 // Mock user subscriptions
 const mockUserSubscriptions = [
   {
-    userId: 1,
-    orgId: 1,
     orgName: 'Veriss Medical Association',
     subscribedDate: '2024-01-01',
     status: 'active'
@@ -118,7 +99,6 @@ function getOrganizationServices(orgId) {
   return [
     {
       id: 1,
-      orgId: 1,
       title: 'Annual Dues 2025',
       description: 'Annual membership dues for all registered members for the 2025 fiscal year.',
       amount: 2000,
@@ -138,7 +118,6 @@ function getOrganizationServices(orgId) {
     },
     {
       id: 2,
-      orgId: 1,
       title: 'Workshop Registration',
       description: 'Registration fee for the annual professional development workshop.',
       amount: 5000,

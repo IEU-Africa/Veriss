@@ -9,9 +9,56 @@
     <script src="https://unpkg.com/vue@3/dist/vue.global.prod.js"></script>
     <link rel="stylesheet" href="assets/css/app.css">
     <script src="https://unpkg.com/lucide@latest"></script>
-    <script src="assets/js/auth.js"></script>
-    <script src="assets/js/org.js"></script>
+
     <style>
+      /* CSS Custom Properties for Veriss Payments Brand Colors */
+      :root {
+        --primary-50: #f0f9ff;
+        --primary-100: #e0f2fe;
+        --primary-200: #bae6fd;
+        --primary-300: #7dd3fc;
+        --primary-400: #38bdf8;
+        --primary-500: #0ea5e9;
+        --primary-600: #0284c7;
+        --primary-700: #0369a1;
+        --primary-800: #075985;
+        --primary-900: #0c4a6e;
+
+        --success-50: #f0fdf4;
+        --success-100: #dcfce7;
+        --success-200: #bbf7d0;
+        --success-300: #86efac;
+        --success-400: #4ade80;
+        --success-500: #22c55e;
+        --success-600: #16a34a;
+        --success-700: #15803d;
+        --success-800: #166534;
+        --success-900: #14532d;
+
+        --neutral-50: #fafafa;
+        --neutral-100: #f5f5f5;
+        --neutral-200: #e5e5e5;
+        --neutral-300: #d4d4d4;
+        --neutral-400: #a3a3a3;
+        --neutral-500: #737373;
+        --neutral-600: #525252;
+        --neutral-700: #404040;
+        --neutral-800: #262626;
+        --neutral-900: #171717;
+
+        --error-500: #ef4444;
+        --error-600: #dc2626;
+        --warning-600: #f59e0b;
+
+        --radius: 0.5rem;
+        --radius-md: 0.75rem;
+        --radius-lg: 1rem;
+        --shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+        --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+        --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+        --shadow-2xl: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
+      }
+
       /* Sidebar Styles */
       .sidebar {
         width: 260px;
@@ -50,6 +97,7 @@
         font-weight: 600;
       }
 
+      /* Main Layout */
       .main-content {
         margin-left: 260px;
         min-height: 100vh;
@@ -77,110 +125,44 @@
         padding: 2rem;
       }
 
-      /* Modal Styles */
-      .modal-overlay {
+      /* Loading Overlay */
+      .loading-overlay {
         position: fixed;
-        top: 0;
-        left: 0;
-        right: 0;
-        bottom: 0;
-        background: rgba(0, 0, 0, 0.5);
+        inset: 0;
+        background: rgba(255, 255, 255, 0.9);
         display: flex;
         align-items: center;
         justify-content: center;
-        z-index: 1000;
-        padding: 2rem;
+        z-index: 9999;
       }
 
-      .modal-content {
-        background: white;
-        border-radius: var(--radius-lg);
-        max-width: 800px;
-        width: 100%;
-        max-height: 90vh;
-        overflow-y: auto;
-        box-shadow: var(--shadow-2xl);
+      .spinner {
+        width: 50px;
+        height: 50px;
+        border: 4px solid var(--neutral-200);
+        border-top-color: var(--primary-600);
+        border-radius: 50%;
+        animation: spin 0.8s linear infinite;
       }
 
-      .modal-header {
-        padding: 1.5rem 2rem;
-        border-bottom: 1px solid var(--neutral-200);
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
+      @keyframes spin {
+        to {
+          transform: rotate(360deg);
+        }
       }
 
-      .modal-body {
-        padding: 2rem;
+      /* Empty State */
+      .empty-state {
+        text-align: center;
+        padding: 4rem 2rem;
+        color: var(--neutral-500);
       }
 
-      .form-section {
-        margin-bottom: 2rem;
-      }
-
-      .form-section-title {
-        font-size: 0.9rem;
-        font-weight: 600;
-        margin-bottom: 1rem;
-        padding-bottom: 0.5rem;
-        border-bottom: 2px solid var(--neutral-100);
-      }
-
-      /* Service Card Styles */
-      .service-card {
-        background: white;
-        border: 1px solid var(--neutral-200);
-        border-radius: var(--radius-md);
-        padding: 1.5rem;
-        transition: all 0.2s ease;
-      }
-
-      .service-card:hover {
-        box-shadow: var(--shadow-lg);
-        border-color: var(--primary-300);
-      }
-
-      /* Table Styles */
-      .data-table {
-        width: 100%;
-        background: white;
-        border-radius: var(--radius-lg);
-        overflow: hidden;
-        box-shadow: var(--shadow-md);
-      }
-
-      /* Pagination */
-      .pagination {
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        gap: 0.5rem;
-        margin-top: 1.5rem;
-      }
-
-      .page-btn {
-        padding: 0.5rem 1rem;
-        border: 1px solid var(--neutral-300);
-        background: white;
-        border-radius: var(--radius);
-        cursor: pointer;
-        transition: all 0.2s ease;
-      }
-
-      .page-btn:hover:not(:disabled) {
-        background: var(--primary-50);
-        border-color: var(--primary-500);
-      }
-
-      .page-btn.active {
-        background: var(--primary-600);
-        color: white;
-        border-color: var(--primary-600);
-      }
-
-      .page-btn:disabled {
+      .empty-state-icon {
+        width: 64px;
+        height: 64px;
+        margin: 0 auto 1rem;
         opacity: 0.5;
-        cursor: not-allowed;
       }
 
       /* Responsive */
@@ -201,34 +183,205 @@
           left: 0;
         }
       }
+
+      /* ==================== MODAL STYLES ==================== */
+      /* Modal Overlay */
+      .modal-overlay {
+        position: fixed;
+        inset: 0;
+        background: rgba(0, 0, 0, 0.5);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        z-index: 1000;
+        padding: 1rem;
+        animation: fadeIn 0.2s ease-out;
+      }
+
+      @keyframes fadeIn {
+        from {
+          opacity: 0;
+        }
+
+        to {
+          opacity: 1;
+        }
+      }
+
+      /* Modal Content */
+      .modal-content {
+        background: white;
+        border-radius: var(--radius-lg);
+        width: 100%;
+        max-height: 90vh;
+        overflow-y: auto;
+        box-shadow: var(--shadow-2xl);
+        animation: slideUp 0.3s ease-out;
+      }
+
+      @keyframes slideUp {
+        from {
+          transform: translateY(20px);
+          opacity: 0;
+        }
+
+        to {
+          transform: translateY(0);
+          opacity: 1;
+        }
+      }
+
+      /* Modal Header */
+      .modal-header {
+        padding: 1.5rem 2rem;
+        border-bottom: 1px solid var(--neutral-200);
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        position: sticky;
+        top: 0;
+        background: white;
+        z-index: 10;
+      }
+
+      /* Modal Body */
+      .modal-body {
+        padding: 2rem;
+      }
+
+      /* Form Section */
+      .form-section {
+        margin-bottom: 2rem;
+      }
+
+      .form-section-title {
+        font-size: 0.875rem;
+        font-weight: 700;
+        color: var(--neutral-900);
+        text-transform: uppercase;
+        letter-spacing: 0.05em;
+        margin-bottom: 1rem;
+        padding-bottom: 0.5rem;
+        border-bottom: 2px solid var(--neutral-200);
+      }
+
+      /* Status Badge */
+      .status-badge {
+        display: inline-block;
+        padding: 0.25rem 0.75rem;
+        border-radius: 9999px;
+        font-size: 0.75rem;
+        font-weight: 600;
+        text-transform: uppercase;
+        letter-spacing: 0.05em;
+      }
+
+      .status-paid {
+        background: var(--success-100);
+        color: var(--success-800);
+      }
+
+      .status-pending {
+        background: #fef3c7;
+        color: #92400e;
+      }
+
+      /* Service Card Styles - Ultra Compact */
+      .service-card {
+        background: white;
+        border: 1px solid var(--neutral-200);
+        border-radius: var(--radius-md);
+        padding: 0.45rem;
+        box-shadow: var(--shadow-sm);
+        transition: all 0.2s ease;
+        font-size: 0.75rem;
+      }
+
+      .service-card:hover {
+        box-shadow: var(--shadow-md);
+        transform: translateY(-1px);
+      }
+
+      .balance-section {
+        text-align: center;
+        padding: 0.3rem 0;
+        border-bottom: 1px solid var(--neutral-100);
+      }
+
+      .balance-section .text-xs {
+        font-size: 0.65rem;
+      }
+
+      .balance-section .text-2xl {
+        font-size: 1rem;
+      }
+
+      .transaction-section {
+        padding: 0.3rem 0;
+        border-bottom: 1px solid var(--neutral-100);
+      }
+
+      .transaction-section .text-xs {
+        font-size: 0.65rem;
+      }
+
+      .transaction-section .text-sm {
+        font-size: 0.7rem;
+      }
+
+      .card-details {
+        padding: 0.3rem 0;
+      }
+
+      .card-details .text-sm {
+        font-size: 0.7rem;
+      }
+
+      .service-card h3 {
+        font-size: 0.9rem;
+        margin-bottom: 0.3rem;
+      }
+
+      .service-card .status-badge {
+        font-size: 0.6rem;
+        padding: 0.15rem 0.4rem;
+      }
     </style>
   </head>
 
   <body>
     <div id="app">
+      <!-- Loading Overlay -->
+      <div v-if="isGlobalLoading" class="loading-overlay">
+        <div>
+          <div class="spinner"></div>
+          <p class="mt-4 text-sm font-semibold" style="color: var(--neutral-700);">Loading...</p>
+        </div>
+      </div>
+
       <!-- Sidebar Navigation -->
       <aside class="sidebar" :class="{ open: sidebarOpen }">
         <div class="flex flex-col">
           <a @click="setActiveView('dashboard')" :class="['sidebar-item', { active: activeView === 'dashboard' }]">
-            <i data-lucide="layout-dashboard"></i>
+            <i data-lucide="layout-dashboard" class="w-5 h-5"></i>
             <span>Dashboard</span>
           </a>
           <a @click="setActiveView('payment-services')"
             :class="['sidebar-item', { active: activeView === 'payment-services' }]">
-            <i data-lucide="credit-card"></i>
+            <i data-lucide="credit-card" class="w-5 h-5"></i>
             <span>Payment Services</span>
           </a>
           <a @click="setActiveView('subscribers')" :class="['sidebar-item', { active: activeView === 'subscribers' }]">
-            <i data-lucide="users"></i>
+            <i data-lucide="users" class="w-5 h-5"></i>
             <span>Subscribers</span>
           </a>
           <a @click="setActiveView('bank-details')"
             :class="['sidebar-item', { active: activeView === 'bank-details' }]">
-            <i data-lucide="building-2"></i>
+            <i data-lucide="building-2" class="w-5 h-5"></i>
             <span>Bank Details</span>
           </a>
           <a @click="setActiveView('settings')" :class="['sidebar-item', { active: activeView === 'settings' }]">
-            <i data-lucide="settings"></i>
+            <i data-lucide="settings" class="w-5 h-5"></i>
             <span>Settings</span>
           </a>
         </div>
@@ -239,23 +392,29 @@
         <!-- Header Bar -->
         <header class="header-bar">
           <div class="flex items-center gap-4">
-            <button @click="toggleSidebar" class="lg:hidden">
-              <i data-lucide="menu"></i>
+            <button @click="toggleSidebar" class="lg:hidden p-2 hover:bg-gray-100 rounded">
+              <i data-lucide="menu" class="w-5 h-5"></i>
             </button>
-            <h1 class="text-lg font-bold text-neutral-900">VERISS PAYMENTS</h1>
+            <h1 class="text-lg font-bold" style="color: var(--neutral-900);">VERISS PAYMENTS</h1>
           </div>
           <div class="flex items-center gap-4">
-            <span class="text-neutral-700 font-semibold">{{ organization?.name || 'Organization' }}</span>
-            <div class="flex items-center gap-2">
-              <div
-                class="w-8 h-8 rounded-full bg-primary-600 flex items-center justify-center text-white font-semibold">
-                {{ currentUser?.name?.charAt(0) || 'A' }}
+            <span class="hidden md:inline font-semibold" style="color: var(--neutral-700);">
+              {{ organizationName }}
+            </span>
+            <a href="org-profile.html" class="flex items-center gap-2 cursor-pointer hover:opacity-90">
+              <div class="w-8 h-8 rounded-full flex items-center justify-center text-white font-semibold"
+                style="background: var(--primary-600);">
+                {{ userInitials }}
               </div>
-              <span class="text-xs text-neutral-700">{{ currentUser?.name || 'Admin User' }}</span>
-            </div>
-            <button @click="logout" class="btn btn-outline text-xs">
-              <i data-lucide="log-out"></i>
-              Logout
+
+              <span class="hidden md:inline text-sm" style="color: var(--neutral-700);">
+                {{ userName }}
+              </span>
+            </a>
+
+            <button @click="handleLogout" class="btn btn-outline text-sm px-3 py-2">
+              <i data-lucide="log-out" class="w-4 h-4"></i>
+              <span class="hidden md:inline ml-2">Logout</span>
             </button>
           </div>
         </header>
@@ -265,84 +424,99 @@
           <!-- Dashboard View -->
           <div v-if="activeView === 'dashboard'" class="dashboard-view">
             <div class="mb-6">
-              <h2 class="text-xl font-bold text-neutral-900 mb-2">Dashboard Overview</h2>
-              <select v-model="dashboardPeriod" class="modern-input" style="width: auto; display: inline-block;">
-                <option value="7">Last 7 Days</option>
-                <option value="30">Last 30 Days</option>
-                <option value="90">Last 90 Days</option>
-              </select>
+              <h2 class="text-2xl font-bold mb-4" style="color: var(--neutral-900);">Dashboard Overview</h2>
             </div>
 
-            <!-- Quick Stats -->
-            <div class="modern-grid modern-grid-4 mb-8">
+            <!-- Stats Cards -->
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
               <div class="stat-card">
-                <div class="flex items-center justify-between mb-2">
-                  <h3 class="text-xs font-bold text-neutral-500 uppercase tracking-wider">Subscribers</h3>
-                  <i data-lucide="users" class="w-5 h-5 text-primary-600"></i>
+                <div class="flex items-center justify-between mb-3">
+                  <h3 class="text-xs font-bold uppercase tracking-wider" style="color: var(--neutral-500);">Subscribers
+                  </h3>
+                  <i data-lucide="users" class="w-6 h-6" style="color: var(--primary-600);"></i>
                 </div>
-                <p class="stat-value text-primary-600">{{ stats.totalSubscribers || 0 }}</p>
-                <p class="text-xs text-success-600 mt-1">+12% ↗</p>
+                <p class="text-3xl font-bold mb-1" style="color: var(--primary-600);">
+                  {{ stats.subscribers || 0 }}
+                </p>
               </div>
+
               <div class="stat-card">
-                <div class="flex items-center justify-between mb-2">
-                  <h3 class="text-xs font-bold text-neutral-500 uppercase tracking-wider">Payments</h3>
-                  <i data-lucide="credit-card" class="w-5 h-5 text-success-600"></i>
+                <div class="flex items-center justify-between mb-3">
+                  <h3 class="text-xs font-bold uppercase tracking-wider" style="color: var(--neutral-500);">Payments
+                  </h3>
+                  <i data-lucide="credit-card" class="w-6 h-6" style="color: var(--success-600);"></i>
                 </div>
-                <p class="stat-value text-success-600">{{ stats.totalPayments || 0 }}</p>
-                <p class="text-xs text-success-600 mt-1">+8% ↗</p>
+                <p class="text-xl font-bold mb-1" style="color: var(--success-600);">
+                  {{ stats.payments || 0 }}
+                </p>
               </div>
+
               <div class="stat-card">
-                <div class="flex items-center justify-between mb-2">
-                  <h3 class="text-xs font-bold text-neutral-500 uppercase tracking-wider">Services</h3>
-                  <i data-lucide="file-text" class="w-5 h-5 text-warning-600"></i>
+                <div class="flex items-center justify-between mb-3">
+                  <h3 class="text-xs font-bold uppercase tracking-wider" style="color: var(--neutral-500);">Services
+                  </h3>
+                  <i data-lucide="file-text" class="w-6 h-6" style="color: var(--warning-600);"></i>
                 </div>
-                <p class="stat-value text-warning-600">{{ stats.activeServices || 0 }}</p>
-                <p class="text-xs text-neutral-500 mt-1">Active</p>
+                <p class="text-xl font-bold mb-1" style="color: var(--warning-600);">
+                  {{ stats.paymentServices || 0 }}
+                </p>
               </div>
+
               <div class="stat-card">
-                <div class="flex items-center justify-between mb-2">
-                  <h3 class="text-xs font-bold text-neutral-500 uppercase tracking-wider">Revenue</h3>
-                  <i data-lucide="trending-up" class="w-5 h-5 text-primary-600"></i>
+                <div class="flex items-center justify-between mb-3">
+                  <h3 class="text-xs font-bold uppercase tracking-wider" style="color: var(--neutral-500);">Revenue</h3>
+                  <i data-lucide="trending-up" class="w-6 h-6" style="color: var(--primary-600);"></i>
                 </div>
-                <p class="stat-value text-primary-600">₦{{ formatCurrency(stats.totalRevenue || 0) }}</p>
-                <p class="text-xs text-success-600 mt-1">+15% ↗</p>
+                <p class="text-xl font-bold mb-1" style="color: var(--primary-600);">
+                  ₦{{ formatCurrency(stats.totalRevenue || 0) }}
+                </p>
               </div>
             </div>
 
-            <!-- Charts and Activity -->
-            <div class="modern-grid modern-grid-2 mb-8">
+            <!-- Recent Activity & Top Services -->
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-8">
+              <!-- Recent Activity -->
               <div class="modern-card">
-                <h3 class="text-base font-semibold mb-4">Revenue Trend</h3>
-                <div class="h-64 flex items-center justify-center bg-neutral-50 rounded-lg">
-                  <p class="text-neutral-500">Chart placeholder - Revenue over time</p>
-                </div>
-              </div>
-              <div class="modern-card">
-                <h3 class="text-base font-semibold mb-4">Recent Activity</h3>
-                <div class="space-y-3">
-                  <div v-for="activity in recentActivity" :key="activity.id"
-                    class="flex items-start gap-3 p-2 rounded hover:bg-neutral-50">
-                    <div class="w-2 h-2 rounded-full bg-primary-600 mt-2"></div>
+                <h3 class="text-lg font-bold mb-4" style="color: var(--neutral-900);">Recent Activity</h3>
+                <div v-if="recentActivity.length > 0" class="space-y-3">
+                  <div v-for="activity in recentActivity" :key="activity._id"
+                    class="flex items-start gap-3 p-3 rounded-lg hover:bg-gray-50 transition-colors">
+                    <div class="w-2 h-2 rounded-full mt-2" style="background: var(--primary-600);"></div>
                     <div class="flex-1">
-                      <p class="text-xs text-neutral-900">{{ activity.message }}</p>
-                      <p class="text-xs text-neutral-500">{{ activity.time }}</p>
+                      <p class="text-sm" style="color: var(--neutral-900);">{{ activity.summary }}</p>
+                      <p class="text-xs mt-1" style="color: var(--neutral-500);">{{ formatDate(activity.createdAt) }}
+                      </p>
                     </div>
                   </div>
                 </div>
+                <div v-else class="empty-state py-8">
+                  <i data-lucide="inbox" class="empty-state-icon"></i>
+                  <p>No recent activity</p>
+                </div>
               </div>
-            </div>
 
-            <!-- Top Services -->
-            <div class="modern-card">
-              <h3 class="text-base font-semibold mb-4">Top Payment Services</h3>
-              <div class="space-y-3">
-                <div v-for="(service, idx) in topServices" :key="service.id"
-                  class="flex items-center justify-between p-3 rounded-lg hover:bg-neutral-50">
-                  <div>
-                    <p class="font-semibold text-neutral-900">{{ idx + 1 }}. {{ service.title }}</p>
-                    <p class="text-xs text-neutral-500">{{ service.paidCount }} paid</p>
+              <!-- Top Services -->
+              <div class="modern-card">
+                <h3 class="text-lg font-bold mb-4" style="color: var(--neutral-900);">Top Payment Services</h3>
+                <div v-if="topServices.length > 0" class="space-y-3">
+                  <div v-for="(service, idx) in topServices" :key="service._id"
+                    class="flex items-center justify-between p-3 rounded-lg hover:bg-gray-50 transition-colors">
+                    <div class="flex-1">
+                      <p class="font-semibold text-sm" style="color: var(--neutral-900);">
+                        {{ idx + 1 }}. {{ service.name }}
+                      </p>
+                      <p class="text-xs mt-1" style="color: var(--neutral-500);">
+                        {{ service.type }}
+                      </p>
+                    </div>
+                    <p class="font-bold text-lg" style="color: var(--primary-600);">
+                      ₦{{ formatCurrency(service.totalAmountPaid) }}
+                    </p>
                   </div>
-                  <p class="font-bold text-primary-600">₦{{ formatCurrency(service.revenue) }}</p>
+                </div>
+                <div v-else class="empty-state py-8">
+                  <i data-lucide="trending-up" class="empty-state-icon"></i>
+                  <p>No services yet</p>
                 </div>
               </div>
             </div>
@@ -350,453 +524,543 @@
 
           <!-- Payment Services View -->
           <div v-if="activeView === 'payment-services'" class="payment-services-view">
-            <div class="flex items-center justify-between mb-6">
-              <h2 class="text-xl font-bold text-neutral-900">Payment Services</h2>
-              <div class="flex items-center gap-4">
+            <div class="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-6">
+              <h2 class="text-2xl font-bold" style="color: var(--neutral-900);">Payment Services</h2>
+              <div class="flex flex-col md:flex-row gap-3">
                 <input v-model="serviceSearch" type="text" placeholder="Search services..." class="modern-input"
-                  style="width: 300px;">
-                <button @click="openCreateModal" class="btn btn-primary">
-                  <i data-lucide="plus"></i>
-                  Create Payment Service
+                  style="min-width: 250px;">
+                <button @click="openCreateServiceModal" class="btn btn-primary">
+                  <i data-lucide="plus" class="w-4 h-4"></i>
+                  <span>Create Service</span>
                 </button>
               </div>
             </div>
 
             <!-- Service Tabs -->
-            <div class="flex gap-4 mb-6 border-b border-neutral-200">
-              <button @click="serviceTab = 'active'"
-                :class="['px-4 py-2 font-semibold border-b-2 transition-colors', serviceTab === 'active' ? 'border-primary-600 text-primary-600' : 'border-transparent text-neutral-500']">
-                Active ({{ activeServices.length }})
+            <div class="flex gap-4 mb-6 border-b" style="border-color: var(--neutral-200);">
+              <button @click="serviceFilter = 'all'" :class="[
+              'px-4 py-2 font-semibold border-b-2 transition-colors',
+              serviceFilter === 'all' ? 'border-primary-600 text-primary-600' : 'border-transparent text-neutral-500'
+            ]"
+                :style="serviceFilter === 'all' ? { borderColor: 'var(--primary-600)', color: 'var(--primary-600)' } : {}">
+                All Services ({{ paymentServices.length }})
               </button>
-              <button @click="serviceTab = 'drafts'"
-                :class="['px-4 py-2 font-semibold border-b-2 transition-colors', serviceTab === 'drafts' ? 'border-primary-600 text-primary-600' : 'border-transparent text-neutral-500']">
-                Drafts ({{ draftServices.length }})
+              <button @click="serviceFilter = 'active'" :class="[
+              'px-4 py-2 font-semibold border-b-2 transition-colors',
+              serviceFilter === 'active' ? 'border-primary-600 text-primary-600' : 'border-transparent text-neutral-500'
+            ]"
+                :style="serviceFilter === 'active' ? { borderColor: 'var(--primary-600)', color: 'var(--primary-600)' } : {}">
+                Active ({{ activeServicesCount }})
               </button>
-              <button @click="serviceTab = 'completed'"
-                :class="['px-4 py-2 font-semibold border-b-2 transition-colors', serviceTab === 'completed' ? 'border-primary-600 text-primary-600' : 'border-transparent text-neutral-500']">
-                Completed ({{ completedServices.length }})
+              <button @click="serviceFilter = 'suspended'" :class="[
+              'px-4 py-2 font-semibold border-b-2 transition-colors',
+              serviceFilter === 'suspended' ? 'border-primary-600 text-primary-600' : 'border-transparent text-neutral-500'
+            ]"
+                :style="serviceFilter === 'suspended' ? { borderColor: 'var(--primary-600)', color: 'var(--primary-600)' } : {}">
+                Suspended ({{ suspendedServicesCount }})
               </button>
             </div>
 
-            <!-- Service Cards -->
-            <div class="modern-grid modern-grid-3">
-              <div v-for="service in displayedServices" :key="service.id" class="service-card">
-                <div class="flex items-start justify-between mb-3">
-                  <h3 class="font-bold text-base text-neutral-900">{{ service.title }}</h3>
-                  <span :class="getServiceStatusClass(service.status)" class="status-badge">
-                    {{ service.status }}
-                  </span>
-                </div>
-                <div class="space-y-2 mb-4">
-                  <p class="text-xs text-neutral-600 flex items-center gap-2">
-                    <i data-lucide="calendar" class="w-4 h-4"></i>
-                    Ends: {{ formatDate(service.endDate) }}
-                  </p>
-                  <p class="text-xs text-neutral-600 flex items-center gap-2">
-                    <i data-lucide="users" class="w-4 h-4"></i>
-                    {{ service.paidCount }} paid
-                  </p>
-                  <p class="text-xs text-neutral-600 flex items-center gap-2">
-                    <i data-lucide="dollar-sign" class="w-4 h-4"></i>
-                    ₦{{ formatCurrency(service.revenue) }}
-                  </p>
-                </div>
-                <div class="flex gap-2">
-                  <button @click="editService(service)" class="btn btn-secondary text-xs flex-1">Edit</button>
-                  <button v-if="service.status === 'active'" @click="pauseService(service)"
-                    class="btn btn-secondary text-xs flex-1">Pause</button>
-                  <button v-if="service.status === 'draft'" @click="deleteService(service)"
-                    class="btn btn-secondary text-xs flex-1"
-                    style="background: var(--error-500); color: white;">Delete</button>
-                  <button @click="viewService(service)" class="btn btn-primary text-xs flex-1">View</button>
-                </div>
-              </div>
+
+         <!-- Services Grid -->
+<div v-if="filteredServices.length > 0"
+  class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
+  <div v-for="service in filteredServices" :key="service._id" class="service-card" style="padding: 1.15rem;">
+    <!-- Card Header -->
+    <div class="flex items-center justify-between mb-3.5">
+      <h3 class="font-semibold text-base truncate" style="color: var(--neutral-900);">{{ service.name }}</h3>
+      <span :class="getStatusBadgeClass(service.status)" class="status-badge text-xs ml-2 flex-shrink-0">
+        {{ service.status }}
+      </span>
+    </div>
+    
+    <!-- Balance & Transactions Combined -->
+    <div class="mb-3.5">
+      <p class="text-xs font-medium uppercase tracking-wider mb-2" style="color: var(--neutral-500);">Balance</p>
+      <p class="text-xl font-bold mb-2.5" style="color: var(--primary-600);">
+        ₦{{ formatCurrency(service.totalAmountPaid || 0) }}
+      </p>
+      <div class="flex items-center gap-1.5">
+        <i data-lucide="activity" class="w-3.5 h-3.5" style="color: var(--neutral-400);"></i>
+        <span class="text-xs" style="color: var(--neutral-600);">
+          {{ service.totalUsage || 0 }} payments • ₦{{ formatCurrency(service.serviceCost) }}/each
+        </span>
+      </div>
+    </div>
+    
+    <!-- Action Buttons -->
+    <div class="flex gap-1.5">
+      <button @click="viewService(service)" class="btn btn-primary text-xs flex-1 px-2.5 py-2">
+        <i data-lucide="eye" class="w-3 h-3"></i>
+        View
+      </button>
+      <button @click="editService(service)" class="btn btn-secondary text-xs flex-1 px-2.5 py-2">
+        <i data-lucide="edit" class="w-3 h-3"></i>
+        Edit
+      </button>
+      <button @click="deleteService(service)" class="btn btn-secondary text-xs px-2.5 py-2"
+        style="background: var(--error-500); color: white;">
+        <i data-lucide="trash-2" class="w-3 h-3"></i>
+      </button>
+    </div>
+  </div>
+</div>
+            <!-- Empty State -->
+            <div v-else class="empty-state">
+              <i data-lucide="credit-card" class="empty-state-icon"></i>
+              <p class="text-lg font-semibold mb-2">No payment services found</p>
+              <p class="mb-4">Create your first payment service to get started</p>
+              <button @click="openCreateServiceModal" class="btn btn-primary">
+                <i data-lucide="plus" class="w-4 h-4"></i>
+                <span>Create Service</span>
+              </button>
             </div>
 
-            <div v-if="displayedServices.length === 0" class="text-center py-12 text-neutral-500">
-              <p>No services found</p>
-            </div>
+
           </div>
 
           <!-- Subscribers View -->
           <div v-if="activeView === 'subscribers'" class="subscribers-view">
-            <div class="flex items-center justify-between mb-6">
-              <h2 class="text-xl font-bold text-neutral-900">Subscribers ({{ totalSubscribers }})</h2>
-              <div class="flex items-center gap-4">
-                <input v-model="subscriberSearch" type="text" placeholder="Search subscribers..." class="modern-input"
-                  style="width: 300px;">
-                <button class="btn btn-secondary">Export CSV</button>
-                <button @click="openAddSubscriberModal" class="btn btn-primary">
-                  <i data-lucide="user-plus"></i>
-                  Add Subscriber
-                </button>
-              </div>
-            </div>
-
-            <!-- Subscriber Tabs -->
-            <div class="flex gap-4 mb-6 border-b border-neutral-200">
-              <button @click="subscriberFilter = 'all'"
-                :class="['px-4 py-2 font-semibold border-b-2 transition-colors', subscriberFilter === 'all' ? 'border-primary-600 text-primary-600' : 'border-transparent text-neutral-500']">
-                All ({{ totalSubscribers }})
-              </button>
-              <button @click="subscriberFilter = 'active'"
-                :class="['px-4 py-2 font-semibold border-b-2 transition-colors', subscriberFilter === 'active' ? 'border-primary-600 text-primary-600' : 'border-transparent text-neutral-500']">
-                Active ({{ activeSubscribersCount }})
-              </button>
-              <button @click="subscriberFilter = 'inactive'"
-                :class="['px-4 py-2 font-semibold border-b-2 transition-colors', subscriberFilter === 'inactive' ? 'border-primary-600 text-primary-600' : 'border-transparent text-neutral-500']">
-                Inactive ({{ inactiveSubscribersCount }})
-              </button>
+            <div class="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-6">
+              <h2 class="text-2xl font-bold" style="color: var(--neutral-900);">
+                Subscribers ({{ subscribers.length }})
+              </h2>
+              <input v-model="subscriberSearch" type="text" placeholder="Search subscribers..." class="modern-input"
+                style="min-width: 250px;">
             </div>
 
             <!-- Subscribers Table -->
-            <div class="data-table">
-              <table class="modern-table">
+            <div v-if="filteredSubscribers.length > 0" class="data-table">
+              <table class="modern-table w-full">
                 <thead>
                   <tr>
-                    <th>#</th>
-                    <th>Name</th>
-                    <th>Email</th>
-                    <th>Join Date</th>
-                    <th>Status</th>
-                    <th>Actions</th>
+                    <th class="text-left p-4">#</th>
+                    <th class="text-left p-4">Name</th>
+                    <th class="text-left p-4">Email</th>
+                    <th class="text-left p-4">Status</th>
+                    <th class="text-left p-4">Joined</th>
                   </tr>
                 </thead>
                 <tbody>
-                  <tr v-for="(subscriber, idx) in paginatedSubscribers" :key="subscriber.id">
-                    <td>{{ (currentPage - 1) * pageSize + idx + 1 }}</td>
-                    <td class="font-semibold">{{ subscriber.name }}</td>
-                    <td>{{ subscriber.email }}</td>
-                    <td>{{ formatDate(subscriber.joinDate) }}</td>
-                    <td>
-                      <span :class="subscriber.status === 'active' ? 'status-paid' : 'bg-neutral-100 text-neutral-800'"
-                        class="status-badge">
-                        {{ subscriber.status === 'active' ? '● Active' : '○ Inactive' }}
+                  <tr v-for="(subscriber, idx) in filteredSubscribers" :key="subscriber._id" class="border-t"
+                    style="border-color: var(--neutral-200);">
+                    <td class="p-4 text-sm">{{ idx + 1 }}</td>
+                    <td class="p-4 font-semibold text-sm" style="color: var(--neutral-900);">
+                      {{ subscriber.subscriber.fullName }}
+                    </td>
+                    <td class="p-4 text-sm" style="color: var(--neutral-600);">
+                      {{ subscriber.subscriber.email }}
+                    </td>
+                    <td class="p-4">
+                      <span :class="getStatusBadgeClass(subscriber.status)" class="status-badge text-xs">
+                        {{ subscriber.status }}
                       </span>
                     </td>
-                    <td>
-                      <button @click="editSubscriber(subscriber)"
-                        class="text-primary-600 hover:text-primary-700 text-xs">Edit</button>
+                    <td class="p-4 text-sm" style="color: var(--neutral-600);">
+                      {{ formatDate(subscriber.joinedAt) }}
                     </td>
                   </tr>
                 </tbody>
               </table>
             </div>
 
-            <!-- Pagination -->
-            <div class="pagination">
-              <button @click="currentPage = 1" :disabled="currentPage === 1" class="page-btn">«</button>
-              <button @click="currentPage--" :disabled="currentPage === 1" class="page-btn">‹</button>
-              <button v-for="page in visiblePages" :key="page" @click="currentPage = page"
-                :class="['page-btn', { active: currentPage === page }]">
-                {{ page }}
-              </button>
-              <button @click="currentPage++" :disabled="currentPage === totalPages" class="page-btn">›</button>
-              <button @click="currentPage = totalPages" :disabled="currentPage === totalPages"
-                class="page-btn">»</button>
+            <!-- Empty State -->
+            <div v-else class="empty-state">
+              <i data-lucide="users" class="empty-state-icon"></i>
+              <p class="text-lg font-semibold mb-2">No subscribers found</p>
+              <p>Subscribers will appear here once they join</p>
             </div>
-            <p class="text-center text-xs text-neutral-500 mt-2">
-              Showing {{ ((currentPage - 1) * pageSize) + 1 }}-{{ Math.min(currentPage * pageSize,
-              filteredSubscribers.length) }} of {{ filteredSubscribers.length }} entries
-            </p>
           </div>
 
           <!-- Bank Details View -->
           <div v-if="activeView === 'bank-details'" class="bank-details-view">
-            <div class="flex items-center justify-between mb-6">
-              <h2 class="text-xl font-bold text-neutral-900">Bank Accounts</h2>
+            <div class="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-6">
+              <h2 class="text-2xl font-bold" style="color: var(--neutral-900);">Bank Accounts</h2>
               <button @click="openAddBankModal" class="btn btn-primary">
-                <i data-lucide="plus"></i>
-                Add Bank Account
+                <i data-lucide="plus" class="w-4 h-4"></i>
+                <span>Add Bank Account</span>
               </button>
             </div>
 
-            <div class="space-y-6">
-              <!-- Primary Account -->
-              <div v-if="primaryBankAccount">
-                <h3 class="text-base font-semibold mb-4">Primary Account</h3>
-                <div class="modern-card">
-                  <div class="flex items-start justify-between">
-                    <div>
-                      <h4 class="font-bold text-base mb-2">{{ primaryBankAccount.bankName }}</h4>
-                      <p class="text-neutral-600 mb-1">Account: •••• {{ primaryBankAccount.accountNumber.slice(-4) }}
-                      </p>
-                      <p class="text-neutral-600 mb-1">Name: {{ primaryBankAccount.accountName }}</p>
-                      <span class="status-paid status-badge">✅ Verified</span>
-                    </div>
-                    <div class="flex gap-2">
-                      <button @click="editBankAccount(primaryBankAccount)"
-                        class="btn btn-secondary text-xs">Edit</button>
-                      <button @click="deleteBankAccount(primaryBankAccount)"
-                        class="btn btn-secondary text-xs">Delete</button>
-                    </div>
+            <!-- Bank Accounts List -->
+            <div v-if="bankAccounts.length > 0" class="grid grid-cols-1 md:grid-cols-2 gap-6">
+              <div v-for="account in bankAccounts" :key="account._id" class="modern-card">
+                <div class="flex items-start justify-between mb-4">
+                  <div class="flex-1">
+                    <h4 class="font-bold text-lg mb-2" style="color: var(--neutral-900);">{{ account.bankName }}</h4>
+                    <p class="text-sm mb-1" style="color: var(--neutral-600);">
+                      Account: {{ account.accountNumber }}
+                    </p>
+                    <p class="text-sm mb-3" style="color: var(--neutral-600);">
+                      Name: {{ account.accountName }}
+                    </p>
+                    <span class="status-badge text-xs"
+                      style="background: var(--success-100); color: var(--success-800);">
+                      ✓ Verified
+                    </span>
                   </div>
                 </div>
-              </div>
-
-              <!-- Other Accounts -->
-              <div v-if="otherBankAccounts.length > 0">
-                <h3 class="text-base font-semibold mb-4">Other Accounts</h3>
-                <div class="modern-grid modern-grid-2">
-                  <div v-for="account in otherBankAccounts" :key="account.id" class="modern-card">
-                    <div class="flex items-start justify-between">
-                      <div>
-                        <h4 class="font-bold text-base mb-2">{{ account.bankName }}</h4>
-                        <p class="text-neutral-600 mb-1">Account: •••• {{ account.accountNumber.slice(-4) }}</p>
-                        <p class="text-neutral-600 mb-1">Name: {{ account.accountName }}</p>
-                        <span class="status-paid status-badge">✅ Verified</span>
-                      </div>
-                      <div class="flex flex-col gap-2">
-                        <button @click="setPrimaryAccount(account)" class="btn btn-secondary text-xs">Set as
-                          Default</button>
-                        <button @click="editBankAccount(account)" class="btn btn-secondary text-xs">Edit</button>
-                        <button @click="deleteBankAccount(account)" class="btn btn-secondary text-xs">Delete</button>
-                      </div>
-                    </div>
-                  </div>
+                <div class="flex gap-2">
+                  <button @click="editBankAccount(account)" class="btn btn-secondary text-sm flex-1">
+                    Edit
+                  </button>
+                  <button @click="deleteBankAccount(account)" class="btn btn-secondary text-sm flex-1">
+                    Delete
+                  </button>
                 </div>
               </div>
+            </div>
 
-              <div v-if="bankAccounts.length === 0" class="text-center py-12 text-neutral-500">
-                <p>No bank accounts added yet</p>
-              </div>
+            <!-- Empty State -->
+            <div v-else class="empty-state">
+              <i data-lucide="building-2" class="empty-state-icon"></i>
+              <p class="text-lg font-semibold mb-2">No bank accounts added</p>
+              <p class="mb-4">Add a bank account to receive payments</p>
+              <button @click="openAddBankModal" class="btn btn-primary">
+                <i data-lucide="plus" class="w-4 h-4"></i>
+                <span>Add Bank Account</span>
+              </button>
             </div>
           </div>
 
           <!-- Settings View -->
           <div v-if="activeView === 'settings'" class="settings-view">
-            <h2 class="text-xl font-bold text-neutral-900 mb-6">Settings</h2>
+            <h2 class="text-2xl font-bold mb-6" style="color: var(--neutral-900);">Settings</h2>
             <div class="modern-card">
-              <p class="text-neutral-600">Settings page coming soon...</p>
+              <p style="color: var(--neutral-600);">Settings page coming soon...</p>
             </div>
           </div>
         </div>
       </div>
 
-      <!-- Create Payment Service Modal -->
-      <div v-if="showCreateModal" class="modal-overlay" @click.self="closeCreateModal">
-        <div class="modal-content">
-          <div class="modal-header">
-            <h3 class="text-lg font-bold">Create Payment Service</h3>
-            <button @click="closeCreateModal" class="text-neutral-500 hover:text-neutral-900">
-              <i data-lucide="x"></i>
-            </button>
-          </div>
-          <div class="modal-body">
-            <!-- Basic Information -->
-            <div class="form-section">
-              <h4 class="form-section-title">Basic Information</h4>
-              <div class="space-y-4">
-                <div>
-                  <label class="block text-xs font-semibold mb-2">Service Title</label>
-                  <input v-model="newService.title" type="text" class="modern-input"
-                    placeholder="Annual Membership Dues 2025">
-                </div>
-                <div>
-                  <label class="block text-xs font-semibold mb-2">Description</label>
-                  <textarea v-model="newService.description" class="modern-input" rows="3"
-                    placeholder="Describe the payment service..."></textarea>
-                </div>
-                <div>
-                  <label class="block text-xs font-semibold mb-2">Amount</label>
-                  <div class="flex items-center gap-2">
-                    <span class="text-base font-semibold">₦</span>
-                    <input v-model.number="newService.amount" type="number" class="modern-input" placeholder="2000">
-                  </div>
-                </div>
-                <div>
-                  <label class="block text-xs font-semibold mb-2">Payment Window</label>
-                  <div class="flex items-center gap-4 mb-3">
-                    <label class="flex items-center gap-2">
-                      <input type="radio" v-model="newService.paymentWindow" value="anytime">
-                      <span>Anytime</span>
-                    </label>
-                    <label class="flex items-center gap-2">
-                      <input type="radio" v-model="newService.paymentWindow" value="dates">
-                      <span>Set Dates</span>
-                    </label>
-                  </div>
-                  <div v-if="newService.paymentWindow === 'dates'" class="flex gap-4">
-                    <div class="flex-1">
-                      <label class="block text-xs text-neutral-600 mb-1">Start Date</label>
-                      <input v-model="newService.startDate" type="date" class="modern-input">
-                    </div>
-                    <div class="flex-1">
-                      <label class="block text-xs text-neutral-600 mb-1">End Date</label>
-                      <input v-model="newService.endDate" type="date" class="modern-input">
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </div>
+      <!-- Modals will be added in Part 2 (JavaScript section) -->
+      <!-- ===================================================================
+     ORGANIZATION DASHBOARD - MODAL COMPONENTS
+     =================================================================== -->
 
-            <!-- Eligibility & Audience -->
-            <div class="form-section">
-              <h4 class="form-section-title">Eligibility & Audience</h4>
-              <div class="space-y-3">
-                <label class="flex items-center gap-2">
-                  <input type="radio" v-model="newService.audience" value="subscribers">
-                  <span>Subscribers Only</span>
-                </label>
-                <label class="flex items-center gap-2">
-                  <input type="radio" v-model="newService.audience" value="subscribers-invited">
-                  <span>Subscribers + Invited Users</span>
-                </label>
-                <label class="flex items-center gap-2">
-                  <input type="radio" v-model="newService.audience" value="public">
-                  <span>General Public</span>
-                </label>
-                <div v-if="newService.audience === 'subscribers-invited'" class="mt-3 space-y-3">
-                  <div class="flex gap-2">
-                    <button @click="openUploadInviteModal" class="btn btn-secondary text-xs">Upload Invite List
-                      (CSV)</button>
-                    <button @click="openSampleFormatModal" class="btn btn-secondary text-xs">View Sample Format</button>
-                  </div>
-                  <div v-if="newService.inviteListFile" class="p-3 bg-success-50 border border-success-200 rounded-lg">
-                    <div class="flex items-center justify-between">
-                      <div class="flex items-center gap-2">
-                        <i data-lucide="file-check" class="w-4 h-4 text-success-600"></i>
-                        <span class="text-xs text-success-700">{{ newService.inviteListFile.name }}</span>
-                      </div>
-                      <button @click="removeInviteList" class="text-error-600 hover:text-error-700">
-                        <i data-lucide="x" class="w-4 h-4"></i>
-                      </button>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </div>
+      <!-- ==================== CREATE/EDIT SERVICE MODAL ==================== -->
 
-            <!-- Bank Account -->
-            <div class="form-section">
-              <h4 class="form-section-title">Bank Account & Funds Routing</h4>
-              <div class="space-y-3">
-                <div>
-                  <label class="block text-xs font-semibold mb-2">Select Bank Account</label>
-                  <select v-model="newService.bankAccountId" class="modern-input">
-                    <option value="">Select an account...</option>
-                    <option v-for="account in bankAccounts" :key="account.id" :value="account.id">
-                      {{ account.bankName }} ••••{{ account.accountNumber.slice(-4) }}
-                    </option>
-                  </select>
-                </div>
-                <button @click="openAddBankModal" class="btn btn-secondary text-xs">Add New Bank Account</button>
-              </div>
-            </div>
-
-            <!-- Additional Information -->
-            <div class="form-section">
-              <h4 class="form-section-title">Additional Information Collection</h4>
-              <div class="space-y-2">
-                <label class="flex items-center gap-2">
-                  <input type="checkbox" v-model="newService.collectFields.fullName" checked disabled>
-                  <span>Full Name (Auto)</span>
-                </label>
-                <label class="flex items-center gap-2">
-                  <input type="checkbox" v-model="newService.collectFields.email" checked disabled>
-                  <span>Email (Auto)</span>
-                </label>
-                <label class="flex items-center gap-2">
-                  <input type="checkbox" v-model="newService.collectFields.phone">
-                  <span>Phone Number</span>
-                </label>
-                <label class="flex items-center gap-2">
-                  <input type="checkbox" v-model="newService.collectFields.idNumber">
-                  <span>ID Number</span>
-                </label>
-                <label class="flex items-center gap-2">
-                  <input type="checkbox" v-model="newService.collectFields.ticketType">
-                  <span>Ticket Type</span>
-                </label>
-                <label class="flex items-center gap-2">
-                  <input type="checkbox" v-model="newService.collectFields.referenceCode">
-                  <span>Reference Code</span>
-                </label>
-              </div>
-              <div class="mt-3 space-y-3">
-                <button @click="openAddCustomFieldModal" class="btn btn-secondary text-xs">Add Custom Field</button>
-                <button @click="openAttachFileModal" class="btn btn-secondary text-xs">Attach File Requirement</button>
-
-                <!-- Custom Fields List -->
-                <div v-if="newService.customFields && newService.customFields.length > 0" class="mt-3 space-y-2">
-                  <div v-for="(field, idx) in newService.customFields" :key="idx"
-                    class="p-2 bg-neutral-50 rounded-lg flex items-center justify-between">
-                    <div>
-                      <span class="text-xs font-semibold text-neutral-900">{{ field.label }}</span>
-                      <span class="text-xs text-neutral-500 ml-2">({{ field.type }})</span>
-                    </div>
-                    <button @click="removeCustomField(idx)" class="text-error-600 hover:text-error-700">
-                      <i data-lucide="trash-2" class="w-3 h-3"></i>
-                    </button>
-                  </div>
-                </div>
-
-                <!-- File Requirements List -->
-                <div v-if="newService.fileRequirements && newService.fileRequirements.length > 0"
-                  class="mt-3 space-y-2">
-                  <div v-for="(req, idx) in newService.fileRequirements" :key="idx"
-                    class="p-2 bg-neutral-50 rounded-lg flex items-center justify-between">
-                    <div>
-                      <span class="text-xs font-semibold text-neutral-900">{{ req.label }}</span>
-                      <span v-if="req.required" class="text-xs text-error-600 ml-2">(Required)</span>
-                      <span v-else class="text-xs text-neutral-500 ml-2">(Optional)</span>
-                    </div>
-                    <button @click="removeFileRequirement(idx)" class="text-error-600 hover:text-error-700">
-                      <i data-lucide="trash-2" class="w-3 h-3"></i>
-                    </button>
-                  </div>
-                </div>
-              </div>
-            </div>
-
-            <!-- Modal Actions -->
-            <div class="flex justify-end gap-3 mt-6 pt-6 border-t border-neutral-200">
-              <button @click="closeCreateModal" class="btn btn-secondary">Cancel</button>
-              <button @click="saveDraft" class="btn btn-secondary">Save as Draft</button>
-              <button @click="publishService" class="btn btn-primary">Publish</button>
-            </div>
-          </div>
-        </div>
-      </div>
-
-      <!-- View Service Modal -->
-      <div v-if="showViewModal && selectedService" class="modal-overlay" @click.self="closeViewModal">
+      <div v-if="showCreateServiceModal" class="modal-overlay" @click.self="closeCreateServiceModal">
         <div class="modal-content" style="max-width: 900px;">
           <div class="modal-header">
-            <h3 class="text-lg font-bold">{{ selectedService.title }}</h3>
-            <button @click="closeViewModal" class="text-neutral-500 hover:text-neutral-900">
-              <i data-lucide="x"></i>
+            <h3 class="text-xl font-bold" style="color: var(--neutral-900);">
+              {{ isEditMode ? 'Edit Payment Service' : 'Create Payment Service' }}
+            </h3>
+            <button @click="closeCreateServiceModal" class="p-2 hover:bg-gray-100 rounded-lg transition-colors">
+              <i data-lucide="x" class="w-5 h-5" style="color: var(--neutral-500);"></i>
             </button>
           </div>
-          <div class="modal-body">
-            <div class="space-y-6">
-              <!-- Service Status -->
-              <div class="flex items-center gap-3">
-                <span :class="getServiceStatusClass(selectedService.status)" class="status-badge">
-                  {{ selectedService.status }}
-                </span>
-                <span class="text-xs text-neutral-500">Created: {{ formatDate(selectedService.createdAt) }}</span>
-              </div>
 
-              <!-- Basic Information -->
+          <div class="modal-body">
+            <form @submit.prevent="createService" class="space-y-6">
+
+              <!-- Basic Information Section -->
               <div class="form-section">
                 <h4 class="form-section-title">Basic Information</h4>
+                <div class="space-y-4">
+                  <div>
+                    <label class="block text-sm font-bold mb-2" style="color: var(--neutral-700);">
+                      Service Name <span style="color: var(--error-500);">*</span>
+                    </label>
+                    <input v-model="newService.name" type="text" required class="modern-input"
+                      placeholder="e.g., Annual Membership Dues 2025">
+                  </div>
+
+                  <div>
+                    <label class="block text-sm font-bold mb-2" style="color: var(--neutral-700);">
+                      Description
+                    </label>
+                    <textarea v-model="newService.description" rows="3" class="modern-input"
+                      placeholder="Describe what this payment service is for..."></textarea>
+                  </div>
+
+                  <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div>
+                      <label class="block text-sm font-bold mb-2" style="color: var(--neutral-700);">
+                        Service Type
+                      </label>
+                      <select v-model="newService.type" class="modern-input">
+                        <option value="event-registration">Event Registration</option>
+                        <option value="membership-dues">Membership Dues</option>
+                        <option value="donation">Donation</option>
+                        <option value="other-payment">Other Payment</option>
+                      </select>
+                    </div>
+
+                    <div>
+                      <label class="block text-sm font-bold mb-2" style="color: var(--neutral-700);">
+                        Amount (₦) <span style="color: var(--error-500);">*</span>
+                      </label>
+                      <input v-model.number="newService.serviceCost" type="number" required min="0" class="modern-input"
+                        placeholder="10000">
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Payment Window Section -->
+              <div class="form-section">
+                <h4 class="form-section-title">Payment Window</h4>
+                <div class="space-y-4">
+                  <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div>
+                      <label class="block text-sm font-bold mb-2" style="color: var(--neutral-700);">
+                        Start Date
+                      </label>
+                      <input v-model="newService.startDate" type="date" class="modern-input">
+                      <p class="text-xs mt-1" style="color: var(--neutral-500);">Leave empty for no start date</p>
+                    </div>
+
+                    <div>
+                      <label class="block text-sm font-bold mb-2" style="color: var(--neutral-700);">
+                        Expiry Date
+                      </label>
+                      <input v-model="newService.expiryDate" type="date" class="modern-input">
+                      <p class="text-xs mt-1" style="color: var(--neutral-500);">Leave empty for no expiry</p>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Bank Account Section -->
+              <div class="form-section">
+                <h4 class="form-section-title">Settlement Account</h4>
                 <div class="space-y-3">
                   <div>
-                    <label class="block text-xs font-semibold text-neutral-600 mb-1">Description</label>
-                    <p class="text-xs text-neutral-900">{{ selectedService.description || 'No description provided' }}
+                    <label class="block text-sm font-bold mb-2" style="color: var(--neutral-700);">
+                      Select Bank Account
+                    </label>
+                    <select v-model="newService.paymentSubaccount" class="modern-input">
+                      <option value="">Select account...</option>
+                      <option v-for="account in bankAccounts" :key="account._id" :value="account.subaccount">
+                        {{ account.bankName }} - {{ account.accountNumber }}
+                      </option>
+                    </select>
+                    <p class="text-xs mt-1" style="color: var(--neutral-500);">
+                      Payments will be settled to this account
                     </p>
                   </div>
+                  <button type="button" @click="openAddBankModal" class="btn btn-secondary text-sm">
+                    <i data-lucide="plus" class="w-4 h-4"></i>
+                    Add New Bank Account
+                  </button>
+                </div>
+              </div>
+
+              <!-- Custom Fields Section -->
+              <div class="form-section">
+                <h4 class="form-section-title">Custom Data Collection</h4>
+                <div class="space-y-3">
+                  <label class="flex items-center gap-2">
+                    <input type="checkbox" v-model="newService.collectCustomData" class="w-4 h-4">
+                    <span class="text-sm" style="color: var(--neutral-700);">Collect additional information from
+                      payers</span>
+                  </label>
+
+                  <div v-if="newService.collectCustomData" class="space-y-3">
+                    <button type="button" @click="openCustomFieldModal" class="btn btn-secondary text-sm">
+                      <i data-lucide="plus" class="w-4 h-4"></i>
+                      Add Custom Field
+                    </button>
+
+                    <!-- Custom Fields List -->
+                    <div v-if="newService.customFields.length > 0" class="space-y-2">
+                      <div v-for="(field, index) in newService.customFields" :key="index"
+                        class="flex items-center justify-between p-3 rounded-lg" style="background: var(--neutral-50);">
+                        <div>
+                          <p class="font-semibold text-sm" style="color: var(--neutral-900);">{{ field.name }}</p>
+                          <p class="text-xs" style="color: var(--neutral-600);">
+                            Type: {{ field.type }} | {{ field.required ? 'Required' : 'Optional' }}
+                          </p>
+                        </div>
+                        <button type="button" @click="removeCustomField(index)"
+                          class="p-2 hover:bg-red-100 rounded transition-colors">
+                          <i data-lucide="trash-2" class="w-4 h-4" style="color: var(--error-500);"></i>
+                        </button>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Form Actions -->
+              <div class="flex justify-end gap-3 pt-4 border-t" style="border-color: var(--neutral-200);">
+                <button type="button" @click="closeCreateServiceModal" class="btn btn-secondary">
+                  Cancel
+                </button>
+                <button type="submit" class="btn btn-primary">
+                  <i :data-lucide="isEditMode ? 'save' : 'check'" class="w-4 h-4"></i>
+                  {{ isEditMode ? 'Update Service' : 'Create Service' }}
+                </button>
+              </div>
+            </form>
+          </div>
+        </div>
+      </div>
+
+      <!-- ==================== EDIT BANK ACCOUNT MODAL ==================== -->
+
+      <div v-if="showEditBankModal" class="modal-overlay" @click.self="closeEditBankModal">
+        <div class="modal-content" style="max-width: 600px;">
+          <div class="modal-header">
+            <h3 class="text-xl font-bold" style="color: var(--neutral-900);">Edit Bank Account</h3>
+            <button @click="closeEditBankModal" class="p-2 hover:bg-gray-100 rounded-lg transition-colors">
+              <i data-lucide="x" class="w-5 h-5" style="color: var(--neutral-500);"></i>
+            </button>
+          </div>
+
+          <div class="modal-body">
+            <form @submit.prevent="updateBankAccount" class="space-y-4">
+
+              <!-- Country -->
+              <div>
+                <label class="block text-sm font-bold mb-2" style="color: var(--neutral-700);">
+                  Country <span style="color: var(--error-500);">*</span>
+                </label>
+                <select v-model="selectedCountry" @change="fetchBanks(selectedCountry.toLowerCase())"
+                  class="modern-input" required>
+                  <option v-for="country in bankCountries" :key="country.iso_code" :value="country.name">
+                    {{ country.name }}
+                  </option>
+                </select>
+              </div>
+
+              <!-- Bank Name -->
+              <div>
+                <label class="block text-sm font-bold mb-2" style="color: var(--neutral-700);">
+                  Bank Name <span style="color: var(--error-500);">*</span>
+                </label>
+                <select v-model="selectedBank" @change="onBankChange" class="modern-input" required>
+                  <option value="">Select bank...</option>
+                  <option v-for="bank in banks" :key="bank.code" :value="bank">
+                    {{ bank.name }}
+                  </option>
+                </select>
+              </div>
+
+              <!-- Bank Code -->
+              <div>
+                <label class="block text-sm font-bold mb-2" style="color: var(--neutral-700);">
+                  Bank Code <span style="color: var(--error-500);">*</span>
+                </label>
+                <input v-model="newBankAccount.bankCode" type="text" required class="modern-input"
+                  placeholder="e.g., 057, 058, 044">
+                <p class="text-xs mt-1" style="color: var(--neutral-500);">
+                  Enter the bank's code (usually 3 digits)
+                </p>
+              </div>
+
+              <!-- Account Number -->
+              <div>
+                <label class="block text-sm font-bold mb-2" style="color: var(--neutral-700);">
+                  Account Number <span style="color: var(--error-500);">*</span>
+                </label>
+                <div class="flex gap-2">
+                  <input v-model="newBankAccount.accountNumber" type="text" required maxlength="10"
+                    class="modern-input flex-1" placeholder="0123456789">
+                  <button type="button" @click="verifyBankAccount" :disabled="isVerifyingAccount"
+                    class="btn btn-secondary text-sm whitespace-nowrap">
+                    <i v-if="!isVerifyingAccount" data-lucide="check-circle" class="w-4 h-4"></i>
+                    <span v-if="isVerifyingAccount">Verifying...</span>
+                    <span v-else>Verify</span>
+                  </button>
+                </div>
+                <p class="text-xs mt-1" style="color: var(--neutral-500);">
+                  10-digit account number
+                </p>
+              </div>
+
+              <!-- Account Name -->
+              <div>
+                <label class="block text-sm font-bold mb-2" style="color: var(--neutral-700);">
+                  Account Name <span style="color: var(--error-500);">*</span>
+                </label>
+                <input v-model="newBankAccount.accountName" type="text" required class="modern-input" disabled
+                  :placeholder="newBankAccount.accountName ? newBankAccount.accountName : 'Will be auto-filled after verification'">
+              </div>
+
+              <!-- Form Actions -->
+              <div class="flex justify-end gap-3 pt-4 border-t" style="border-color: var(--neutral-200);">
+                <button type="button" @click="closeEditBankModal" class="btn btn-secondary">
+                  Cancel
+                </button>
+                <button type="button" @click="verifyBankAccount" :disabled="isVerifyingAccount"
+                  class="btn btn-secondary">
+                  <i v-if="!isVerifyingAccount" data-lucide="check-circle" class="w-4 h-4"></i>
+                  <span v-if="isVerifyingAccount">Verifying...</span>
+                  <span v-else>Verify Account</span>
+                </button>
+                <button type="submit" class="btn btn-primary">
+                  <i data-lucide="save" class="w-4 h-4"></i>
+                  Update Bank
+                </button>
+              </div>
+            </form>
+          </div>
+        </div>
+      </div>
+
+      <!-- ==================== UPDATED VIEW SERVICE MODAL ==================== -->
+
+      <div v-if="showServiceModal && selectedService" class="modal-overlay" @click.self="showServiceModal = false">
+        <div class="modal-content" style="max-width: 800px;">
+          <div class="modal-header">
+            <div>
+              <h3 class="text-xl font-bold" style="color: var(--neutral-900);">{{ selectedService.name }}</h3>
+              <p class="text-sm mt-1" style="color: var(--neutral-600);">{{ selectedService.type }}</p>
+            </div>
+            <button @click="showServiceModal = false" class="p-2 hover:bg-gray-100 rounded-lg transition-colors">
+              <i data-lucide="x" class="w-5 h-5" style="color: var(--neutral-500);"></i>
+            </button>
+          </div>
+
+          <div class="modal-body">
+            <div class="space-y-6">
+
+              <!-- Status Badge -->
+              <div>
+                <span :class="getStatusBadgeClass(selectedService.status)" class="status-badge">
+                  {{ selectedService.status }}
+                </span>
+              </div>
+
+              <!-- Basic Info -->
+              <div class="form-section">
+                <h4 class="form-section-title">Service Information</h4>
+                <div class="space-y-3">
+                  <div>
+                    <label class="block text-xs font-bold mb-1" style="color: var(--neutral-500);">Description</label>
+                    <p class="text-sm" style="color: var(--neutral-900);">
+                      {{ selectedService.description || 'No description provided' }}
+                    </p>
+                  </div>
+
                   <div class="grid grid-cols-2 gap-4">
                     <div>
-                      <label class="block text-xs font-semibold text-neutral-600 mb-1">Amount</label>
-                      <p class="text-xs text-neutral-900 font-semibold">₦{{ formatCurrency(selectedService.amount || 0)
-                        }}</p>
+                      <label class="block text-xs font-bold mb-1" style="color: var(--neutral-500);">Service
+                        Cost</label>
+                      <p class="text-lg font-bold" style="color: var(--primary-600);">
+                        ₦{{ formatCurrency(selectedService.serviceCost) }}
+                      </p>
                     </div>
                     <div>
-                      <label class="block text-xs font-semibold text-neutral-600 mb-1">Payment Window</label>
-                      <p class="text-xs text-neutral-900">{{ selectedService.paymentWindow === 'anytime' ? 'Anytime' :
-                        `${formatDate(selectedService.startDate)} - ${formatDate(selectedService.endDate)}` }}</p>
+                      <label class="block text-xs font-bold mb-1" style="color: var(--neutral-500);">Total Usage</label>
+                      <p class="text-lg font-bold" style="color: var(--success-600);">
+                        {{ selectedService.totalUsage || 0 }} payments
+                      </p>
+                    </div>
+                  </div>
+
+                  <div class="grid grid-cols-2 gap-4">
+                    <div>
+                      <label class="block text-xs font-bold mb-1" style="color: var(--neutral-500);">Start Date</label>
+                      <p class="text-sm" style="color: var(--neutral-900);">{{ formatDate(selectedService.startDate) }}
+                      </p>
+                    </div>
+                    <div>
+                      <label class="block text-xs font-bold mb-1" style="color: var(--neutral-500);">Expiry Date</label>
+                      <p class="text-sm" style="color: var(--neutral-900);">{{ formatDate(selectedService.expiryDate) }}
+                      </p>
                     </div>
                   </div>
                 </div>
@@ -804,1045 +1068,1346 @@
 
               <!-- Statistics -->
               <div class="form-section">
-                <h4 class="form-section-title">Statistics</h4>
+                <h4 class="form-section-title">Performance</h4>
                 <div class="grid grid-cols-3 gap-4">
-                  <div class="p-3 bg-primary-50 rounded-lg">
-                    <label class="block text-xs font-semibold text-neutral-600 mb-1">Total Paid</label>
-                    <p class="text-lg font-bold text-primary-600">{{ selectedService.paidCount || 0 }}</p>
-                  </div>
-                  <div class="p-3 bg-success-50 rounded-lg">
-                    <label class="block text-xs font-semibold text-neutral-600 mb-1">Total Revenue</label>
-                    <p class="text-lg font-bold text-success-600">₦{{ formatCurrency(selectedService.revenue || 0) }}
+                  <div class="p-4 rounded-lg" style="background: var(--primary-50);">
+                    <p class="text-xs font-bold mb-1" style="color: var(--neutral-600);">Total Revenue</p>
+                    <p class="text-2xl font-bold" style="color: var(--primary-600);">
+                      ₦{{ formatCurrency(selectedService.totalAmountPaid || 0) }}
                     </p>
                   </div>
-                  <div class="p-3 bg-warning-50 rounded-lg">
-                    <label class="block text-xs font-semibold text-neutral-600 mb-1">Average Payment</label>
-                    <p class="text-lg font-bold text-warning-600">₦{{ formatCurrency(selectedService.paidCount > 0 ?
-                      (selectedService.revenue / selectedService.paidCount) : 0) }}</p>
+                  <div class="p-4 rounded-lg" style="background: var(--success-50);">
+                    <p class="text-xs font-bold mb-1" style="color: var(--neutral-600);">Payments</p>
+                    <p class="text-2xl font-bold" style="color: var(--success-600);">
+                      {{ selectedService.totalUsage || 0 }}
+                    </p>
+                  </div>
+                  <div class="p-4 rounded-lg" style="background: var(--neutral-100);">
+                    <p class="text-xs font-bold mb-1" style="color: var(--neutral-600);">Platform Fee</p>
+                    <p class="text-2xl font-bold" style="color: var(--neutral-700);">
+                      {{ selectedService.platformFee || 2 }}%
+                    </p>
                   </div>
                 </div>
               </div>
 
-              <!-- Eligibility & Audience -->
-              <div class="form-section">
-                <h4 class="form-section-title">Eligibility & Audience</h4>
+              <!-- Custom Fields -->
+              <div v-if="selectedService.customFields && selectedService.customFields.length > 0" class="form-section">
+                <h4 class="form-section-title">Custom Fields</h4>
                 <div class="space-y-2">
-                  <p class="text-xs text-neutral-900">
-                    <span class="font-semibold">Audience:</span>
-                    {{ selectedService.audience === 'subscribers' ? 'Subscribers Only' :
-                    selectedService.audience === 'subscribers-invited' ? 'Subscribers + Invited Users' :
-                    'General Public' }}
-                  </p>
-                  <div v-if="selectedService.inviteListFile" class="p-2 bg-neutral-50 rounded">
-                    <p class="text-xs text-neutral-600">Invite List: {{ selectedService.inviteListFile.name }}</p>
-                  </div>
-                </div>
-              </div>
-
-              <!-- Bank Account -->
-              <div class="form-section">
-                <h4 class="form-section-title">Bank Account</h4>
-                <div v-if="selectedService.bankAccountId">
-                  <p class="text-xs text-neutral-900">
-                    {{ getBankAccountName(selectedService.bankAccountId) }}
-                  </p>
-                </div>
-                <p v-else class="text-xs text-neutral-500">No bank account assigned</p>
-              </div>
-
-              <!-- Additional Information Collection -->
-              <div class="form-section">
-                <h4 class="form-section-title">Information Collection</h4>
-                <div class="space-y-2">
-                  <div v-for="(value, key) in selectedService.collectFields" :key="key" v-if="value"
-                    class="flex items-center gap-2">
-                    <i data-lucide="check" class="w-3 h-3 text-success-600"></i>
-                    <span class="text-xs text-neutral-900">{{ formatFieldName(key) }}</span>
-                  </div>
-                  <div v-if="selectedService.customFields && selectedService.customFields.length > 0" class="mt-3">
-                    <p class="text-xs font-semibold text-neutral-600 mb-2">Custom Fields:</p>
-                    <div class="space-y-1">
-                      <div v-for="(field, idx) in selectedService.customFields" :key="idx"
-                        class="text-xs text-neutral-900">
-                        • {{ field.label }} ({{ field.type }})
-                      </div>
-                    </div>
-                  </div>
-                  <div v-if="selectedService.fileRequirements && selectedService.fileRequirements.length > 0"
-                    class="mt-3">
-                    <p class="text-xs font-semibold text-neutral-600 mb-2">File Requirements:</p>
-                    <div class="space-y-1">
-                      <div v-for="(req, idx) in selectedService.fileRequirements" :key="idx"
-                        class="text-xs text-neutral-900">
-                        • {{ req.label }} {{ req.required ? '(Required)' : '(Optional)' }}
-                      </div>
+                  <div v-for="field in selectedService.customFields" :key="field._id"
+                    class="flex items-center justify-between p-3 rounded-lg" style="background: var(--neutral-50);">
+                    <div>
+                      <p class="font-semibold text-sm" style="color: var(--neutral-900);">{{ field.name }}</p>
+                      <p class="text-xs" style="color: var(--neutral-600);">
+                        Type: {{ field.type }} | {{ field.required ? 'Required' : 'Optional' }}
+                      </p>
                     </div>
                   </div>
                 </div>
               </div>
 
-              <!-- Actions -->
-              <div class="flex justify-end gap-3 pt-4 border-t border-neutral-200">
-                <button @click="closeViewModal" class="btn btn-secondary">Close</button>
-                <button @click="editServiceFromView" class="btn btn-primary">Edit Service</button>
+              <!-- Actions with Full CRUD -->
+              <div class="flex justify-end gap-3 pt-4 border-t" style="border-color: var(--neutral-200);">
+                <button @click="showServiceModal = false" class="btn btn-secondary">
+                  Close
+                </button>
+                <button v-if="selectedService.status === 'active'"
+                  @click="toggleServiceStatus(selectedService); showServiceModal = false" class="btn btn-secondary">
+                  <i data-lucide="pause-circle" class="w-4 h-4"></i>
+                  Suspend
+                </button>
+                <button v-else @click="toggleServiceStatus(selectedService); showServiceModal = false"
+                  class="btn btn-secondary" style="background: var(--success-600); color: white;">
+                  <i data-lucide="play-circle" class="w-4 h-4"></i>
+                  Activate
+                </button>
+                <button @click="showServiceModal = false; editService(selectedService)" class="btn btn-primary">
+                  <i data-lucide="edit" class="w-4 h-4"></i>
+                  Edit Service
+                </button>
               </div>
             </div>
           </div>
         </div>
       </div>
 
-      <!-- Upload Invite List Modal -->
-      <div v-if="showUploadInviteModal" class="modal-overlay" @click.self="closeUploadInviteModal">
+      <!-- ==================== ADD BANK ACCOUNT MODAL ==================== -->
+      <div v-if="showAddBankModal" class="modal-overlay" @click.self="closeAddBankModal">
         <div class="modal-content" style="max-width: 600px;">
           <div class="modal-header">
-            <h3 class="text-lg font-bold">Upload Invite List</h3>
-            <button @click="closeUploadInviteModal" class="text-neutral-500 hover:text-neutral-900">
-              <i data-lucide="x"></i>
+            <h3 class="text-xl font-bold" style="color: var(--neutral-900);">Add Bank Account</h3>
+            <button @click="closeAddBankModal" class="p-2 hover:bg-gray-100 rounded-lg transition-colors">
+              <i data-lucide="x" class="w-5 h-5" style="color: var(--neutral-500);"></i>
             </button>
           </div>
-          <div class="modal-body">
-            <div class="space-y-4">
-              <div class="p-4 border-2 border-dashed border-neutral-300 rounded-lg text-center">
-                <i data-lucide="upload" class="w-8 h-8 text-neutral-400 mx-auto mb-2"></i>
-                <p class="text-xs text-neutral-600 mb-2">Upload CSV file with invited users</p>
-                <input type="file" @change="handleInviteListUpload" accept=".csv" class="hidden" ref="inviteFileInput">
-                <button @click="$refs.inviteFileInput.click()" class="btn btn-primary text-xs">Choose File</button>
-              </div>
-              <div class="p-3 bg-neutral-50 rounded-lg">
-                <p class="text-xs font-semibold text-neutral-900 mb-2">CSV Format Requirements:</p>
-                <ul class="text-xs text-neutral-600 space-y-1 list-disc list-inside">
-                  <li>First row should contain headers: email, name (optional)</li>
-                  <li>Each subsequent row should contain user data</li>
-                  <li>Maximum 10,000 rows</li>
-                  <li>File size limit: 5MB</li>
-                </ul>
-              </div>
-            </div>
-            <div class="flex justify-end gap-3 mt-6 pt-4 border-t border-neutral-200">
-              <button @click="closeUploadInviteModal" class="btn btn-secondary">Cancel</button>
-            </div>
-          </div>
-        </div>
-      </div>
 
-      <!-- Sample Format Modal -->
-      <div v-if="showSampleFormatModal" class="modal-overlay" @click.self="closeSampleFormatModal">
-        <div class="modal-content" style="max-width: 700px;">
-          <div class="modal-header">
-            <h3 class="text-lg font-bold">CSV Sample Format</h3>
-            <button @click="closeSampleFormatModal" class="text-neutral-500 hover:text-neutral-900">
-              <i data-lucide="x"></i>
-            </button>
-          </div>
           <div class="modal-body">
-            <div class="space-y-4">
-              <div class="p-4 bg-neutral-50 rounded-lg">
-                <p class="text-xs text-neutral-600 mb-3">Your CSV file should follow this format:</p>
-                <div class="overflow-x-auto">
-                  <table class="w-full text-xs border border-neutral-300">
-                    <thead class="bg-neutral-200">
-                      <tr>
-                        <th class="p-2 text-left border border-neutral-300">email</th>
-                        <th class="p-2 text-left border border-neutral-300">name</th>
-                      </tr>
-                    </thead>
-                    <tbody>
-                      <tr>
-                        <td class="p-2 border border-neutral-300">user1@example.com</td>
-                        <td class="p-2 border border-neutral-300">John Doe</td>
-                      </tr>
-                      <tr>
-                        <td class="p-2 border border-neutral-300">user2@example.com</td>
-                        <td class="p-2 border border-neutral-300">Jane Smith</td>
-                      </tr>
-                      <tr>
-                        <td class="p-2 border border-neutral-300">user3@example.com</td>
-                        <td class="p-2 border border-neutral-300">Bob Johnson</td>
-                      </tr>
-                    </tbody>
-                  </table>
+            <form @submit.prevent="addBankAccount" class="space-y-4">
+
+              <!-- Country -->
+              <div>
+                <label class="block text-sm font-bold mb-2" style="color: var(--neutral-700);">
+                  Country <span style="color: var(--error-500);">*</span>
+                </label>
+                <select v-model="selectedCountry" @change="fetchBanks(selectedCountry.toLowerCase())"
+                  class="modern-input" required>
+                  <option v-for="country in bankCountries" :key="country.iso_code" :value="country.name">
+                    {{ country.name }}
+                  </option>
+                </select>
+              </div>
+
+              <!-- Bank Name -->
+              <div>
+                <label class="block text-sm font-bold mb-2" style="color: var(--neutral-700);">
+                  Bank Name <span style="color: var(--error-500);">*</span>
+                </label>
+                <select v-model="selectedBank" @change="onBankChange" class="modern-input" required>
+                  <option value="">Select bank...</option>
+                  <option v-for="bank in banks" :key="bank.code" :value="bank">
+                    {{ bank.name }}
+                  </option>
+                </select>
+              </div>
+
+              <!-- Bank Code -->
+              <div>
+                <label class="block text-sm font-bold mb-2" style="color: var(--neutral-700);">
+                  Bank Code <span style="color: var(--error-500);">*</span>
+                </label>
+                <input v-model="newBankAccount.bankCode" type="text" required class="modern-input"
+                  placeholder="e.g., 057, 058, 044">
+                <p class="text-xs mt-1" style="color: var(--neutral-500);">
+                  Enter the bank's code (usually 3 digits)
+                </p>
+              </div>
+
+              <!-- Account Number -->
+              <div>
+                <label class="block text-sm font-bold mb-2" style="color: var(--neutral-700);">
+                  Account Number <span style="color: var(--error-500);">*</span>
+                </label>
+                <div class="flex gap-2">
+                  <input v-model="newBankAccount.accountNumber" type="text" required maxlength="10"
+                    class="modern-input flex-1" placeholder="0123456789">
+                  <button type="button" @click="verifyBankAccount" :disabled="isVerifyingAccount"
+                    class="btn btn-secondary text-sm whitespace-nowrap">
+                    <i v-if="!isVerifyingAccount" data-lucide="check-circle" class="w-4 h-4"></i>
+                    <span v-if="isVerifyingAccount">Verifying...</span>
+                    <span v-else>Verify</span>
+                  </button>
+                </div>
+                <p class="text-xs mt-1" style="color: var(--neutral-500);">
+                  10-digit account number
+                </p>
+              </div>
+
+              <!-- Account Name (Auto-filled after verification) -->
+              <div>
+                <label class="block text-sm font-bold mb-2" style="color: var(--neutral-700);">
+                  Account Name <span style="color: var(--error-500);">*</span>
+                </label>
+                <input v-model="newBankAccount.accountName" type="text" required class="modern-input" disabled
+                  :placeholder="newBankAccount.accountName ? newBankAccount.accountName : 'Will be auto-filled after verification'">
+                <p class="text-xs mt-1" style="color: var(--neutral-500);">
+                  Verify account to auto-fill this field
+                </p>
+              </div>
+
+              <!-- Important Note -->
+              <div class="p-4 rounded-lg" style="background: var(--primary-50); border: 1px solid var(--primary-200);">
+                <div class="flex gap-3">
+                  <i data-lucide="info" class="w-5 h-5 flex-shrink-0" style="color: var(--primary-600);"></i>
+                  <div>
+                    <p class="text-sm font-semibold mb-1" style="color: var(--primary-900);">Important</p>
+                    <p class="text-xs" style="color: var(--primary-800);">
+                      The account name must match exactly as it appears on your bank statement.
+                      This account will be used to receive payments from your services.
+                    </p>
+                  </div>
                 </div>
               </div>
-              <div class="p-3 bg-primary-50 rounded-lg">
-                <p class="text-xs font-semibold text-primary-900 mb-2">Notes:</p>
-                <ul class="text-xs text-primary-700 space-y-1 list-disc list-inside">
-                  <li>The "email" column is required</li>
-                  <li>The "name" column is optional</li>
-                  <li>Email addresses must be valid format</li>
-                  <li>Duplicate emails will be ignored</li>
-                </ul>
+
+              <!-- Form Actions -->
+              <div class="flex justify-end gap-3 pt-4 border-t" style="border-color: var(--neutral-200);">
+                <button type="button" @click="closeAddBankModal" class="btn btn-secondary">
+                  Cancel
+                </button>
+                <button type="button" @click="verifyBankAccount" :disabled="isVerifyingAccount"
+                  class="btn btn-secondary">
+                  <i v-if="!isVerifyingAccount" data-lucide="check-circle" class="w-4 h-4"></i>
+                  <span v-if="isVerifyingAccount">Verifying...</span>
+                  <span v-else>Verify Account</span>
+                </button>
+                <button type="submit" class="btn btn-primary">
+                  <i data-lucide="check" class="w-4 h-4"></i>
+                  Add Bank
+                </button>
               </div>
-              <button @click="downloadSampleCSV" class="btn btn-primary text-xs w-full">
-                <i data-lucide="download"></i>
-                Download Sample CSV
-              </button>
-            </div>
-            <div class="flex justify-end gap-3 mt-6 pt-4 border-t border-neutral-200">
-              <button @click="closeSampleFormatModal" class="btn btn-secondary">Close</button>
-            </div>
+            </form>
           </div>
         </div>
       </div>
 
-      <!-- Add Custom Field Modal -->
+      <!-- ==================== CUSTOM FIELD MODAL ==================== -->
       <div v-if="showCustomFieldModal" class="modal-overlay" @click.self="closeCustomFieldModal">
         <div class="modal-content" style="max-width: 500px;">
           <div class="modal-header">
-            <h3 class="text-lg font-bold">Add Custom Field</h3>
-            <button @click="closeCustomFieldModal" class="text-neutral-500 hover:text-neutral-900">
-              <i data-lucide="x"></i>
+            <h3 class="text-xl font-bold" style="color: var(--neutral-900);">Add Custom Field</h3>
+            <button @click="closeCustomFieldModal" class="p-2 hover:bg-gray-100 rounded-lg transition-colors">
+              <i data-lucide="x" class="w-5 h-5" style="color: var(--neutral-500);"></i>
             </button>
           </div>
+
           <div class="modal-body">
-            <div class="space-y-4">
+            <form @submit.prevent="addCustomField" class="space-y-4">
+
+              <!-- Field Name -->
               <div>
-                <label class="block text-xs font-semibold mb-2">Field Label</label>
-                <input v-model="newCustomField.label" type="text" class="modern-input" placeholder="e.g., Member ID">
+                <label class="block text-sm font-bold mb-2" style="color: var(--neutral-700);">
+                  Field Name <span style="color: var(--error-500);">*</span>
+                </label>
+                <input v-model="newCustomField.name" type="text" required class="modern-input"
+                  placeholder="e.g., Member ID, Phone Number, Date of Birth">
               </div>
+
+              <!-- Field Type -->
               <div>
-                <label class="block text-xs font-semibold mb-2">Field Type</label>
+                <label class="block text-sm font-bold mb-2" style="color: var(--neutral-700);">
+                  Field Type <span style="color: var(--error-500);">*</span>
+                </label>
                 <select v-model="newCustomField.type" class="modern-input">
                   <option value="text">Text</option>
                   <option value="number">Number</option>
                   <option value="email">Email</option>
+                  <option value="tel">Phone Number</option>
                   <option value="date">Date</option>
-                  <option value="textarea">Long Text</option>
+                  <option value="select-option">Dropdown Selection</option>
+                  <option value="textarea">Long Text (Multiple Lines)</option>
                 </select>
               </div>
+
+              <!-- Options (for select-option type) -->
+              <div v-if="newCustomField.type === 'select-option'">
+                <label class="block text-sm font-bold mb-2" style="color: var(--neutral-700);">
+                  Dropdown Options
+                </label>
+                <textarea v-model="newCustomField.optionsText" rows="4" class="modern-input"
+                  placeholder="Enter each option on a new line:&#10;Option 1&#10;Option 2&#10;Option 3"></textarea>
+                <p class="text-xs mt-1" style="color: var(--neutral-500);">
+                  Enter each option on a new line
+                </p>
+              </div>
+
+              <!-- Placeholder -->
+              <div>
+                <label class="block text-sm font-bold mb-2" style="color: var(--neutral-700);">
+                  Placeholder Text
+                </label>
+                <input v-model="newCustomField.placeholder" type="text" class="modern-input"
+                  placeholder="e.g., Enter your member ID">
+              </div>
+
+              <!-- Default Value -->
+              <div>
+                <label class="block text-sm font-bold mb-2" style="color: var(--neutral-700);">
+                  Default Value
+                </label>
+                <input v-model="newCustomField.default" type="text" class="modern-input"
+                  placeholder="Optional default value">
+              </div>
+
+              <!-- Required Checkbox -->
               <div>
                 <label class="flex items-center gap-2">
-                  <input type="checkbox" v-model="newCustomField.required">
-                  <span class="text-xs">Required field</span>
+                  <input type="checkbox" v-model="newCustomField.required" class="w-4 h-4">
+                  <span class="text-sm font-semibold" style="color: var(--neutral-700);">
+                    This field is required
+                  </span>
                 </label>
               </div>
-            </div>
-            <div class="flex justify-end gap-3 mt-6 pt-4 border-t border-neutral-200">
-              <button @click="closeCustomFieldModal" class="btn btn-secondary">Cancel</button>
-              <button @click="addCustomField" class="btn btn-primary">Add Field</button>
-            </div>
-          </div>
-        </div>
-      </div>
 
-      <!-- Attach File Requirement Modal -->
-      <div v-if="showAttachFileModal" class="modal-overlay" @click.self="closeAttachFileModal">
-        <div class="modal-content" style="max-width: 500px;">
-          <div class="modal-header">
-            <h3 class="text-lg font-bold">Attach File Requirement</h3>
-            <button @click="closeAttachFileModal" class="text-neutral-500 hover:text-neutral-900">
-              <i data-lucide="x"></i>
-            </button>
-          </div>
-          <div class="modal-body">
-            <div class="space-y-4">
-              <div>
-                <label class="block text-xs font-semibold mb-2">File Label</label>
-                <input v-model="newFileRequirement.label" type="text" class="modern-input"
-                  placeholder="e.g., ID Card, Receipt">
+              <!-- Form Actions -->
+              <div class="flex justify-end gap-3 pt-4 border-t" style="border-color: var(--neutral-200);">
+                <button type="button" @click="closeCustomFieldModal" class="btn btn-secondary">
+                  Cancel
+                </button>
+                <button type="submit" class="btn btn-primary">
+                  <i data-lucide="plus" class="w-4 h-4"></i>
+                  Add Field
+                </button>
               </div>
-              <div>
-                <label class="block text-xs font-semibold mb-2">Accepted File Types</label>
-                <select v-model="newFileRequirement.acceptedTypes" class="modern-input" multiple
-                  style="min-height: 100px;">
-                  <option value="pdf">PDF</option>
-                  <option value="jpg">JPG/JPEG</option>
-                  <option value="png">PNG</option>
-                  <option value="doc">DOC</option>
-                  <option value="docx">DOCX</option>
-                </select>
-                <p class="text-xs text-neutral-500 mt-1">Hold Ctrl/Cmd to select multiple</p>
-              </div>
-              <div>
-                <label class="block text-xs font-semibold mb-2">Maximum File Size (MB)</label>
-                <input v-model.number="newFileRequirement.maxSize" type="number" class="modern-input" placeholder="5">
-              </div>
-              <div>
-                <label class="flex items-center gap-2">
-                  <input type="checkbox" v-model="newFileRequirement.required">
-                  <span class="text-xs">Required file</span>
-                </label>
-              </div>
-            </div>
-            <div class="flex justify-end gap-3 mt-6 pt-4 border-t border-neutral-200">
-              <button @click="closeAttachFileModal" class="btn btn-secondary">Cancel</button>
-              <button @click="addFileRequirement" class="btn btn-primary">Add Requirement</button>
-            </div>
-          </div>
-        </div>
-      </div>
-
-      <!-- Add Subscriber Modal -->
-      <div v-if="showAddSubscriberModal" class="modal-overlay" @click.self="closeAddSubscriberModal">
-        <div class="modal-content" style="max-width: 600px;">
-          <div class="modal-header">
-            <h3 class="text-lg font-bold">Add Subscriber</h3>
-            <button @click="closeAddSubscriberModal" class="text-neutral-500 hover:text-neutral-900">
-              <i data-lucide="x"></i>
-            </button>
-          </div>
-          <div class="modal-body">
-            <div class="space-y-4">
-              <div>
-                <label class="block text-xs font-semibold mb-2">Full Name <span class="text-error-600">*</span></label>
-                <input v-model="newSubscriber.name" type="text" class="modern-input" placeholder="Enter full name"
-                  required>
-              </div>
-              <div>
-                <label class="block text-xs font-semibold mb-2">Email Address <span
-                    class="text-error-600">*</span></label>
-                <div class="relative">
-                  <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                    <i data-lucide="mail" class="w-4 h-4 text-neutral-400"></i>
-                  </div>
-                  <input v-model="newSubscriber.email" type="email" class="modern-input pl-10"
-                    placeholder="subscriber@example.com" required>
-                </div>
-              </div>
-              <div>
-                <label class="block text-xs font-semibold mb-2">Phone Number</label>
-                <div class="relative">
-                  <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                    <i data-lucide="phone" class="w-4 h-4 text-neutral-400"></i>
-                  </div>
-                  <input v-model="newSubscriber.phone" type="tel" class="modern-input pl-10"
-                    placeholder="+234 800 000 0000">
-                </div>
-              </div>
-              <div>
-                <label class="block text-xs font-semibold mb-2">Status</label>
-                <select v-model="newSubscriber.status" class="modern-input">
-                  <option value="active">Active</option>
-                  <option value="inactive">Inactive</option>
-                </select>
-              </div>
-              <div class="p-3 bg-neutral-50 rounded-lg">
-                <p class="text-xs text-neutral-600">
-                  <span class="font-semibold">Note:</span> The subscriber will receive an email notification with their
-                  login credentials.
-                </p>
-              </div>
-            </div>
-            <div class="flex justify-end gap-3 mt-6 pt-4 border-t border-neutral-200">
-              <button @click="closeAddSubscriberModal" class="btn btn-secondary">Cancel</button>
-              <button @click="addSubscriber" class="btn btn-primary">Add Subscriber</button>
-            </div>
-          </div>
-        </div>
-      </div>
-
-      <!-- Add Bank Account Modal -->
-      <div v-if="showAddBankModal" class="modal-overlay" @click.self="closeAddBankModal">
-        <div class="modal-content" style="max-width: 600px;">
-          <div class="modal-header">
-            <h3 class="text-lg font-bold">Add Bank Account</h3>
-            <button @click="closeAddBankModal" class="text-neutral-500 hover:text-neutral-900">
-              <i data-lucide="x"></i>
-            </button>
-          </div>
-          <div class="modal-body">
-            <div class="space-y-4">
-              <div>
-                <label class="block text-xs font-semibold mb-2">Bank Name <span class="text-error-600">*</span></label>
-                <div class="relative">
-                  <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                    <i data-lucide="building-2" class="w-4 h-4 text-neutral-400"></i>
-                  </div>
-                  <input v-model="newBankAccount.bankName" type="text" class="modern-input pl-10"
-                    placeholder="e.g., Zenith Bank, First Bank" required>
-                </div>
-              </div>
-              <div>
-                <label class="block text-xs font-semibold mb-2">Account Number <span
-                    class="text-error-600">*</span></label>
-                <div class="relative">
-                  <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                    <i data-lucide="hash" class="w-4 h-4 text-neutral-400"></i>
-                  </div>
-                  <input v-model="newBankAccount.accountNumber" type="text" class="modern-input pl-10"
-                    placeholder="Enter 10-digit account number" maxlength="10" required>
-                </div>
-                <p class="text-xs text-neutral-500 mt-1">Account number must be at least 10 digits</p>
-              </div>
-              <div>
-                <label class="block text-xs font-semibold mb-2">Account Name <span
-                    class="text-error-600">*</span></label>
-                <div class="relative">
-                  <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                    <i data-lucide="user" class="w-4 h-4 text-neutral-400"></i>
-                  </div>
-                  <input v-model="newBankAccount.accountName" type="text" class="modern-input pl-10"
-                    placeholder="Name as it appears on bank account" required>
-                </div>
-              </div>
-              <div class="p-3 bg-primary-50 rounded-lg">
-                <p class="text-xs text-primary-900">
-                  <span class="font-semibold">Important:</span> The account name must match exactly as it appears on
-                  your bank statement. This account will be used to receive payments.
-                </p>
-              </div>
-              <div v-if="bankAccounts.length === 0" class="p-3 bg-success-50 rounded-lg">
-                <p class="text-xs text-success-900">
-                  <i data-lucide="info" class="w-4 h-4 inline"></i>
-                  This will be set as your primary account since it's your first bank account.
-                </p>
-              </div>
-            </div>
-            <div class="flex justify-end gap-3 mt-6 pt-4 border-t border-neutral-200">
-              <button @click="closeAddBankModal" class="btn btn-secondary">Cancel</button>
-              <button @click="addBankAccount" class="btn btn-primary">Add Bank Account</button>
-            </div>
+            </form>
           </div>
         </div>
       </div>
     </div>
 
-    <script>
+    <!-- JavaScript will be added in Part 2 -->
+    <script type="module">
+      // Part 2 will contain all the Vue.js logic and API integration
+      // ===================================================================
+      // ORGANIZATION DASHBOARD - COMPLETE JAVASCRIPT IMPLEMENTATION
+      // ===================================================================
+      // This script should be placed in the <script type="module"> section
+      // of the org-dashboard.html file (Part 1)
+      // ===================================================================
+
+      import { getCookie, deleteCookie } from "./assets/js/utils/cookies.js";
+      import { showErrorAlert, showSuccessAlert } from "./assets/js/utils/alerts.js";
+      import {
+        getOrgOverviewApi,
+        getOrgRecentActivityApi,
+        getOrgTopPaymentServicesApi,
+        getOrgBankCountriesApi,
+        getOrgBankAvailableApi,
+        verifyOrgBankAccountApi,
+        addOrgBankDetailsApi,
+        getOrgBankDetailsApi,
+        deleteOrgBankDetailApi,
+        editOrgBankDetailsApi,
+        createOrgPaymentServiceApi,
+        getOrgPaymentServicesApi,
+        viewOrgPaymentServiceApi,
+        editOrgPaymentServiceApi,
+        deleteOrgPaymentServiceApi,
+        getOrgServicePaymentsApi,
+        getOrgSubscribersApi,
+      } from "./assets/js/services/organisation/controller.js";
+      import { logoutApi } from "./assets/js/services/organisation/auth.js";
+
       const { createApp } = Vue;
 
       createApp({
         data() {
           return {
+            // ========== AUTHENTICATION & USER DATA ==========
+            token: null,
+            currentUser: null,
+            organizationName: 'Organization',
+            userName: 'User',
+            userInitials: 'U',
+
+            // ========== UI STATE ==========
             activeView: 'dashboard',
             sidebarOpen: false,
-            currentUser: null,
-            organization: null,
-            dashboardPeriod: '30',
-            serviceTab: 'active',
-            serviceSearch: '',
-            subscriberSearch: '',
-            subscriberFilter: 'all',
-            currentPage: 1,
-            pageSize: 50,
-            showCreateModal: false,
-            showViewModal: false,
-            showUploadInviteModal: false,
-            showSampleFormatModal: false,
-            showCustomFieldModal: false,
-            showAttachFileModal: false,
-            showAddSubscriberModal: false,
-            showAddBankModal: false,
-            selectedService: null,
-            newService: {
-              title: '',
-              description: '',
-              amount: 0,
-              paymentWindow: 'anytime',
-              startDate: '',
-              endDate: '',
-              audience: 'subscribers',
-              bankAccountId: '',
-              inviteListFile: null,
-              customFields: [],
-              fileRequirements: [],
-              collectFields: {
-                fullName: true,
-                email: true,
-                phone: false,
-                idNumber: false,
-                ticketType: false,
-                referenceCode: false
-              }
-            },
+            isGlobalLoading: true,
+            isEditMode: false,
+
+            isEditBankMode: false,
+
+            showEditBankModal: false,
+
+            // ========== DASHBOARD DATA ==========
             stats: {
-              totalSubscribers: 1245,
-              totalPayments: 45820,
-              activeServices: 12,
-              totalRevenue: 91600000
+              subscribers: 0,
+              payments: 0,
+              paymentServices: 0,
+              totalRevenue: 0,
             },
+            recentActivity: [],
+            topServices: [],
+
+            // ========== PAYMENT SERVICES ==========
             paymentServices: [],
-            subscribers: [],
-            bankAccounts: [],
-            recentActivity: [
-              { id: 1, message: 'Adeola paid Annual Dues', time: '2 minutes ago' },
-              { id: 2, message: 'New subscriber: Chinedu', time: '5 minutes ago' },
-              { id: 3, message: 'Payment service "Conference" ended', time: '1 hour ago' },
-              { id: 4, message: '45 payments today (₦90,000 total)', time: '2 hours ago' }
-            ],
-            topServices: [
-              { id: 1, title: 'Annual Dues 2025', paidCount: 1204, revenue: 2408000 },
-              { id: 2, title: 'Workshop Registration', paidCount: 45, revenue: 225000 },
-              { id: 3, title: 'License Renewal', paidCount: 90, revenue: 180000 }
-            ],
-            newCustomField: {
-              label: '',
-              type: 'text',
-              required: false
-            },
-            newFileRequirement: {
-              label: '',
-              acceptedTypes: [],
-              maxSize: 5,
-              required: false
-            },
-            newSubscriber: {
+            serviceSearch: '',
+            serviceFilter: 'all',
+            selectedService: null,
+            showServiceModal: false,
+            showCreateServiceModal: false,
+            newService: {
               name: '',
-              email: '',
-              phone: '',
-              status: 'active'
+              description: '',
+              type: 'other-payment',
+              serviceCost: 0,
+              paymentSubaccount: '',
+              startDate: '',
+              expiryDate: '',
+              collectCustomData: false,
+              customFields: [],
+              tags: [],
             },
+            editingServiceId: null,
+
+            // ========== SUBSCRIBERS ==========
+            subscribers: [],
+            subscriberSearch: '',
+
+            // ========== BANK DETAILS ==========
+            bankAccounts: [],
+            bankCountries: [],
+            banks: [],
+            selectedCountry: 'Nigeria',
+            selectedBank: null,
+            showAddBankModal: false,
+            showEditBankModal: false,
+            isVerifyingAccount: false,
             newBankAccount: {
               bankName: '',
+              bankCode: '',
               accountNumber: '',
-              accountName: ''
-            }
-          }
-        },
-        computed: {
-          activeServices() {
-            return this.paymentServices.filter(s => s.status === 'active');
-          },
-          draftServices() {
-            return this.paymentServices.filter(s => s.status === 'draft');
-          },
-          completedServices() {
-            return this.paymentServices.filter(s => s.status === 'completed');
-          },
-          displayedServices() {
-            let services = [];
-            if (this.serviceTab === 'active') services = this.activeServices;
-            else if (this.serviceTab === 'drafts') services = this.draftServices;
-            else services = this.completedServices;
+              accountName: '',
+            },
+            editingBankAccount: null,
+            editingBankAccountId: null,
 
-            if (this.serviceSearch) {
+            // ========== CUSTOM FIELDS ==========
+            showCustomFieldModal: false,
+            newCustomField: {
+              name: '',
+              type: 'text',
+              required: false,
+              default: '',
+              placeholder: '',
+              options: [],
+            },
+
+
+          };
+        },
+
+        computed: {
+          // ========== SERVICE FILTERS ==========
+          activeServicesCount() {
+            return this.paymentServices.filter(s => s.status === 'active').length;
+          },
+
+          suspendedServicesCount() {
+            return this.paymentServices.filter(s => s.status === 'suspended').length;
+          },
+
+          filteredServices() {
+            let services = this.paymentServices;
+
+            // Filter by status
+            if (this.serviceFilter === 'active') {
+              services = services.filter(s => s.status === 'active');
+            } else if (this.serviceFilter === 'suspended') {
+              services = services.filter(s => s.status === 'suspended');
+            }
+
+            // Filter by search
+            if (this.serviceSearch.trim()) {
+              const search = this.serviceSearch.toLowerCase();
               services = services.filter(s =>
-                s.title.toLowerCase().includes(this.serviceSearch.toLowerCase())
+                s.name.toLowerCase().includes(search) ||
+                (s.description && s.description.toLowerCase().includes(search))
               );
             }
+
             return services;
           },
-          totalSubscribers() {
-            return this.subscribers.length;
-          },
-          activeSubscribersCount() {
-            return this.subscribers.filter(s => s.status === 'active').length;
-          },
-          inactiveSubscribersCount() {
-            return this.subscribers.filter(s => s.status === 'inactive').length;
-          },
+
+          // ========== SUBSCRIBER FILTERS ==========
           filteredSubscribers() {
-            let filtered = this.subscribers;
-            if (this.subscriberFilter === 'active') {
-              filtered = filtered.filter(s => s.status === 'active');
-            } else if (this.subscriberFilter === 'inactive') {
-              filtered = filtered.filter(s => s.status === 'inactive');
-            }
-            if (this.subscriberSearch) {
-              filtered = filtered.filter(s =>
-                s.name.toLowerCase().includes(this.subscriberSearch.toLowerCase()) ||
-                s.email.toLowerCase().includes(this.subscriberSearch.toLowerCase())
+            let subs = this.subscribers;
+
+            if (this.subscriberSearch.trim()) {
+              const search = this.subscriberSearch.toLowerCase();
+              subs = subs.filter(s =>
+                s.subscriber.fullName.toLowerCase().includes(search) ||
+                s.subscriber.email.toLowerCase().includes(search)
               );
             }
-            return filtered;
+
+            return subs;
           },
-          paginatedSubscribers() {
-            const start = (this.currentPage - 1) * this.pageSize;
-            return this.filteredSubscribers.slice(start, start + this.pageSize);
-          },
-          totalPages() {
-            return Math.ceil(this.filteredSubscribers.length / this.pageSize);
-          },
-          visiblePages() {
-            const pages = [];
-            const maxVisible = 5;
-            let start = Math.max(1, this.currentPage - 2);
-            let end = Math.min(this.totalPages, start + maxVisible - 1);
-            if (end - start < maxVisible - 1) {
-              start = Math.max(1, end - maxVisible + 1);
-            }
-            for (let i = start; i <= end; i++) {
-              pages.push(i);
-            }
-            return pages;
-          },
-          primaryBankAccount() {
-            return this.bankAccounts.find(a => a.primary) || null;
-          },
-          otherBankAccounts() {
-            return this.bankAccounts.filter(a => !a.primary);
-          }
         },
-        mounted() {
+
+        async mounted() {
+          // Initialize Lucide icons
           lucide.createIcons();
-          this.currentUser = getCurrentUser();
-          if (this.currentUser && this.currentUser.role === 'org') {
-            this.organization = getOrganization(this.currentUser.orgId);
-            this.loadData();
-          } else {
-            window.location.href = 'login.html';
+
+          // Check authentication
+          await this.initializeAuth();
+
+          // Load all data
+          if (this.token) {
+            await this.loadAllData();
           }
+
+          this.isGlobalLoading = false;
         },
+
         updated() {
-          lucide.createIcons();
+          // Re-initialize icons after DOM updates
+          this.$nextTick(() => {
+            lucide.createIcons();
+          });
         },
+
         methods: {
-          setActiveView(view) {
-            this.activeView = view;
-            this.sidebarOpen = false;
+          // ===================================================================
+          // AUTHENTICATION & INITIALIZATION
+          // ===================================================================
+
+          async initializeAuth() {
+            try {
+              // Get token from cookie
+              this.token = getCookie('auth_token');
+
+              if (!this.token) {
+                showErrorAlert('Session expired. Please login again.');
+                setTimeout(() => {
+                  window.location.href = 'login.html';
+                }, 2000);
+                return;
+              }
+
+              // Get user data from cookie
+              const userData = getCookie('user_data');
+              if (userData) {
+                try {
+                  this.currentUser = userData;
+                  this.organizationName = this.currentUser.name || this.currentUser.organizationName || 'Organization';
+                  this.userName = this.currentUser.fullName || this.currentUser.name || 'User';
+                  this.userInitials = this.userName.charAt(0).toUpperCase();
+                } catch (e) {
+                  console.error('Error parsing user data:', e);
+                }
+              }
+            } catch (error) {
+              console.error('Authentication error:', error);
+              showErrorAlert('Authentication failed. Please login again.');
+              setTimeout(() => {
+                window.location.href = 'login.html';
+              }, 2000);
+            }
           },
-          toggleSidebar() {
-            this.sidebarOpen = !this.sidebarOpen;
+
+          async loadAllData() {
+            try {
+              // Load data based on active view
+              if (this.activeView === 'dashboard') {
+                await Promise.all([
+                  this.loadDashboardStats(),
+                  this.loadRecentActivity(),
+                  this.loadTopServices(),
+                ]);
+              } else if (this.activeView === 'payment-services') {
+                await this.loadPaymentServices();
+              } else if (this.activeView === 'subscribers') {
+                await this.loadSubscribers();
+              } else if (this.activeView === 'bank-details') {
+                await this.loadBankDetails();
+              }
+            } catch (error) {
+              console.error('Error loading data:', error);
+              showErrorAlert('Failed to load data. Please refresh the page.');
+            }
           },
-          logout() {
-            logout();
-            window.location.href = 'index.html';
+
+          // ===================================================================
+          // DASHBOARD DATA LOADING
+          // ===================================================================
+
+          async loadDashboardStats() {
+            try {
+              const currentYear = new Date().getFullYear();
+              const response = await getOrgOverviewApi(currentYear, this.token);
+
+              if (response.success) {
+                this.stats = {
+                  subscribers: response.data.subscribers || 0,
+                  payments: response.data.payments || 0,
+                  paymentServices: response.data.paymentServices || 0,
+                  totalRevenue: response.data.totalRevenue || 0,
+                };
+              } else {
+                console.error('Failed to load stats:', response.message);
+              }
+            } catch (error) {
+              console.error('Error loading dashboard stats:', error);
+            }
           },
-          formatCurrency(amount) {
-            return (amount || 0).toLocaleString();
+
+          async loadRecentActivity() {
+            try {
+              const response = await getOrgRecentActivityApi(10, this.token);
+
+              if (response.success) {
+                this.recentActivity = response.data || [];
+              } else {
+                console.error('Failed to load activity:', response.message);
+              }
+            } catch (error) {
+              console.error('Error loading recent activity:', error);
+            }
           },
-          formatDate(date) {
-            if (!date) return 'N/A';
-            return new Date(date).toLocaleDateString('en-US', { year: 'numeric', month: 'short', day: 'numeric' });
+
+          async loadTopServices() {
+            try {
+              const response = await getOrgTopPaymentServicesApi(this.token);
+
+              if (response.success) {
+                this.topServices = response.data || [];
+              } else {
+                console.error('Failed to load top services:', response.message);
+              }
+            } catch (error) {
+              console.error('Error loading top services:', error);
+            }
           },
-          getServiceStatusClass(status) {
-            return {
-              'active': 'status-paid',
-              'draft': 'status-pending',
-              'completed': 'bg-neutral-100 text-neutral-800'
-            }[status] || 'bg-neutral-100 text-neutral-800';
+
+          // ===================================================================
+          // PAYMENT SERVICES
+          // ===================================================================
+
+          async loadPaymentServices() {
+            try {
+              const response = await getOrgPaymentServicesApi(this.token);
+
+              if (response.success) {
+                this.paymentServices = response.data || [];
+              } else {
+                showErrorAlert('Failed to load payment services');
+              }
+            } catch (error) {
+              console.error('Error loading payment services:', error);
+              showErrorAlert('Failed to load payment services');
+            }
           },
-          openCreateModal() {
-            this.showCreateModal = true;
+
+          async viewService(service) {
+            try {
+              const response = await viewOrgPaymentServiceApi(service._id, this.token);
+
+              if (response.success) {
+                this.selectedService = response.data;
+                this.showServiceModal = true;
+              } else {
+                showErrorAlert('Failed to load service details');
+              }
+            } catch (error) {
+              console.error('Error viewing service:', error);
+              showErrorAlert('Failed to load service details');
+            }
           },
-          closeCreateModal() {
-            this.showCreateModal = false;
+
+          openCreateServiceModal() {
             this.resetNewService();
+            this.showCreateServiceModal = true;
           },
+
           resetNewService() {
             this.newService = {
-              title: '',
+              name: '',
               description: '',
-              amount: 0,
-              paymentWindow: 'anytime',
+              type: 'other-payment',
+              serviceCost: 0,
+              paymentSubaccount: '',
               startDate: '',
-              endDate: '',
-              audience: 'subscribers',
-              bankAccountId: '',
-              inviteListFile: null,
+              expiryDate: '',
+              collectCustomData: false,
               customFields: [],
-              fileRequirements: [],
-              collectFields: {
-                fullName: true,
-                email: true,
-                phone: false,
-                idNumber: false,
-                ticketType: false,
-                referenceCode: false
-              }
+              tags: [],
             };
           },
-          saveDraft() {
-            const service = {
-              id: Date.now(),
-              ...this.newService,
-              status: 'draft',
-              paidCount: 0,
-              revenue: 0,
-              createdAt: new Date().toISOString()
-            };
-            // Convert file to object for storage
-            if (service.inviteListFile) {
-              service.inviteListFile = {
-                name: service.inviteListFile.name,
-                size: service.inviteListFile.size
-              };
-            }
-            this.paymentServices.push(service);
-            this.closeCreateModal();
-            alert('Service saved as draft');
-          },
-          publishService() {
-            if (!this.newService.title || !this.newService.amount) {
-              alert('Please fill in required fields');
+
+
+          async deleteService(service) {
+            if (!confirm(`Are you sure you want to delete "${service.name}"?`)) {
               return;
             }
-            const service = {
-              id: Date.now(),
-              ...this.newService,
-              status: 'active',
-              paidCount: 0,
-              revenue: 0,
-              createdAt: new Date().toISOString()
-            };
-            // Convert file to object for storage
-            if (service.inviteListFile) {
-              service.inviteListFile = {
-                name: service.inviteListFile.name,
-                size: service.inviteListFile.size
+
+            try {
+              const response = await deleteOrgPaymentServiceApi(service._id, this.token);
+
+              if (response.success) {
+                showSuccessAlert('Service deleted successfully');
+                await this.loadPaymentServices();
+              } else {
+                showErrorAlert(response.message || 'Failed to delete service');
+              }
+            } catch (error) {
+              console.error('Error deleting service:', error);
+              showErrorAlert('Failed to delete service');
+            }
+          },
+          // ========== PAYMENT SERVICES CRUD ==========
+
+          /**
+           * Edit Payment Service
+           * Location: Replace the editService() method in Part 2
+           */
+          async editService(service) {
+            try {
+              // Load full service details first
+              const response = await viewOrgPaymentServiceApi(service._id, this.token);
+
+              if (!response.success) {
+                showErrorAlert('Failed to load service details');
+                return;
+              }
+
+              // Populate the edit form with existing data
+              this.newService = {
+                name: response.data.name,
+                description: response.data.description,
+                type: response.data.type,
+                serviceCost: response.data.serviceCost,
+                paymentSubaccount: response.data.paymentSubaccount,
+                startDate: response.data.startDate === 'N/A' ? '' : response.data.startDate,
+                expiryDate: response.data.expiryDate === 'N/A' ? '' : response.data.expiryDate,
+                collectCustomData: response.data.collectCustomData,
+                customFields: response.data.customFields || [],
+                tags: response.data.tags || [],
               };
-            }
-            this.paymentServices.push(service);
-            this.closeCreateModal();
-            alert('Service published successfully');
-          },
-          editService(service) {
-            alert('Edit service: ' + service.title);
-          },
-          pauseService(service) {
-            service.status = 'draft';
-            alert('Service paused');
-          },
-          viewService(service) {
-            this.selectedService = service;
-            this.showViewModal = true;
-          },
-          closeViewModal() {
-            this.showViewModal = false;
-            this.selectedService = null;
-          },
-          editServiceFromView() {
-            this.closeViewModal();
-            this.editService(this.selectedService);
-          },
-          deleteService(service) {
-            if (confirm(`Are you sure you want to delete "${service.title}"? This action cannot be undone.`)) {
-              const index = this.paymentServices.findIndex(s => s.id === service.id);
-              if (index > -1) {
-                this.paymentServices.splice(index, 1);
-                alert('Service deleted successfully');
-              }
+
+              // Store the service ID for update
+              this.editingServiceId = service._id;
+
+              // Open modal in edit mode
+              this.isEditMode = true;
+              this.showCreateServiceModal = true;
+
+            } catch (error) {
+              console.error('Error loading service for edit:', error);
+              showErrorAlert('Failed to load service details');
             }
           },
-          openUploadInviteModal() {
-            this.showUploadInviteModal = true;
-          },
-          closeUploadInviteModal() {
-            this.showUploadInviteModal = false;
-          },
-          handleInviteListUpload(event) {
-            const file = event.target.files[0];
-            if (file) {
-              if (file.size > 5 * 1024 * 1024) {
-                alert('File size exceeds 5MB limit');
+
+          /**
+           * Update Payment Service
+           * Location: Add this new method to Part 2
+           */
+          async updateService() {
+            try {
+              // Validate required fields
+              if (!this.newService.name || !this.newService.serviceCost) {
+                showErrorAlert('Please fill in all required fields');
                 return;
               }
-              if (!file.name.endsWith('.csv')) {
-                alert('Please upload a CSV file');
-                return;
+
+              // Prepare payload (only include fields that can be updated)
+              const payload = {
+                name: this.newService.name,
+                description: this.newService.description,
+                serviceCost: this.newService.serviceCost,
+                startDate: this.newService.startDate || 'N/A',
+                expiryDate: this.newService.expiryDate || 'N/A',
+                collectCustomData: this.newService.collectCustomData,
+                customFields: this.newService.customFields,
+                tags: this.newService.tags,
+              };
+
+              const response = await editOrgPaymentServiceApi(
+                this.editingServiceId,
+                payload,
+                this.token
+              );
+
+              if (response.success) {
+                showSuccessAlert('Payment service updated successfully!');
+                this.closeCreateServiceModal();
+                await this.loadPaymentServices();
+              } else {
+                showErrorAlert(response.message || 'Failed to update service');
               }
-              this.newService.inviteListFile = file;
-              this.closeUploadInviteModal();
-              alert('Invite list uploaded successfully');
+            } catch (error) {
+              console.error('Error updating service:', error);
+              showErrorAlert('Failed to update service');
             }
           },
-          removeInviteList() {
-            this.newService.inviteListFile = null;
+
+          /**
+           * Suspend/Activate Service
+           * Location: Add this new method to Part 2
+           */
+          async toggleServiceStatus(service) {
+            try {
+              const newStatus = service.status === 'active' ? 'suspended' : 'active';
+              const action = newStatus === 'suspended' ? 'suspend' : 'activate';
+
+              if (!confirm(`Are you sure you want to ${action} "${service.name}"?`)) {
+                return;
+              }
+
+              const payload = {
+                status: newStatus,
+              };
+
+              const response = await editOrgPaymentServiceApi(
+                service._id,
+                payload,
+                this.token
+              );
+
+              if (response.success) {
+                showSuccessAlert(`Service ${action}d successfully!`);
+                await this.loadPaymentServices();
+              } else {
+                showErrorAlert(response.message || `Failed to ${action} service`);
+              }
+            } catch (error) {
+              console.error('Error toggling service status:', error);
+              showErrorAlert('Failed to update service status');
+            }
           },
-          openSampleFormatModal() {
-            this.showSampleFormatModal = true;
+
+          /**
+           * Delete Payment Service - Already implemented but here's the complete version
+           * Location: Replace deleteService() in Part 2
+           */
+          async deleteService(service) {
+            if (!confirm(`Are you sure you want to delete "${service.name}"?\n\nThis action cannot be undone.`)) {
+              return;
+            }
+
+            try {
+              const response = await deleteOrgPaymentServiceApi(service._id, this.token);
+
+              if (response.success) {
+                showSuccessAlert('Service deleted successfully');
+                await this.loadPaymentServices();
+
+                // Also refresh dashboard stats if on dashboard
+                if (this.activeView === 'dashboard') {
+                  await this.loadDashboardStats();
+                }
+              } else {
+                showErrorAlert(response.message || 'Failed to delete service');
+              }
+            } catch (error) {
+              console.error('Error deleting service:', error);
+              showErrorAlert('Failed to delete service');
+            }
           },
-          closeSampleFormatModal() {
-            this.showSampleFormatModal = false;
+
+          /**
+           * Modified createService to handle both create and update
+           * Location: Replace createService() in Part 2
+           */
+          async createService() {
+            try {
+              // If in edit mode, call update instead
+              if (this.isEditMode && this.editingServiceId) {
+                await this.updateService();
+                return;
+              }
+
+              // Validate required fields
+              if (!this.newService.name || !this.newService.serviceCost) {
+                showErrorAlert('Please fill in all required fields');
+                return;
+              }
+
+              // Prepare payload for creation
+              const payload = {
+                name: this.newService.name,
+                type: this.newService.type,
+                description: this.newService.description,
+                createdFor: { type: 'subscribers' },
+                serviceCost: this.newService.serviceCost,
+                paymentSubaccount: this.newService.paymentSubaccount,
+                startDate: this.newService.startDate || 'N/A',
+                expiryDate: this.newService.expiryDate || 'N/A',
+                collectCustomData: this.newService.collectCustomData,
+                customFields: this.newService.customFields,
+                tags: this.newService.tags,
+              };
+
+              const response = await createOrgPaymentServiceApi(payload, this.token);
+
+              if (response.success) {
+                showSuccessAlert('Payment service created successfully!');
+                this.closeCreateServiceModal();
+                await this.loadPaymentServices();
+
+                // Refresh dashboard stats if on dashboard
+                if (this.activeView === 'dashboard') {
+                  await this.loadDashboardStats();
+                }
+              } else {
+                showErrorAlert(response.message || 'Failed to create service');
+              }
+            } catch (error) {
+              console.error('Error creating service:', error);
+              showErrorAlert('Failed to create service');
+            }
           },
-          downloadSampleCSV() {
-            const csvContent = "email,name\nuser1@example.com,John Doe\nuser2@example.com,Jane Smith\nuser3@example.com,Bob Johnson";
-            const blob = new Blob([csvContent], { type: 'text/csv' });
-            const url = window.URL.createObjectURL(blob);
-            const a = document.createElement('a');
-            a.href = url;
-            a.download = 'invite-list-sample.csv';
-            a.click();
-            window.URL.revokeObjectURL(url);
+
+          // ===================================================================
+          // SUBSCRIBERS
+          // ===================================================================
+
+          async loadSubscribers() {
+            try {
+              const response = await getOrgSubscribersApi(this.token);
+
+              if (response.success) {
+                this.subscribers = response.data || [];
+              } else {
+                showErrorAlert('Failed to load subscribers');
+              }
+            } catch (error) {
+              console.error('Error loading subscribers:', error);
+              showErrorAlert('Failed to load subscribers');
+            }
           },
-          openAddCustomFieldModal() {
-            this.newCustomField = { label: '', type: 'text', required: false };
+
+          // ===================================================================
+          // BANK DETAILS
+          // ===================================================================
+
+          async loadBankDetails() {
+            try {
+              const response = await getOrgBankDetailsApi(this.token);
+
+              if (response.success) {
+                this.bankAccounts = response.data || [];
+              } else {
+                showErrorAlert('Failed to load bank details');
+              }
+            } catch (error) {
+              console.error('Error loading bank details:', error);
+              showErrorAlert('Failed to load bank details');
+            }
+          },
+
+          async loadBankCountries() {
+            try {
+              const response = await getOrgBankCountriesApi(this.token);
+
+              if (response.success) {
+                this.bankCountries = response.data || [];
+              }
+            } catch (error) {
+              console.error('Error loading bank countries:', error);
+            }
+          },
+
+          async fetchBanks(country) {
+            try {
+              const response = await getOrgBankAvailableApi(country, this.token);
+
+              if (response.success) {
+                this.banks = response.data || [];
+              } else {
+                this.banks = [];
+              }
+            } catch (error) {
+              console.error('Error loading banks:', error);
+              this.banks = [];
+            }
+          },
+
+          openAddBankModal() {
+            this.resetBankAccount();
+            this.showAddBankModal = true;
+            this.loadBankCountries();
+            this.fetchBanks('nigeria');
+          },
+
+          closeAddBankModal() {
+            this.showAddBankModal = false;
+            this.resetBankAccount();
+          },
+
+          resetBankAccount() {
+            this.newBankAccount = {
+              bankName: '',
+              bankCode: '',
+              accountNumber: '',
+              accountName: '',
+            };
+            this.selectedBank = null;
+            this.selectedCountry = 'Nigeria';
+            this.banks = [];
+          },
+
+          onBankChange() {
+            if (this.selectedBank) {
+              this.newBankAccount.bankName = this.selectedBank.name;
+              this.newBankAccount.bankCode = this.selectedBank.code;
+            } else {
+              this.newBankAccount.bankName = '';
+              this.newBankAccount.bankCode = '';
+            }
+          },
+
+          async verifyBankAccount() {
+            if (!this.newBankAccount.accountNumber || !this.newBankAccount.bankCode) {
+              showErrorAlert('Please enter account number and select bank');
+              return;
+            }
+
+            try {
+              this.isVerifyingAccount = true;
+
+              const response = await verifyOrgBankAccountApi(
+                this.newBankAccount.accountNumber,
+                this.newBankAccount.bankCode,
+                this.token
+              );
+
+              if (response.success) {
+                this.newBankAccount.accountName = response.data.account_name;
+                showSuccessAlert('Account verified successfully!');
+              } else {
+                showErrorAlert(response.message || 'Failed to verify account');
+              }
+            } catch (error) {
+              console.error('Error verifying account:', error);
+              showErrorAlert('Failed to verify account');
+            } finally {
+              this.isVerifyingAccount = false;
+            }
+          },
+
+          async addBankAccount() {
+            try {
+              // Validate fields
+              if (!this.newBankAccount.bankName || !this.newBankAccount.accountNumber || !this.newBankAccount.accountName) {
+                showErrorAlert('Please fill in all required fields');
+                return;
+              }
+
+              const payload = {
+                accountNumber: this.newBankAccount.accountNumber,
+                bankCode: this.newBankAccount.bankCode,
+                bankName: this.newBankAccount.bankName,
+                accountName: this.newBankAccount.accountName,
+              };
+
+              const response = await addOrgBankDetailsApi(payload, this.token);
+
+              if (response.success) {
+                showSuccessAlert('Bank account added successfully!');
+                this.closeAddBankModal();
+                await this.loadBankDetails();
+              } else {
+                showErrorAlert(response.message || 'Failed to add bank account');
+              }
+            } catch (error) {
+              console.error('Error adding bank account:', error);
+              showErrorAlert('Failed to add bank account');
+            }
+          },
+
+          async deleteBankAccount(account) {
+            if (!confirm(`Are you sure you want to delete this bank account?`)) {
+              return;
+            }
+
+            try {
+              const response = await deleteOrgBankDetailApi(account._id, this.token);
+
+              if (response.success) {
+                showSuccessAlert('Bank account deleted successfully');
+                await this.loadBankDetails();
+              } else {
+                showErrorAlert(response.message || 'Failed to delete bank account');
+              }
+            } catch (error) {
+              console.error('Error deleting bank account:', error);
+              showErrorAlert('Failed to delete bank account');
+            }
+          },
+          // ========== BANK DETAILS CRUD ==========
+
+          /**
+           * Edit Bank Account
+           * Location: Replace editBankAccount() in Part 2
+           */
+          async editBankAccount(account) {
+            try {
+              // Load bank countries if not loaded
+              if (this.bankCountries.length === 0) {
+                await this.loadBankCountries();
+              }
+
+              // Fetch banks for Nigeria (assuming all are Nigeria for now)
+              await this.fetchBanks('nigeria');
+
+              // Populate form with existing data
+              this.newBankAccount = {
+                bankName: account.bankName,
+                bankCode: account.bankCode,
+                accountNumber: account.accountNumber,
+                accountName: account.accountName,
+              };
+
+              // Set selected bank
+              this.selectedBank = this.banks.find(b => b.code === account.bankCode) || null;
+
+              // Store account ID for update
+              this.editingBankAccountId = account._id;
+
+              // Open modal in edit mode
+              this.isEditBankMode = true;
+              this.showEditBankModal = true;
+
+            } catch (error) {
+              console.error('Error loading bank account for edit:', error);
+              showErrorAlert('Failed to load bank account details');
+            }
+          },
+
+          /**
+           * Update Bank Account
+           * Location: Add this new method to Part 2
+           */
+          async updateBankAccount() {
+            try {
+              // Validate fields
+              if (!this.newBankAccount.bankName || !this.newBankAccount.accountNumber || !this.newBankAccount.accountName) {
+                showErrorAlert('Please fill in all required fields');
+                return;
+              }
+
+              const payload = {
+                accountNumber: this.newBankAccount.accountNumber,
+                bankCode: this.newBankAccount.bankCode,
+                bankName: this.newBankAccount.bankName,
+                accountName: this.newBankAccount.accountName,
+              };
+
+              const response = await editOrgBankDetailsApi(
+                this.editingBankAccountId,
+                payload,
+                this.token
+              );
+
+              if (response.success) {
+                showSuccessAlert('Bank account updated successfully!');
+                this.closeEditBankModal();
+                await this.loadBankDetails();
+              } else {
+                showErrorAlert(response.message || 'Failed to update bank account');
+              }
+            } catch (error) {
+              console.error('Error updating bank account:', error);
+              showErrorAlert('Failed to update bank account');
+            }
+          },
+
+          /**
+           * Delete Bank Account - Already implemented but here's the complete version
+           * Location: Replace deleteBankAccount() in Part 2
+           */
+          async deleteBankAccount(account) {
+            if (!confirm(`Are you sure you want to delete this bank account?\n\nBank: ${account.bankName}\nAccount: ${account.accountNumber}\n\nThis action cannot be undone.`)) {
+              return;
+            }
+
+            try {
+              const response = await deleteOrgBankDetailApi(account._id, this.token);
+
+              if (response.success) {
+                showSuccessAlert('Bank account deleted successfully');
+                await this.loadBankDetails();
+              } else {
+                showErrorAlert(response.message || 'Failed to delete bank account');
+              }
+            } catch (error) {
+              console.error('Error deleting bank account:', error);
+              showErrorAlert('Failed to delete bank account');
+            }
+          },
+
+          /**
+           * Modified addBankAccount to handle both add and update
+           * Location: Replace addBankAccount() in Part 2
+           */
+          async addBankAccount() {
+            try {
+              // If in edit mode, call update instead
+              if (this.isEditBankMode && this.editingBankAccountId) {
+                await this.updateBankAccount();
+                return;
+              }
+
+              // Validate fields
+              if (!this.newBankAccount.bankName || !this.newBankAccount.accountNumber || !this.newBankAccount.accountName) {
+                showErrorAlert('Please fill in all required fields');
+                return;
+              }
+
+              const payload = {
+                accountNumber: this.newBankAccount.accountNumber,
+                bankCode: this.newBankAccount.bankCode,
+                bankName: this.newBankAccount.bankName,
+                accountName: this.newBankAccount.accountName,
+              };
+
+              const response = await addOrgBankDetailsApi(payload, this.token);
+
+              if (response.success) {
+                showSuccessAlert('Bank account added successfully!');
+                this.closeAddBankModal();
+                await this.loadBankDetails();
+              } else {
+                showErrorAlert(response.message || 'Failed to add bank account');
+              }
+            } catch (error) {
+              console.error('Error adding bank account:', error);
+              showErrorAlert('Failed to add bank account');
+            }
+          },
+          // ===================================================================
+          // CUSTOM FIELDS
+          // ===================================================================
+
+          openCustomFieldModal() {
+            this.resetCustomField();
             this.showCustomFieldModal = true;
           },
+
           closeCustomFieldModal() {
             this.showCustomFieldModal = false;
+            this.resetCustomField();
           },
+
+          resetCustomField() {
+            this.newCustomField = {
+              name: '',
+              type: 'text',
+              required: false,
+              default: '',
+              placeholder: '',
+              options: [],
+            };
+          },
+
           addCustomField() {
-            if (!this.newCustomField.label) {
-              alert('Please enter a field label');
+            if (!this.newCustomField.name) {
+              showErrorAlert('Please enter a field name');
               return;
             }
-            if (!this.newService.customFields) {
-              this.newService.customFields = [];
-            }
+
             this.newService.customFields.push({ ...this.newCustomField });
             this.closeCustomFieldModal();
+            showSuccessAlert('Custom field added');
           },
+
           removeCustomField(index) {
             this.newService.customFields.splice(index, 1);
           },
-          openAttachFileModal() {
-            this.newFileRequirement = { label: '', acceptedTypes: [], maxSize: 5, required: false };
-            this.showAttachFileModal = true;
-          },
-          closeAttachFileModal() {
-            this.showAttachFileModal = false;
-          },
-          addFileRequirement() {
-            if (!this.newFileRequirement.label) {
-              alert('Please enter a file label');
-              return;
-            }
-            if (!this.newFileRequirement.acceptedTypes || this.newFileRequirement.acceptedTypes.length === 0) {
-              alert('Please select at least one accepted file type');
-              return;
-            }
-            if (!this.newService.fileRequirements) {
-              this.newService.fileRequirements = [];
-            }
-            this.newService.fileRequirements.push({ ...this.newFileRequirement });
-            this.closeAttachFileModal();
-          },
-          removeFileRequirement(index) {
-            this.newService.fileRequirements.splice(index, 1);
-          },
-          getBankAccountName(accountId) {
-            const account = this.bankAccounts.find(a => a.id === accountId);
-            return account ? `${account.bankName} ••••${account.accountNumber.slice(-4)}` : 'Unknown';
-          },
-          formatFieldName(key) {
-            const names = {
-              fullName: 'Full Name',
-              email: 'Email',
-              phone: 'Phone Number',
-              idNumber: 'ID Number',
-              ticketType: 'Ticket Type',
-              referenceCode: 'Reference Code'
-            };
-            return names[key] || key;
-          },
-          openAddSubscriberModal() {
-            this.newSubscriber = {
-              name: '',
-              email: '',
-              phone: '',
-              status: 'active'
-            };
-            this.showAddSubscriberModal = true;
-          },
-          closeAddSubscriberModal() {
-            this.showAddSubscriberModal = false;
-          },
-          addSubscriber() {
-            if (!this.newSubscriber.name || !this.newSubscriber.email) {
-              alert('Please fill in required fields (Name and Email)');
-              return;
-            }
-            // Validate email format
-            const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-            if (!emailRegex.test(this.newSubscriber.email)) {
-              alert('Please enter a valid email address');
-              return;
-            }
-            // Check if email already exists
-            if (this.subscribers.some(s => s.email === this.newSubscriber.email)) {
-              alert('A subscriber with this email already exists');
-              return;
-            }
-            const subscriber = {
-              id: Date.now(),
-              name: this.newSubscriber.name,
-              email: this.newSubscriber.email,
-              phone: this.newSubscriber.phone || '',
-              joinDate: new Date().toISOString(),
-              status: this.newSubscriber.status
-            };
-            this.subscribers.push(subscriber);
-            this.closeAddSubscriberModal();
-            alert('Subscriber added successfully');
-          },
-          editSubscriber(subscriber) {
-            alert('Edit subscriber: ' + subscriber.name);
-          },
-          openAddBankModal() {
-            this.newBankAccount = {
-              bankName: '',
-              accountNumber: '',
-              accountName: ''
-            };
-            this.showAddBankModal = true;
-          },
-          closeAddBankModal() {
-            this.showAddBankModal = false;
-          },
-          addBankAccount() {
-            if (!this.newBankAccount.bankName || !this.newBankAccount.accountNumber || !this.newBankAccount.accountName) {
-              alert('Please fill in all required fields');
-              return;
-            }
-            // Validate account number (should be numeric and reasonable length)
-            if (!/^\d+$/.test(this.newBankAccount.accountNumber)) {
-              alert('Account number should contain only digits');
-              return;
-            }
-            if (this.newBankAccount.accountNumber.length < 10) {
-              alert('Account number should be at least 10 digits');
-              return;
-            }
-            // Check if account number already exists
-            if (this.bankAccounts.some(a => a.accountNumber === this.newBankAccount.accountNumber)) {
-              alert('A bank account with this account number already exists');
-              return;
-            }
-            const bankAccount = {
-              id: Date.now(),
-              bankName: this.newBankAccount.bankName,
-              accountNumber: this.newBankAccount.accountNumber,
-              accountName: this.newBankAccount.accountName,
-              primary: this.bankAccounts.length === 0
-            };
-            this.bankAccounts.push(bankAccount);
-            this.closeAddBankModal();
-            alert('Bank account added successfully');
-          },
-          editBankAccount(account) {
-            alert('Edit bank account: ' + account.bankName);
-          },
-          deleteBankAccount(account) {
-            if (confirm('Delete this bank account?')) {
-              const index = this.bankAccounts.findIndex(a => a.id === account.id);
-              if (index > -1) {
-                this.bankAccounts.splice(index, 1);
-              }
-            }
-          },
-          setPrimaryAccount(account) {
-            this.bankAccounts.forEach(a => a.primary = false);
-            account.primary = true;
-          },
-          loadData() {
-            // Load mock data
-            this.paymentServices = [
-              {
-                id: 1,
-                title: 'Annual Dues 2025',
-                status: 'active',
-                endDate: '2025-12-31',
-                startDate: '2025-01-01',
-                amount: 2000,
-                description: 'Annual membership dues for all registered members for the 2025 fiscal year.',
-                paymentWindow: 'dates',
-                audience: 'subscribers',
-                bankAccountId: 1,
-                paidCount: 1204,
-                revenue: 2408000,
-                createdAt: '2025-01-01',
-                collectFields: {
-                  fullName: true,
-                  email: true,
-                  phone: true,
-                  idNumber: false,
-                  ticketType: false,
-                  referenceCode: false
-                },
-                customFields: [],
-                fileRequirements: []
-              },
-              {
-                id: 2,
-                title: 'Workshop Registration',
-                status: 'active',
-                endDate: '2025-11-30',
-                startDate: '2025-10-01',
-                amount: 5000,
-                description: 'Registration fee for the annual professional development workshop.',
-                paymentWindow: 'dates',
-                audience: 'public',
-                bankAccountId: 2,
-                paidCount: 45,
-                revenue: 225000,
-                createdAt: '2025-09-15',
-                collectFields: {
-                  fullName: true,
-                  email: true,
-                  phone: true,
-                  idNumber: true,
-                  ticketType: true,
-                  referenceCode: false
-                },
-                customFields: [
-                  { label: 'Workshop Track', type: 'text', required: true }
-                ],
-                fileRequirements: [
-                  { label: 'Professional Certificate', acceptedTypes: ['pdf', 'jpg', 'png'], maxSize: 5, required: true }
-                ]
-              },
-              {
-                id: 3,
-                title: 'Workshop Draft',
-                status: 'draft',
-                endDate: '',
-                startDate: '',
-                amount: 3000,
-                description: 'Draft workshop registration service',
-                paymentWindow: 'anytime',
-                audience: 'subscribers',
-                bankAccountId: '',
-                paidCount: 0,
-                revenue: 0,
-                createdAt: new Date().toISOString(),
-                collectFields: {
-                  fullName: true,
-                  email: true,
-                  phone: false,
-                  idNumber: false,
-                  ticketType: false,
-                  referenceCode: false
-                },
-                customFields: [],
-                fileRequirements: []
-              },
-              {
-                id: 4,
-                title: 'Conference 2024',
-                status: 'completed',
-                endDate: '2024-10-15',
-                startDate: '2024-08-01',
-                amount: 5000,
-                description: 'Annual conference registration for 2024',
-                paymentWindow: 'dates',
-                audience: 'subscribers-invited',
-                bankAccountId: 1,
-                paidCount: 890,
-                revenue: 4450000,
-                createdAt: '2024-07-01',
-                inviteListFile: { name: 'conference-invites.csv', size: 24560 },
-                collectFields: {
-                  fullName: true,
-                  email: true,
-                  phone: true,
-                  idNumber: true,
-                  ticketType: true,
-                  referenceCode: true
-                },
-                customFields: [
-                  { label: 'Company Name', type: 'text', required: false }
-                ],
-                fileRequirements: [
-                  { label: 'Business Card', acceptedTypes: ['pdf', 'jpg', 'png'], maxSize: 2, required: false }
-                ]
-              }
-            ];
 
-            this.subscribers = Array.from({ length: 1245 }, (_, i) => ({
-              id: i + 1,
-              name: `Subscriber ${i + 1}`,
-              email: `subscriber${i + 1}@example.com`,
-              joinDate: new Date(2024, Math.floor(Math.random() * 12), Math.floor(Math.random() * 28) + 1).toISOString(),
-              status: Math.random() > 0.1 ? 'active' : 'inactive'
-            }));
+          // ===================================================================
+          // UI HELPERS
+          // ===================================================================
 
-            this.bankAccounts = [
-              {
-                id: 1,
-                bankName: 'Zenith Bank',
-                accountNumber: '1234567843',
-                accountName: 'Veriss Medical Association',
-                primary: true
-              },
-              {
-                id: 2,
-                bankName: 'First Bank',
-                accountNumber: '9876543211',
-                accountName: 'Veriss Events Account',
-                primary: false
+          setActiveView(view) {
+            this.activeView = view;
+            this.sidebarOpen = false;
+
+            // Load data for the new view
+            this.loadAllData();
+          },
+
+          toggleSidebar() {
+            this.sidebarOpen = !this.sidebarOpen;
+          },
+
+          async handleLogout() {
+            if (confirm("Are you sure you want to logout?")) {
+              try {
+                await logoutApi(this.token);
+              } catch (error) {
+                alert("Logout failed. Please try again or contact support.");
               }
-            ];
-          }
-        }
+              // Always clear storage and redirect, regardless of API success
+              deleteCookie('auth_token');
+              deleteCookie('user_data');
+              window.location.href = 'login.html';
+            }
+          },
+
+          formatCurrency(amount) {
+            return (amount || 0).toLocaleString('en-NG', {
+              minimumFractionDigits: 0,
+              maximumFractionDigits: 2,
+            });
+          },
+
+          formatDate(dateString) {
+            if (!dateString || dateString === 'N/A') return 'N/A';
+
+            try {
+              const date = new Date(dateString);
+              return date.toLocaleDateString('en-US', {
+                year: 'numeric',
+                month: 'short',
+                day: 'numeric',
+              });
+            } catch (e) {
+              return dateString;
+            }
+          },
+
+          getStatusBadgeClass(status) {
+            const statusMap = {
+              active: 'status-paid',
+              suspended: 'status-pending',
+              completed: 'bg-neutral-100',
+            };
+
+            return statusMap[status] || 'bg-neutral-100';
+          },
+          addCustomField() {
+            if (!this.newCustomField.name) {
+              showErrorAlert('Please enter a field name');
+              return;
+            }
+
+            // Convert options text to array for select-option type
+            if (this.newCustomField.type === 'select-option' && this.newCustomField.optionsText) {
+              this.newCustomField.options = this.newCustomField.optionsText
+                .split('\n')
+                .map(opt => opt.trim())
+                .filter(opt => opt.length > 0);
+            }
+
+            // Add field to service
+            this.newService.customFields.push({
+              name: this.newCustomField.name,
+              type: this.newCustomField.type,
+              required: this.newCustomField.required,
+              default: this.newCustomField.default,
+              placeholder: this.newCustomField.placeholder,
+              options: this.newCustomField.options || [],
+            });
+
+            this.closeCustomFieldModal();
+            showSuccessAlert('Custom field added successfully');
+          },
+
+
+          // ========== MODAL HELPER METHODS ==========
+
+          /**
+           * Close Edit Bank Modal
+           * Location: Add this new method to Part 2
+           */
+          closeEditBankModal() {
+            this.showEditBankModal = false;
+            this.isEditBankMode = false;
+            this.editingBankAccountId = null;
+            this.resetBankAccount();
+          },
+
+          /**
+           * Modified closeCreateServiceModal
+           * Location: Replace closeCreateServiceModal() in Part 2
+           */
+          closeCreateServiceModal() {
+            this.showCreateServiceModal = false;
+            this.isEditMode = false;
+            this.editingServiceId = null;
+            this.resetNewService();
+          },
+
+        },
+
+        watch: {
+          // Watch for view changes
+          activeView(newView) {
+            console.log('View changed to:', newView);
+          },
+        },
       }).mount('#app');
     </script>
   </body>

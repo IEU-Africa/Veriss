@@ -7,9 +7,177 @@
     <title>Sign Up - Veriss Payments</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://unpkg.com/vue@3/dist/vue.global.prod.js"></script>
-    <link rel="stylesheet" href="assets/css/app.css">
     <script src="https://unpkg.com/lucide@latest"></script>
-    <script src="assets/js/auth.js"></script>
+
+    <style>
+      /* CSS Custom Properties for Veriss Payments Brand Colors */
+      :root {
+        --primary-50: #f0f9ff;
+        --primary-100: #e0f2fe;
+        --primary-200: #bae6fd;
+        --primary-300: #7dd3fc;
+        --primary-400: #38bdf8;
+        --primary-500: #0ea5e9;
+        --primary-600: #0284c7;
+        --primary-700: #0369a1;
+        --primary-800: #075985;
+        --primary-900: #0c4a6e;
+
+        --success-50: #f0fdf4;
+        --success-100: #dcfce7;
+        --success-200: #bbf7d0;
+        --success-300: #86efac;
+        --success-400: #4ade80;
+        --success-500: #22c55e;
+        --success-600: #16a34a;
+        --success-700: #15803d;
+        --success-800: #166534;
+        --success-900: #14532d;
+
+        --neutral-50: #fafafa;
+        --neutral-100: #f5f5f5;
+        --neutral-200: #e5e5e5;
+        --neutral-300: #d4d4d4;
+        --neutral-400: #a3a3a3;
+        --neutral-500: #737373;
+        --neutral-600: #525252;
+        --neutral-700: #404040;
+        --neutral-800: #262626;
+        --neutral-900: #171717;
+      }
+
+      /* Custom styles for modern UI */
+      .modern-card {
+        background: white;
+        border-radius: 1.5rem;
+        padding: 2.5rem;
+        box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+      }
+
+      .modern-card-compact {
+        background: white;
+        border-radius: 1rem;
+        padding: 1.5rem;
+      }
+
+      .modern-input {
+        width: 100%;
+        padding: 0.875rem 1rem;
+        border: 2px solid var(--neutral-200);
+        border-radius: 0.75rem;
+        font-size: 1rem;
+        transition: all 0.2s;
+        background: white;
+      }
+
+      .modern-input:focus {
+        outline: none;
+        border-color: var(--primary-500);
+        box-shadow: 0 0 0 3px rgba(14, 165, 233, 0.1);
+      }
+
+      .modern-input::placeholder {
+        color: var(--neutral-400);
+      }
+
+      .btn {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        gap: 0.5rem;
+        font-weight: 600;
+        border-radius: 0.75rem;
+        transition: all 0.2s;
+        cursor: pointer;
+        border: none;
+      }
+
+      .btn-primary {
+        background: linear-gradient(135deg, var(--primary-500) 0%, var(--primary-600) 100%);
+        color: white;
+        padding: 1rem 1.5rem;
+      }
+
+      .btn-primary:hover:not(:disabled) {
+        background: linear-gradient(135deg, var(--primary-600) 0%, var(--primary-700) 100%);
+        transform: translateY(-2px);
+      }
+
+      .btn-primary:active:not(:disabled) {
+        transform: translateY(0);
+      }
+
+      .btn-primary:disabled {
+        opacity: 0.5;
+        cursor: not-allowed;
+      }
+
+      .modern-link {
+        color: var(--primary-600);
+        text-decoration: none;
+        transition: color 0.2s;
+      }
+
+      .modern-link:hover {
+        color: var(--primary-700);
+        text-decoration: underline;
+      }
+
+      /* Custom select styling */
+      select.modern-input {
+        background-image: none;
+        padding-right: 3rem;
+      }
+
+      /* Radio button container styling */
+      .radio-card {
+        position: relative;
+        display: flex;
+        align-items: center;
+        padding: 1rem;
+        border: 2px solid var(--neutral-300);
+        border-radius: 0.75rem;
+        cursor: pointer;
+        transition: all 0.2s;
+      }
+
+      .radio-card:hover {
+        border-color: var(--neutral-400);
+      }
+
+      .radio-card.selected {
+        border-color: var(--primary-500);
+        background-color: var(--primary-50);
+      }
+
+      /* Custom SweetAlert2 styling to match Veriss brand */
+      .swal2-popup {
+        border-radius: 1rem !important;
+        padding: 2rem !important;
+      }
+
+      .swal2-title {
+        color: var(--neutral-900) !important;
+        font-size: 1.5rem !important;
+        font-weight: 700 !important;
+      }
+
+      .swal2-html-container {
+        color: var(--neutral-600) !important;
+        font-size: 1rem !important;
+      }
+
+      .swal2-confirm {
+        background: linear-gradient(135deg, var(--primary-500) 0%, var(--primary-600) 100%) !important;
+        border-radius: 0.5rem !important;
+        padding: 0.75rem 2rem !important;
+        font-weight: 600 !important;
+      }
+
+      .swal2-confirm:hover {
+        background: linear-gradient(135deg, var(--primary-600) 0%, var(--primary-700) 100%) !important;
+      }
+    </style>
   </head>
 
   <body class="bg-gradient-to-br from-neutral-50 to-neutral-100">
@@ -17,140 +185,775 @@
       <div class="max-w-md w-full">
         <!-- Back to Home Link -->
         <div class="text-center mb-6">
-          <a href="index.html" class="inline-flex items-center gap-2 text-primary-600 hover:text-primary-700 font-semibold transition-all hover:scale-105">
+          <a href="index.html" class="inline-flex items-center gap-2 font-semibold transition-all hover:scale-105"
+            style="color: var(--primary-600);">
             <i data-lucide="arrow-left" class="w-4 h-4"></i>
             Back to Home
           </a>
         </div>
 
         <div class="modern-card shadow-2xl">
+          <!-- Header Section -->
           <div class="text-center mb-8">
-            <div class="inline-flex items-center justify-center w-20 h-20 rounded-2xl bg-gradient-to-br from-success-100 to-success-200 text-success-600 mb-4 shadow-lg">
+            <div class="inline-flex items-center justify-center w-20 h-20 rounded-2xl shadow-lg mb-4"
+              style="background: linear-gradient(to bottom right, var(--success-100), var(--success-200)); color: var(--success-600);">
               <i data-lucide="user-plus" class="w-10 h-10"></i>
             </div>
-            <h2 class="text-3xl font-extrabold text-neutral-900 mb-2">Create Your Account</h2>
-            <p class="text-neutral-600 font-medium">Join Veriss Payments today</p>
+            <h2 class="text-3xl font-extrabold mb-2" style="color: var(--neutral-900);">Create Your Account</h2>
+            <p class="font-medium" style="color: var(--neutral-600);">Join Veriss Payments today</p>
           </div>
-          
+
+          <!-- Sign Up Form -->
           <form class="space-y-6" @submit.prevent="handleSubmit">
+
+            <!-- Account Type Selection -->
             <div>
-              <label class="block text-sm font-medium text-neutral-700 mb-3">Account Type</label>
+              <label class="block text-sm font-medium mb-3" style="color: var(--neutral-700);">Account Type</label>
               <div class="grid grid-cols-2 gap-3">
-                <label class="relative flex items-center p-4 border-2 rounded-lg cursor-pointer transition-all" 
-                       :class="formData.role === 'org' ? 'border-primary-500 bg-primary-50' : 'border-neutral-300 hover:border-neutral-400'">
-                  <input v-model="formData.role" type="radio" value="org" class="sr-only">
+
+                <!-- Organization Option -->
+                <label class="radio-card" :class="{ 'selected': formData.role === 'professional-organisation' }">
+                  <input v-model="formData.role" type="radio" value="professional-organisation" class="sr-only">
                   <div class="flex items-center gap-3">
-                    <i data-lucide="building-2" class="w-5 h-5" :class="formData.role === 'org' ? 'text-primary-600' : 'text-neutral-400'"></i>
-                    <span class="font-medium" :class="formData.role === 'org' ? 'text-primary-700' : 'text-neutral-700'">Organization</span>
+                    <i data-lucide="building-2" class="w-5 h-5"
+                      :style="{ color: formData.role === 'professional-organisation' ? 'var(--primary-600)' : 'var(--neutral-400)' }"></i>
+                    <span class="font-medium"
+                      :style="{ color: formData.role === 'professional-organisation' ? 'var(--primary-700)' : 'var(--neutral-700)' }">Organization</span>
                   </div>
                 </label>
-                <label class="relative flex items-center p-4 border-2 rounded-lg cursor-pointer transition-all"
-                       :class="formData.role === 'user' ? 'border-primary-500 bg-primary-50' : 'border-neutral-300 hover:border-neutral-400'">
+
+                <!-- Member/User Option -->
+                <label class="radio-card" :class="{ 'selected': formData.role === 'user' }">
                   <input v-model="formData.role" type="radio" value="user" class="sr-only">
                   <div class="flex items-center gap-3">
-                    <i data-lucide="user" class="w-5 h-5" :class="formData.role === 'user' ? 'text-primary-600' : 'text-neutral-400'"></i>
-                    <span class="font-medium" :class="formData.role === 'user' ? 'text-primary-700' : 'text-neutral-700'">Member</span>
+                    <i data-lucide="user" class="w-5 h-5"
+                      :style="{ color: formData.role === 'user' ? 'var(--primary-600)' : 'var(--neutral-400)' }"></i>
+                    <span class="font-medium"
+                      :style="{ color: formData.role === 'user' ? 'var(--primary-700)' : 'var(--neutral-700)' }">Member</span>
                   </div>
                 </label>
               </div>
             </div>
 
+            <!-- Personal Information Fields -->
             <div class="space-y-5">
-              <div>
-                <label for="name" class="block text-sm font-bold text-neutral-700 mb-2">Full Name</label>
+
+              <!-- Full Name Input (Only for Members) -->
+              <div v-if="formData.role === 'user'">
+                <label for="name" class="block text-sm font-bold mb-2" style="color: var(--neutral-700);">
+                  Full Name <span style="color: #ef4444;">*</span>
+                </label>
                 <div class="relative">
                   <div class="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
-                    <i data-lucide="user" class="w-5 h-5 text-neutral-400"></i>
+                    <i data-lucide="user" class="w-5 h-5" style="color: var(--neutral-400);"></i>
                   </div>
                   <input v-model="formData.name" id="name" name="name" type="text" required
-                    class="modern-input pl-12 text-base"
-                    placeholder="John Doe">
+                    class="modern-input pl-12 text-base" placeholder="John Doe" @blur="validateName">
                 </div>
+                <p v-if="errors.name" class="mt-1 text-sm" style="color: #dc2626;">{{ errors.name }}</p>
               </div>
-              <div>
-                <label for="email" class="block text-sm font-bold text-neutral-700 mb-2">Email address</label>
+
+              <!-- Title Input (Only for Members) -->
+              <div v-if="formData.role === 'user'">
+                <label for="title" class="block text-sm font-bold mb-2" style="color: var(--neutral-700);">
+                  Title <span style="color: #ef4444;">*</span>
+                </label>
                 <div class="relative">
                   <div class="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
-                    <i data-lucide="mail" class="w-5 h-5 text-neutral-400"></i>
+                    <i data-lucide="crown" class="w-5 h-5" style="color: var(--neutral-400);"></i>
+                  </div>
+                  <select v-model="formData.title" id="title" name="title" required
+                    class="modern-input pl-12 text-base appearance-none cursor-pointer" @change="validateTitle">
+                    <option value="" disabled>Select title</option>
+                    <option value="Mr.">Mr.</option>
+                    <option value="Mrs.">Mrs.</option>
+                    <option value="Ms.">Ms.</option>
+                    <option value="Dr.">Dr.</option>
+                    <option value="Prof.">Prof.</option>
+                  </select>
+                  <div class="absolute inset-y-0 right-0 pr-4 flex items-center pointer-events-none">
+                    <i data-lucide="chevron-down" class="w-5 h-5" style="color: var(--neutral-400);"></i>
+                  </div>
+                </div>
+                <p v-if="errors.title" class="mt-1 text-sm" style="color: #dc2626;">{{ errors.title }}</p>
+              </div>
+
+              <!-- Phone Number Input (Only for Members) -->
+              <div v-if="formData.role === 'user'">
+                <label for="phoneNumber" class="block text-sm font-bold mb-2" style="color: var(--neutral-700);">
+                  Phone Number <span style="color: #ef4444;">*</span>
+                </label>
+                <div class="relative">
+                  <div class="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
+                    <i data-lucide="phone" class="w-5 h-5" style="color: var(--neutral-400);"></i>
+                  </div>
+                  <input v-model="formData.phoneNumber" id="phoneNumber" name="phoneNumber" type="tel" required
+                    class="modern-input pl-12 text-base" placeholder="+1234567890" @blur="validatePhoneNumber">
+                </div>
+                <p v-if="errors.phoneNumber" class="mt-1 text-sm" style="color: #dc2626;">{{ errors.phoneNumber }}</p>
+              </div>
+
+              <!-- Gender Input (Only for Members) -->
+              <div v-if="formData.role === 'user'">
+                <label for="gender" class="block text-sm font-bold mb-2" style="color: var(--neutral-700);">
+                  Gender <span style="color: #ef4444;">*</span>
+                </label>
+                <div class="relative">
+                  <div class="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
+                    <i data-lucide="users" class="w-5 h-5" style="color: var(--neutral-400);"></i>
+                  </div>
+                  <select v-model="formData.gender" id="gender" name="gender" required
+                    class="modern-input pl-12 text-base appearance-none cursor-pointer" @change="validateGender">
+                    <option value="" disabled>Select gender</option>
+                    <option value="male">Male</option>
+                    <option value="female">Female</option>
+                    <option value="other">Other</option>
+                  </select>
+                  <div class="absolute inset-y-0 right-0 pr-4 flex items-center pointer-events-none">
+                    <i data-lucide="chevron-down" class="w-5 h-5" style="color: var(--neutral-400);"></i>
+                  </div>
+                </div>
+                <p v-if="errors.gender" class="mt-1 text-sm" style="color: #dc2626;">{{ errors.gender }}</p>
+              </div>
+
+              <!-- Occupation Input (Only for Members) -->
+              <div v-if="formData.role === 'user'">
+                <label for="occupation" class="block text-sm font-bold mb-2" style="color: var(--neutral-700);">
+                  Occupation <span style="color: #ef4444;">*</span>
+                </label>
+                <div class="relative">
+                  <div class="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
+                    <i data-lucide="briefcase" class="w-5 h-5" style="color: var(--neutral-400);"></i>
+                  </div>
+                  <input v-model="formData.occupation" id="occupation" name="occupation" type="text" required
+                    class="modern-input pl-12 text-base" placeholder="Software Engineer" @blur="validateOccupation">
+                </div>
+                <p v-if="errors.occupation" class="mt-1 text-sm" style="color: #dc2626;">{{ errors.occupation }}</p>
+              </div>
+
+              <!-- Country Input (Only for Members) -->
+              <div v-if="formData.role === 'user'">
+                <label for="country" class="block text-sm font-bold mb-2" style="color: var(--neutral-700);">
+                  Country <span style="color: #ef4444;">*</span>
+                </label>
+                <div class="relative">
+                  <div class="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
+                    <i data-lucide="map-pin" class="w-5 h-5" style="color: var(--neutral-400);"></i>
+                  </div>
+                  <input v-model="formData.country" id="country" name="country" type="text" required
+                    class="modern-input pl-12 text-base" placeholder="Nigeria" @blur="validateCountry">
+                </div>
+                <p v-if="errors.country" class="mt-1 text-sm" style="color: #dc2626;">{{ errors.country }}</p>
+              </div>
+
+              <!-- State Input (Only for Members) -->
+              <div v-if="formData.role === 'user'">
+                <label for="state" class="block text-sm font-bold mb-2" style="color: var(--neutral-700);">
+                  State <span style="color: #ef4444;">*</span>
+                </label>
+                <div class="relative">
+                  <div class="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
+                    <i data-lucide="map-pin" class="w-5 h-5" style="color: var(--neutral-400);"></i>
+                  </div>
+                  <input v-model="formData.state" id="state" name="state" type="text" required
+                    class="modern-input pl-12 text-base" placeholder="Lagos" @blur="validateState">
+                </div>
+                <p v-if="errors.state" class="mt-1 text-sm" style="color: #dc2626;">{{ errors.state }}</p>
+              </div>
+
+              <!-- City Input (Only for Members) -->
+              <div v-if="formData.role === 'user'">
+                <label for="city" class="block text-sm font-bold mb-2" style="color: var(--neutral-700);">
+                  City <span style="color: #ef4444;">*</span>
+                </label>
+                <div class="relative">
+                  <div class="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
+                    <i data-lucide="map-pin" class="w-5 h-5" style="color: var(--neutral-400);"></i>
+                  </div>
+                  <input v-model="formData.city" id="city" name="city" type="text" required
+                    class="modern-input pl-12 text-base" placeholder="Lagos" @blur="validateCity">
+                </div>
+                <p v-if="errors.city" class="mt-1 text-sm" style="color: #dc2626;">{{ errors.city }}</p>
+              </div>
+
+              <!-- Email Input -->
+              <div>
+                <label for="email" class="block text-sm font-bold mb-2" style="color: var(--neutral-700);">
+                  Email Address <span style="color: #ef4444;">*</span>
+                </label>
+                <div class="relative">
+                  <div class="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
+                    <i data-lucide="mail" class="w-5 h-5" style="color: var(--neutral-400);"></i>
                   </div>
                   <input v-model="formData.email" id="email" name="email" type="email" required
-                    class="modern-input pl-12 text-base"
-                    placeholder="you@example.com">
+                    class="modern-input pl-12 text-base" placeholder="you@example.com" @blur="validateEmail">
                 </div>
+                <p v-if="errors.email" class="mt-1 text-sm" style="color: #dc2626;">{{ errors.email }}</p>
               </div>
+
+              <!-- Password Input -->
               <div>
-                <label for="password" class="block text-sm font-bold text-neutral-700 mb-2">Password</label>
+                <label for="password" class="block text-sm font-bold mb-2" style="color: var(--neutral-700);">
+                  Password <span style="color: #ef4444;">*</span>
+                </label>
                 <div class="relative">
                   <div class="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
-                    <i data-lucide="lock" class="w-5 h-5 text-neutral-400"></i>
+                    <i data-lucide="lock" class="w-5 h-5" style="color: var(--neutral-400);"></i>
                   </div>
-                  <input v-model="formData.password" id="password" name="password" type="password" required
-                    class="modern-input pl-12 text-base"
-                    placeholder="Create a password">
+                  <input v-model="formData.password" id="password" name="password"
+                    :type="showPassword ? 'text' : 'password'" required class="modern-input pl-12 pr-12 text-base"
+                    placeholder="Create a strong password" @blur="validatePassword">
+                  <button type="button" @click="showPassword = !showPassword"
+                    class="absolute inset-y-0 right-0 pr-4 flex items-center">
+                    <i :data-lucide="showPassword ? 'eye-off' : 'eye'" class="w-5 h-5"
+                      style="color: var(--neutral-400);"></i>
+                  </button>
+                </div>
+                <p v-if="errors.password" class="mt-1 text-sm" style="color: #dc2626;">{{ errors.password }}</p>
+                <p class="mt-1 text-xs" style="color: var(--neutral-500);">Must be at least 8 characters with uppercase,
+                  lowercase, and number</p>
+              </div>
+            </div>
+
+            <!-- Organization Details (Conditional) -->
+            <div v-if="formData.role === 'professional-organisation'" class="modern-card-compact shadow-md"
+              style="background: linear-gradient(to bottom right, var(--primary-50), var(--primary-100)); border: 2px solid var(--primary-200);">
+              <h3 class="text-lg font-bold mb-4 flex items-center gap-2" style="color: var(--neutral-900);">
+                <i data-lucide="building-2" class="w-5 h-5" style="color: var(--primary-600);"></i>
+                Organization Details
+              </h3>
+
+              <div class="space-y-5">
+
+                <!-- Organization Category Dropdown -->
+                <div>
+                  <label for="orgCategory" class="block text-sm font-bold mb-2" style="color: var(--neutral-700);">
+                    Category of Organisation <span style="color: #ef4444;">*</span>
+                  </label>
+                  <div class="relative">
+                    <div class="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none z-10">
+                      <i data-lucide="list" class="w-5 h-5" style="color: var(--neutral-400);"></i>
+                    </div>
+                    <select v-model="formData.orgCategory" id="orgCategory" name="orgCategory" required
+                      class="modern-input pl-12 text-base appearance-none cursor-pointer" @change="validateOrgCategory">
+                      <option value="" disabled>Select organization category</option>
+                      <option value="government-agency">Government Agency</option>
+                      <option value="professional-organisation">Professional Organisation</option>
+                      <option value="student-organisations">Student Organisations</option>
+                      <option value="hospital">Hospital</option>
+                      <option value="corporate-organisations">Corporate Organisations</option>
+                      <option value="town-unions">Town Unions</option>
+                      <option value="labour-groups">Labour Groups</option>
+                      <option value="others">Others</option>
+                    </select>
+                    <div class="absolute inset-y-0 right-0 pr-4 flex items-center pointer-events-none">
+                      <i data-lucide="chevron-down" class="w-5 h-5" style="color: var(--neutral-400);"></i>
+                    </div>
+                  </div>
+                  <p v-if="errors.orgCategory" class="mt-1 text-sm" style="color: #dc2626;">{{ errors.orgCategory }}</p>
+                </div>
+
+                <!-- Organization Name Input -->
+                <div>
+                  <label for="orgName" class="block text-sm font-bold mb-2" style="color: var(--neutral-700);">
+                    Organization Name <span style="color: #ef4444;">*</span>
+                  </label>
+                  <div class="relative">
+                    <div class="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
+                      <i data-lucide="building" class="w-5 h-5" style="color: var(--neutral-400);"></i>
+                    </div>
+                    <input v-model="formData.orgName" id="orgName" name="orgName" type="text" required
+                      class="modern-input pl-12 text-base" placeholder="Your Organization Name" @blur="validateOrgName">
+                  </div>
+                  <p v-if="errors.orgName" class="mt-1 text-sm" style="color: #dc2626;">{{ errors.orgName }}</p>
                 </div>
               </div>
             </div>
 
-            <div v-if="formData.role === 'org'" class="modern-card-compact bg-gradient-to-br from-primary-50 to-primary-100 border-2 border-primary-200 shadow-md">
-              <h3 class="text-lg font-bold text-neutral-900 mb-4 flex items-center gap-2">
-                <i data-lucide="building-2" class="w-5 h-5 text-primary-600"></i>
-                Organization Details
-              </h3>
-              <div>
-                <label for="orgName" class="block text-sm font-bold text-neutral-700 mb-2">Organization Name</label>
-                <input v-model="formData.orgName" id="orgName" name="orgName" type="text"
-                  class="modern-input text-base"
-                  placeholder="Your Organization Name">
-              </div>
-            </div>
-
+            <!-- Submit Button -->
             <div>
-              <button type="submit" class="btn btn-primary w-full text-base py-4 shadow-xl hover:shadow-2xl">
+              <button type="submit" :disabled="isSubmitting" class="btn btn-primary w-full text-base py-4 shadow-xl">
                 <i data-lucide="user-plus" class="w-5 h-5"></i>
-                Sign up
+                <span v-if="!isSubmitting">Sign up</span>
+                <span v-else>Creating account...</span>
               </button>
             </div>
 
-            <div class="text-center pt-4 border-t border-neutral-200">
-              <a href="login.html" class="modern-link font-semibold">Already have an account? Sign in</a>
+            <!-- Login Link -->
+            <div class="text-center pt-4" style="border-top: 1px solid var(--neutral-200);">
+              <p style="color: var(--neutral-600);">
+                Already have an account?
+                <a href="login.html" class="modern-link font-semibold">Sign in</a>
+              </p>
             </div>
           </form>
+        </div>
+
+        <!-- Additional Information -->
+        <div class="mt-6 text-center">
+          <p class="text-sm" style="color: var(--neutral-500);">
+            By signing up, you agree to our
+            <a href="#" class="modern-link">Terms of Service</a> and
+            <a href="#" class="modern-link">Privacy Policy</a>
+          </p>
         </div>
       </div>
     </div>
 
-    <script>
+    <script type="module">
+      // Import SweetAlert2 for beautiful notifications
+      import Swal from 'https://cdn.jsdelivr.net/npm/sweetalert2@11.26.17/+esm';
+
+      import { registerApi } from "./assets/js/services/organisation/auth.js";
+
+      import { registerApiMember } from "./assets/js/services/member/auth.js";
+
+      import { showErrorAlert, showSuccessAlert } from "./assets/js/utils/alerts.js";
       const { createApp } = Vue;
 
       createApp({
         data() {
           return {
+            // Form data object containing all user inputs
             formData: {
-              role: 'user',
+              role: 'user', // Default to regular user
+              name: 'John Doe',
+              fullName: '',
+              title: 'Software Engineer',
+              email: 'johndoe@example.com',
+              password: 'testUser@123',
+              phoneNumber: '1234567890',
+              gender: 'Male',
+              occupation: 'Tech',
+              country: 'United States',
+              state: 'California',
+              city: 'San Francisco',
+              orgName: '',
+              orgCategory: '' // New field for organization category
+            },
+
+            // Error tracking for each field
+            errors: {
               name: '',
+              title: '',
               email: '',
               password: '',
-              orgName: ''
-            }
+              phoneNumber: '',
+              gender: '',
+              occupation: '',
+              country: '',
+              state: '',
+              city: '',
+              orgName: '',
+              orgCategory: ''
+            },
+
+            // UI state management
+            showPassword: false, // Toggle password visibility
+            isSubmitting: false // Prevent multiple submissions
           }
         },
+
         mounted() {
+          // Initialize Lucide icons when component mounts
           lucide.createIcons();
         },
+
         updated() {
+          // Re-initialize Lucide icons after DOM updates (for dynamic content)
           lucide.createIcons();
         },
+
         methods: {
-          handleSubmit() {
-            const result = signup(this.formData);
-            if (result.success) {
-              if (this.formData.role === 'org') {
-                window.location.href = 'org-setup.html';
-              } else {
-                window.location.href = 'user-dashboard.html';
+          /**
+           * Validates the full name field
+           * - Must not be empty
+           * - Should contain at least 2 characters
+           */
+          validateName() {
+            // Only validate name for regular users
+            if (this.formData.role !== 'user') {
+              this.errors.name = '';
+              return true;
+            }
+
+            if (!this.formData.name || this.formData.name.trim().length < 2) {
+              this.errors.name = 'Please enter your full name (at least 2 characters)';
+              return false;
+            }
+            this.errors.name = '';
+            return true;
+          },
+
+          /**
+           * Validates the title field
+           * - Required for users
+           */
+          validateTitle() {
+            if (this.formData.role === 'user') {
+              if (!this.formData.title) {
+                this.errors.title = 'Please select a title';
+                return false;
               }
+            }
+            this.errors.title = '';
+            return true;
+          },
+
+          /**
+           * Validates the phone number field
+           * - Required for users
+           * - Basic phone number format
+           */
+          validatePhoneNumber() {
+            if (this.formData.role === 'user') {
+              const phoneRegex = /^\+?[1-9]\d{1,14}$/;
+              if (!this.formData.phoneNumber || !phoneRegex.test(this.formData.phoneNumber.replace(/\s/g, ''))) {
+                this.errors.phoneNumber = 'Please enter a valid phone number';
+                return false;
+              }
+            }
+            this.errors.phoneNumber = '';
+            return true;
+          },
+
+          /**
+           * Validates the gender field
+           * - Required for users
+           */
+          validateGender() {
+            if (this.formData.role === 'user') {
+              if (!this.formData.gender) {
+                this.errors.gender = 'Please select your gender';
+                return false;
+              }
+            }
+            this.errors.gender = '';
+            return true;
+          },
+
+          /**
+           * Validates the occupation field
+           * - Required for users
+           */
+          validateOccupation() {
+            if (this.formData.role === 'user') {
+              if (!this.formData.occupation || this.formData.occupation.trim().length < 2) {
+                this.errors.occupation = 'Please enter your occupation';
+                return false;
+              }
+            }
+            this.errors.occupation = '';
+            return true;
+          },
+
+          /**
+           * Validates the country field
+           * - Required for users
+           */
+          validateCountry() {
+            if (this.formData.role === 'user') {
+              if (!this.formData.country || this.formData.country.trim().length < 2) {
+                this.errors.country = 'Please enter your country';
+                return false;
+              }
+            }
+            this.errors.country = '';
+            return true;
+          },
+
+          /**
+           * Validates the state field
+           * - Required for users
+           */
+          validateState() {
+            if (this.formData.role === 'user') {
+              if (!this.formData.state || this.formData.state.trim().length < 2) {
+                this.errors.state = 'Please enter your state';
+                return false;
+              }
+            }
+            this.errors.state = '';
+            return true;
+          },
+
+          /**
+           * Validates the city field
+           * - Required for users
+           */
+          validateCity() {
+            if (this.formData.role === 'user') {
+              if (!this.formData.city || this.formData.city.trim().length < 2) {
+                this.errors.city = 'Please enter your city';
+                return false;
+              }
+            }
+            this.errors.city = '';
+            return true;
+          },
+
+          /**
+           * Validates email format using regex
+           * - Must be a valid email format
+           */
+          validateEmail() {
+            const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+            if (!this.formData.email || !emailRegex.test(this.formData.email)) {
+              this.errors.email = 'Please enter a valid email address';
+              return false;
+            }
+            this.errors.email = '';
+            return true;
+          },
+
+          /**
+           * Validates password strength
+           * - Minimum 8 characters
+           * - Must contain uppercase letter
+           * - Must contain lowercase letter
+           * - Must contain at least one number
+           */
+          validatePassword() {
+            const password = this.formData.password;
+
+            if (!password || password.length < 8) {
+              this.errors.password = 'Password must be at least 8 characters long';
+              return false;
+            }
+
+            if (!/[A-Z]/.test(password)) {
+              this.errors.password = 'Password must contain at least one uppercase letter';
+              return false;
+            }
+
+            if (!/[a-z]/.test(password)) {
+              this.errors.password = 'Password must contain at least one lowercase letter';
+              return false;
+            }
+
+            if (!/[0-9]/.test(password)) {
+              this.errors.password = 'Password must contain at least one number';
+              return false;
+            }
+
+            this.errors.password = '';
+            return true;
+          },
+
+          /**
+           * Validates organization name
+           * - Required only when role is 'professional-organisation'
+           * - Must be at least 3 characters
+           */
+          validateOrgName() {
+            if (this.formData.role === 'professional-organisation') {
+              if (!this.formData.orgName || this.formData.orgName.trim().length < 3) {
+                this.errors.orgName = 'Organization name must be at least 3 characters';
+                return false;
+              }
+            }
+            this.errors.orgName = '';
+            return true;
+          },
+
+          /**
+           * Validates organization category selection
+           * - Required only when role is 'professional-organisation'
+           */
+          validateOrgCategory() {
+            if (this.formData.role === 'professional-organisation') {
+              if (!this.formData.orgCategory) {
+                this.errors.orgCategory = 'Please select an organization category';
+                return false;
+              }
+            }
+            this.errors.orgCategory = '';
+            return true;
+          },
+
+          /**
+           * Validates all form fields
+           * @returns {boolean} True if all validations pass
+           */
+          validateForm() {
+            const emailValid = this.validateEmail();
+            const passwordValid = this.validatePassword();
+
+            // Name validation only for regular users
+            let nameValid = true;
+            if (this.formData.role === 'user') {
+              nameValid = this.validateName();
+            }
+
+            // Additional user validations
+            let userValid = true;
+            if (this.formData.role === 'user') {
+              const titleValid = this.validateTitle();
+              const phoneValid = this.validatePhoneNumber();
+              const genderValid = this.validateGender();
+              const occupationValid = this.validateOccupation();
+              const countryValid = this.validateCountry();
+              const stateValid = this.validateState();
+              const cityValid = this.validateCity();
+              userValid = titleValid && phoneValid && genderValid && occupationValid && countryValid && stateValid && cityValid;
+            }
+
+            // Organization-specific validations
+            let orgValid = true;
+            if (this.formData.role === 'professional-organisation') {
+              const orgNameValid = this.validateOrgName();
+              const orgCategoryValid = this.validateOrgCategory();
+              orgValid = orgNameValid && orgCategoryValid;
+            }
+
+            return nameValid && emailValid && passwordValid && userValid && orgValid;
+          },
+
+          /**
+           * Shows a SweetAlert2 warning notification for validation errors
+           */
+          showValidationWarning() {
+            Swal.fire({
+              icon: 'warning',
+              title: 'Validation Error',
+              text: 'Please fix the errors in the form before submitting.',
+              confirmButtonText: 'OK',
+              customClass: {
+                confirmButton: 'swal2-confirm'
+              }
+            });
+          },
+
+          /**
+           * Handles form submission
+           * - Validates all fields
+           * - Calls the API for registration
+           * - Shows appropriate feedback using SweetAlert2
+           * - Redirects based on user role on success
+           */
+          async handleSubmit() {
+            // Validate entire form
+            if (!this.validateForm()) {
+              this.showValidationWarning();
+              return;
+            }
+
+            // Prevent multiple submissions
+            if (this.isSubmitting) return;
+            this.isSubmitting = true;
+
+            Swal.fire({
+              title: "Creating Account",
+              text: "Please wait while we set up your account...",
+              allowOutsideClick: false,
+              allowEscapeKey: false,
+              didOpen: () => {
+                Swal.showLoading();
+              },
+            });
+
+            try {
+              // Prepare user data
+              const userData = {
+                type: this.formData.role,
+                email: this.formData.email,
+                password: this.formData.password,
+                phoneNumber: this.formData.phoneNumber,
+              };
+
+              // Add member details
+              if (this.formData.role === "user") {
+                Object.assign(userData, {
+                  title: this.formData.title,
+                  gender: this.formData.gender,
+                  occupation: this.formData.occupation,
+                  country: this.formData.country,
+                  state: this.formData.state,
+                  city: this.formData.city,
+                  fullName: this.formData.name,
+                });
+              }
+
+              // Add organisation details
+              if (this.formData.role === "professional-organisation") {
+                userData.type = this.formData.orgCategory;
+                userData.name = this.formData.orgName;
+              }
+
+              // Call registration API
+              const response =
+                this.formData.role === "user"
+                  ? await registerApiMember(userData)
+                  : await registerApi(userData);
+
+              // ❌ force API failure into catch
+              if (!response?.success) {
+                throw new Error(
+                  response?.message || "Registration failed. Please try again."
+                );
+              }
+
+              // ✅ success path
+              showSuccessAlert(response.message || "Account created successfully!");
+
+              setTimeout(() => {
+                const accountType =
+                  this.formData.role !== "user" ? "organisation" : "member";
+
+                window.location.href = `email-verification.html?email=${encodeURIComponent(
+                  this.formData.email
+                )}&type=${accountType}`;
+              }, 2000);
+
+            } catch (error) {
+              // ❌ error path
+              console.error("Registration error:", error);
+
+              showErrorAlert(
+                error.response?.data?.message ||
+                error.message ||
+                "An unexpected error occurred. Please try again later."
+              );
+
+            } finally {
+              // 🔁 always runs
+              this.isSubmitting = false;
+              Swal.close();
+            }
+          },
+
+        },
+
+        watch: {
+          /**
+           * Watch for role changes to clear organization-specific errors
+           * when user switches from organization to member
+           */
+          'formData.role'(newRole) {
+            if (newRole === 'user') {
+              // Clear organization-specific fields and errors
+              this.errors.orgName = '';
+              this.errors.orgCategory = '';
+              this.formData.orgName = '';
+              this.formData.orgCategory = '';
             } else {
-              alert('Signup failed');
+              // Clear user-specific fields and errors when switching to organization
+              this.errors.name = '';
+              this.errors.title = '';
+              this.errors.phoneNumber = '';
+              this.errors.gender = '';
+              this.errors.occupation = '';
+              this.errors.country = '';
+              this.errors.state = '';
+              this.errors.city = '';
+              this.formData.name = '';
+              this.formData.title = '';
+              this.formData.phoneNumber = '';
+              this.formData.gender = '';
+              this.formData.occupation = '';
+              this.formData.country = '';
+              this.formData.state = '';
+              this.formData.city = '';
             }
           }
         }

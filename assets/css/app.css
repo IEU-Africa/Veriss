@@ -52,9 +52,12 @@
   /* Shadow System - Enhanced */
   --shadow-sm: 0 1px 2px 0 rgb(0 0 0 / 0.05);
   --shadow: 0 1px 3px 0 rgb(0 0 0 / 0.08), 0 1px 2px -1px rgb(0 0 0 / 0.08);
-  --shadow-md: 0 4px 6px -1px rgb(0 0 0 / 0.08), 0 2px 4px -2px rgb(0 0 0 / 0.08);
-  --shadow-lg: 0 10px 15px -3px rgb(0 0 0 / 0.1), 0 4px 6px -4px rgb(0 0 0 / 0.08);
-  --shadow-xl: 0 20px 25px -5px rgb(0 0 0 / 0.12), 0 8px 10px -6px rgb(0 0 0 / 0.1);
+  --shadow-md: 0 4px 6px -1px rgb(0 0 0 / 0.08),
+    0 2px 4px -2px rgb(0 0 0 / 0.08);
+  --shadow-lg: 0 10px 15px -3px rgb(0 0 0 / 0.1),
+    0 4px 6px -4px rgb(0 0 0 / 0.08);
+  --shadow-xl: 0 20px 25px -5px rgb(0 0 0 / 0.12),
+    0 8px 10px -6px rgb(0 0 0 / 0.1);
   --shadow-2xl: 0 25px 50px -12px rgb(0 0 0 / 0.15);
   --shadow-inner: inset 0 2px 4px 0 rgb(0 0 0 / 0.06);
 
@@ -140,7 +143,7 @@ p {
 }
 
 .modern-card::before {
-  content: '';
+  content: "";
   position: absolute;
   top: 0;
   left: 0;
@@ -186,13 +189,18 @@ p {
 }
 
 .btn::before {
-  content: '';
+  content: "";
   position: absolute;
   top: 0;
   left: -100%;
   width: 100%;
   height: 100%;
-  background: linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent);
+  background: linear-gradient(
+    90deg,
+    transparent,
+    rgba(255, 255, 255, 0.2),
+    transparent
+  );
   transition: left 0.5s ease;
 }
 
@@ -211,16 +219,28 @@ p {
 }
 
 .btn-primary {
-  background: linear-gradient(135deg, var(--primary-600) 0%, var(--primary-700) 100%);
+  background: linear-gradient(
+    135deg,
+    var(--primary-600) 0%,
+    var(--primary-700) 100%
+  );
   color: white;
 }
 
 .btn-primary:hover {
-  background: linear-gradient(135deg, var(--primary-700) 0%, var(--primary-800) 100%);
+  background: linear-gradient(
+    135deg,
+    var(--primary-700) 0%,
+    var(--primary-800) 100%
+  );
 }
 
 .btn-success {
-  background: linear-gradient(135deg, var(--success-600) 0%, var(--success-700) 100%);
+  background: linear-gradient(
+    135deg,
+    var(--success-600) 0%,
+    var(--success-700) 100%
+  );
   color: white;
 }
 
@@ -397,7 +417,7 @@ textarea.modern-input {
 }
 
 .stat-card::after {
-  content: '';
+  content: "";
   position: absolute;
   bottom: 0;
   left: 0;
@@ -447,7 +467,11 @@ textarea.modern-input {
 }
 
 .modern-table thead {
-  background: linear-gradient(135deg, var(--neutral-50) 0%, var(--neutral-100) 100%);
+  background: linear-gradient(
+    135deg,
+    var(--neutral-50) 0%,
+    var(--neutral-100) 100%
+  );
 }
 
 .modern-table th {
@@ -551,4 +575,32 @@ textarea.modern-input {
   h3 {
     font-size: 1rem;
   }
+}
+
+.swal2-cancel {
+  background-color: var(--neutral-200) !important;
+  color: var(--neutral-700) !important;
+  border-radius: 0.5rem !important;
+  padding: 0.75rem 2rem !important;
+  font-weight: 600 !important;
+}
+
+.swal2-icon.swal2-success {
+  border-color: var(--success-500) !important;
+  color: var(--success-500) !important;
+}
+
+.swal2-icon.swal2-error {
+  border-color: #ef4444 !important;
+  color: #ef4444 !important;
+}
+
+.swal2-icon.swal2-warning {
+  border-color: #f59e0b !important;
+  color: #f59e0b !important;
+}
+
+.swal2-icon.swal2-info {
+  border-color: var(--primary-500) !important;
+  color: var(--primary-500) !important;
 }
