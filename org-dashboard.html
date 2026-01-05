@@ -1623,7 +1623,10 @@
                   this.loadTopServices(),
                 ]);
               } else if (this.activeView === 'payment-services') {
-                await this.loadPaymentServices();
+                await Promise.all([
+                  this.loadPaymentServices(),
+                  this.loadBankDetails(),
+                ]);
               } else if (this.activeView === 'subscribers') {
                 await this.loadSubscribers();
               } else if (this.activeView === 'bank-details') {
