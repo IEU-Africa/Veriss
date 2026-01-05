@@ -166,8 +166,8 @@ export async function getPaymentByIdApi(paymentId, token) {
   });
 }
 
-export async function getOverviewApi(token) {
-  return await httpRequest(`${endpoint.getOverview}?year=all`, {
+export async function getOverviewApi(token, year = 'all') {
+  return await httpRequest(`${endpoint.getOverview}?year=${year}`, {
     method: "GET",
     headers: {
       "Authorization": `Bearer ${token}`,
