@@ -9,7 +9,7 @@ const endpoint = {
 
   // Dashboard APIs
   searchOrganizations: `${baseURL}/organizations/search`,
-  viewOrganization: `${baseURL}/organizations/organization/i`,
+  viewOrganization: `${baseURL}/organization/i`,
   subscribeToOrganization: `${baseURL}/organizations/subscribe/i`,
   unsubscribeFromOrganization: `${baseURL}/organizations/unsubscribe/i`,
   getUserSubscriptions: `${baseURL}/subscriptions`,
