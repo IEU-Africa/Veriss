@@ -115,14 +115,23 @@
         display: flex;
         align-items: center;
         justify-content: space-between;
-        padding: 0 2rem;
+        padding: 0 1rem;
         z-index: 90;
         box-shadow: var(--shadow-sm);
       }
 
       .content-area {
         margin-top: 80px;
-        padding: 2rem;
+        padding: 1rem;
+      }
+
+      @media (min-width: 640px) {
+        .header-bar {
+          padding: 0 2rem;
+        }
+        .content-area {
+          padding: 2rem;
+        }
       }
 
       /* Loading Overlay */
@@ -169,6 +178,7 @@
       @media (max-width: 768px) {
         .sidebar {
           transform: translateX(-100%);
+          width: 280px;
         }
 
         .sidebar.open {
@@ -181,6 +191,13 @@
 
         .header-bar {
           left: 0;
+          padding: 0 1rem;
+          height: 70px;
+        }
+
+        .content-area {
+          margin-top: 70px;
+          padding: 1rem;
         }
       }
 
@@ -196,6 +213,12 @@
         z-index: 1000;
         padding: 1rem;
         animation: fadeIn 0.2s ease-out;
+      }
+
+      @media (min-width: 640px) {
+        .modal-overlay {
+          padding: 2rem;
+        }
       }
 
       @keyframes fadeIn {
@@ -233,7 +256,7 @@
 
       /* Modal Header */
       .modal-header {
-        padding: 1.5rem 2rem;
+        padding: 1rem 1.5rem;
         border-bottom: 1px solid var(--neutral-200);
         display: flex;
         align-items: center;
@@ -246,7 +269,16 @@
 
       /* Modal Body */
       .modal-body {
-        padding: 2rem;
+        padding: 1rem 1.5rem;
+      }
+
+      @media (min-width: 640px) {
+        .modal-header {
+          padding: 1.5rem 2rem;
+        }
+        .modal-body {
+          padding: 2rem;
+        }
       }
 
       /* Form Section */
@@ -380,10 +412,6 @@
             <i data-lucide="building-2" class="w-5 h-5"></i>
             <span>Bank Details</span>
           </a>
-          <a @click="setActiveView('settings')" :class="['sidebar-item', { active: activeView === 'settings' }]">
-            <i data-lucide="settings" class="w-5 h-5"></i>
-            <span>Settings</span>
-          </a>
         </div>
       </aside>
 
@@ -391,30 +419,30 @@
       <div class="main-content">
         <!-- Header Bar -->
         <header class="header-bar">
-          <div class="flex items-center gap-4">
+          <div class="flex items-center gap-2 sm:gap-4">
             <button @click="toggleSidebar" class="lg:hidden p-2 hover:bg-gray-100 rounded">
               <i data-lucide="menu" class="w-5 h-5"></i>
             </button>
-            <h1 class="text-lg font-bold" style="color: var(--neutral-900);">VERISS PAYMENTS</h1>
+            <h1 class="text-sm sm:text-lg font-bold" style="color: var(--neutral-900);">VERISS PAYMENTS</h1>
           </div>
-          <div class="flex items-center gap-4">
-            <span class="hidden md:inline font-semibold" style="color: var(--neutral-700);">
+          <div class="flex items-center gap-2 sm:gap-4">
+            <span class="hidden md:inline font-semibold text-xs sm:text-sm" style="color: var(--neutral-700);">
               {{ organizationName }}
             </span>
-            <a href="org-profile.html" class="flex items-center gap-2 cursor-pointer hover:opacity-90">
-              <div class="w-8 h-8 rounded-full flex items-center justify-center text-white font-semibold"
+            <a href="org-profile.html" class="flex items-center gap-1 sm:gap-2 cursor-pointer hover:opacity-90">
+              <div class="w-7 h-7 sm:w-8 sm:h-8 rounded-full flex items-center justify-center text-white font-semibold text-xs sm:text-sm"
                 style="background: var(--primary-600);">
                 {{ userInitials }}
               </div>
 
-              <span class="hidden md:inline text-sm" style="color: var(--neutral-700);">
+              <span class="hidden md:inline text-xs sm:text-sm" style="color: var(--neutral-700);">
                 {{ userName }}
               </span>
             </a>
 
-            <button @click="handleLogout" class="btn btn-outline text-sm px-3 py-2">
-              <i data-lucide="log-out" class="w-4 h-4"></i>
-              <span class="hidden md:inline ml-2">Logout</span>
+            <button @click="handleLogout" class="btn btn-outline text-xs sm:text-sm px-2 sm:px-3 py-1.5 sm:py-2">
+              <i data-lucide="log-out" class="w-3 h-3 sm:w-4 sm:h-4"></i>
+              <span class="hidden md:inline sm:ml-2">Logout</span>
             </button>
           </div>
         </header>
@@ -423,100 +451,109 @@
         <div class="content-area">
           <!-- Dashboard View -->
           <div v-if="activeView === 'dashboard'" class="dashboard-view">
-            <div class="mb-6">
-              <h2 class="text-2xl font-bold mb-4" style="color: var(--neutral-900);">Dashboard Overview</h2>
+            <div class="mb-6 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+              <h2 class="text-xl sm:text-2xl font-bold" style="color: var(--neutral-900);">Dashboard Overview</h2>
+              <div class="flex items-center gap-2">
+                <label class="text-sm font-medium" style="color: var(--neutral-700); white-space: nowrap;">Filter by Year:</label>
+                <select v-model="selectedYear" @change="onYearChange"
+                  class="px-4 py-2 border rounded-lg focus:ring-2 focus:ring-primary-600 focus:border-transparent bg-white text-sm font-medium cursor-pointer hover:border-primary-500 transition-colors"
+                  style="border-color: var(--neutral-300); color: var(--neutral-900);">
+                  <option value="all">All Time</option>
+                  <option v-for="year in availableYears" :key="year" :value="year">{{year}}</option>
+                </select>
+              </div>
             </div>
 
             <!-- Stats Cards -->
-            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
+            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6 mb-6 sm:mb-8">
               <div class="stat-card">
-                <div class="flex items-center justify-between mb-3">
+                <div class="flex items-center justify-between mb-2 sm:mb-3">
                   <h3 class="text-xs font-bold uppercase tracking-wider" style="color: var(--neutral-500);">Subscribers
                   </h3>
-                  <i data-lucide="users" class="w-6 h-6" style="color: var(--primary-600);"></i>
+                  <i data-lucide="users" class="w-5 h-5 sm:w-6 sm:h-6" style="color: var(--primary-600);"></i>
                 </div>
-                <p class="text-3xl font-bold mb-1" style="color: var(--primary-600);">
+                <p class="text-2xl sm:text-3xl font-bold mb-1" style="color: var(--primary-600);">
                   {{ stats.subscribers || 0 }}
                 </p>
               </div>
 
               <div class="stat-card">
-                <div class="flex items-center justify-between mb-3">
+                <div class="flex items-center justify-between mb-2 sm:mb-3">
                   <h3 class="text-xs font-bold uppercase tracking-wider" style="color: var(--neutral-500);">Payments
                   </h3>
-                  <i data-lucide="credit-card" class="w-6 h-6" style="color: var(--success-600);"></i>
+                  <i data-lucide="credit-card" class="w-5 h-5 sm:w-6 sm:h-6" style="color: var(--success-600);"></i>
                 </div>
-                <p class="text-xl font-bold mb-1" style="color: var(--success-600);">
+                <p class="text-lg sm:text-xl font-bold mb-1" style="color: var(--success-600);">
                   {{ stats.payments || 0 }}
                 </p>
               </div>
 
               <div class="stat-card">
-                <div class="flex items-center justify-between mb-3">
+                <div class="flex items-center justify-between mb-2 sm:mb-3">
                   <h3 class="text-xs font-bold uppercase tracking-wider" style="color: var(--neutral-500);">Services
                   </h3>
-                  <i data-lucide="file-text" class="w-6 h-6" style="color: var(--warning-600);"></i>
+                  <i data-lucide="file-text" class="w-5 h-5 sm:w-6 sm:h-6" style="color: var(--warning-600);"></i>
                 </div>
-                <p class="text-xl font-bold mb-1" style="color: var(--warning-600);">
+                <p class="text-lg sm:text-xl font-bold mb-1" style="color: var(--warning-600);">
                   {{ stats.paymentServices || 0 }}
                 </p>
               </div>
 
               <div class="stat-card">
-                <div class="flex items-center justify-between mb-3">
+                <div class="flex items-center justify-between mb-2 sm:mb-3">
                   <h3 class="text-xs font-bold uppercase tracking-wider" style="color: var(--neutral-500);">Revenue</h3>
-                  <i data-lucide="trending-up" class="w-6 h-6" style="color: var(--primary-600);"></i>
+                  <i data-lucide="trending-up" class="w-5 h-5 sm:w-6 sm:h-6" style="color: var(--primary-600);"></i>
                 </div>
-                <p class="text-xl font-bold mb-1" style="color: var(--primary-600);">
+                <p class="text-lg sm:text-xl font-bold mb-1" style="color: var(--primary-600);">
                   ₦{{ formatCurrency(stats.totalRevenue || 0) }}
                 </p>
               </div>
             </div>
 
             <!-- Recent Activity & Top Services -->
-            <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-8">
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-4 sm:gap-6 mb-6 sm:mb-8">
               <!-- Recent Activity -->
               <div class="modern-card">
-                <h3 class="text-lg font-bold mb-4" style="color: var(--neutral-900);">Recent Activity</h3>
-                <div v-if="recentActivity.length > 0" class="space-y-3">
+                <h3 class="text-base sm:text-lg font-bold mb-3 sm:mb-4" style="color: var(--neutral-900);">Recent Activity</h3>
+                <div v-if="recentActivity.length > 0" class="space-y-2 sm:space-y-3">
                   <div v-for="activity in recentActivity" :key="activity._id"
-                    class="flex items-start gap-3 p-3 rounded-lg hover:bg-gray-50 transition-colors">
-                    <div class="w-2 h-2 rounded-full mt-2" style="background: var(--primary-600);"></div>
-                    <div class="flex-1">
-                      <p class="text-sm" style="color: var(--neutral-900);">{{ activity.summary }}</p>
+                    class="flex items-start gap-2 sm:gap-3 p-2 sm:p-3 rounded-lg hover:bg-gray-50 transition-colors">
+                    <div class="w-2 h-2 rounded-full mt-2 flex-shrink-0" style="background: var(--primary-600);"></div>
+                    <div class="flex-1 min-w-0">
+                      <p class="text-xs sm:text-sm" style="color: var(--neutral-900);">{{ activity.summary }}</p>
                       <p class="text-xs mt-1" style="color: var(--neutral-500);">{{ formatDate(activity.createdAt) }}
                       </p>
                     </div>
                   </div>
                 </div>
-                <div v-else class="empty-state py-8">
+                <div v-else class="empty-state py-6 sm:py-8">
                   <i data-lucide="inbox" class="empty-state-icon"></i>
-                  <p>No recent activity</p>
+                  <p class="text-sm sm:text-base">No recent activity</p>
                 </div>
               </div>
 
               <!-- Top Services -->
               <div class="modern-card">
-                <h3 class="text-lg font-bold mb-4" style="color: var(--neutral-900);">Top Payment Services</h3>
-                <div v-if="topServices.length > 0" class="space-y-3">
+                <h3 class="text-base sm:text-lg font-bold mb-3 sm:mb-4" style="color: var(--neutral-900);">Top Payment Services</h3>
+                <div v-if="topServices.length > 0" class="space-y-2 sm:space-y-3">
                   <div v-for="(service, idx) in topServices" :key="service._id"
-                    class="flex items-center justify-between p-3 rounded-lg hover:bg-gray-50 transition-colors">
-                    <div class="flex-1">
-                      <p class="font-semibold text-sm" style="color: var(--neutral-900);">
+                    class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2 p-2 sm:p-3 rounded-lg hover:bg-gray-50 transition-colors">
+                    <div class="flex-1 min-w-0">
+                      <p class="font-semibold text-xs sm:text-sm truncate" style="color: var(--neutral-900);">
                         {{ idx + 1 }}. {{ service.name }}
                       </p>
                       <p class="text-xs mt-1" style="color: var(--neutral-500);">
                         {{ service.type }}
                       </p>
                     </div>
-                    <p class="font-bold text-lg" style="color: var(--primary-600);">
+                    <p class="font-bold text-base sm:text-lg" style="color: var(--primary-600);">
                       ₦{{ formatCurrency(service.totalAmountPaid) }}
                     </p>
                   </div>
                 </div>
-                <div v-else class="empty-state py-8">
+                <div v-else class="empty-state py-6 sm:py-8">
                   <i data-lucide="trending-up" class="empty-state-icon"></i>
-                  <p>No services yet</p>
+                  <p class="text-sm sm:text-base">No services yet</p>
                 </div>
               </div>
             </div>
@@ -537,23 +574,23 @@
             </div>
 
             <!-- Service Tabs -->
-            <div class="flex gap-4 mb-6 border-b" style="border-color: var(--neutral-200);">
+            <div class="flex gap-2 sm:gap-4 mb-4 sm:mb-6 border-b overflow-x-auto" style="border-color: var(--neutral-200);">
               <button @click="serviceFilter = 'all'" :class="[
-              'px-4 py-2 font-semibold border-b-2 transition-colors',
+              'px-3 sm:px-4 py-2 font-semibold border-b-2 transition-colors text-xs sm:text-sm whitespace-nowrap',
               serviceFilter === 'all' ? 'border-primary-600 text-primary-600' : 'border-transparent text-neutral-500'
             ]"
                 :style="serviceFilter === 'all' ? { borderColor: 'var(--primary-600)', color: 'var(--primary-600)' } : {}">
                 All Services ({{ paymentServices.length }})
               </button>
               <button @click="serviceFilter = 'active'" :class="[
-              'px-4 py-2 font-semibold border-b-2 transition-colors',
+              'px-3 sm:px-4 py-2 font-semibold border-b-2 transition-colors text-xs sm:text-sm whitespace-nowrap',
               serviceFilter === 'active' ? 'border-primary-600 text-primary-600' : 'border-transparent text-neutral-500'
             ]"
                 :style="serviceFilter === 'active' ? { borderColor: 'var(--primary-600)', color: 'var(--primary-600)' } : {}">
                 Active ({{ activeServicesCount }})
               </button>
               <button @click="serviceFilter = 'suspended'" :class="[
-              'px-4 py-2 font-semibold border-b-2 transition-colors',
+              'px-3 sm:px-4 py-2 font-semibold border-b-2 transition-colors text-xs sm:text-sm whitespace-nowrap',
               serviceFilter === 'suspended' ? 'border-primary-600 text-primary-600' : 'border-transparent text-neutral-500'
             ]"
                 :style="serviceFilter === 'suspended' ? { borderColor: 'var(--primary-600)', color: 'var(--primary-600)' } : {}">
@@ -564,24 +601,24 @@
 
          <!-- Services Grid -->
 <div v-if="filteredServices.length > 0"
-  class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
-  <div v-for="service in filteredServices" :key="service._id" class="service-card" style="padding: 1.15rem;">
+  class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-3 sm:gap-4">
+  <div v-for="service in filteredServices" :key="service._id" class="service-card" style="padding: 0.875rem 1rem;">
     <!-- Card Header -->
-    <div class="flex items-center justify-between mb-3.5">
-      <h3 class="font-semibold text-base truncate" style="color: var(--neutral-900);">{{ service.name }}</h3>
+    <div class="flex items-center justify-between mb-3">
+      <h3 class="font-semibold text-sm sm:text-base truncate flex-1" style="color: var(--neutral-900);">{{ service.name }}</h3>
       <span :class="getStatusBadgeClass(service.status)" class="status-badge text-xs ml-2 flex-shrink-0">
         {{ service.status }}
       </span>
     </div>
     
     <!-- Balance & Transactions Combined -->
-    <div class="mb-3.5">
-      <p class="text-xs font-medium uppercase tracking-wider mb-2" style="color: var(--neutral-500);">Balance</p>
-      <p class="text-xl font-bold mb-2.5" style="color: var(--primary-600);">
+    <div class="mb-3">
+      <p class="text-xs font-medium uppercase tracking-wider mb-1.5" style="color: var(--neutral-500);">Balance</p>
+      <p class="text-lg sm:text-xl font-bold mb-2" style="color: var(--primary-600);">
         ₦{{ formatCurrency(service.totalAmountPaid || 0) }}
       </p>
-      <div class="flex items-center gap-1.5">
-        <i data-lucide="activity" class="w-3.5 h-3.5" style="color: var(--neutral-400);"></i>
+      <div class="flex items-center gap-1.5 flex-wrap">
+        <i data-lucide="activity" class="w-3 h-3 sm:w-3.5 sm:h-3.5" style="color: var(--neutral-400);"></i>
         <span class="text-xs" style="color: var(--neutral-600);">
           {{ service.totalUsage || 0 }} payments • ₦{{ formatCurrency(service.serviceCost) }}/each
         </span>
@@ -589,16 +626,16 @@
     </div>
     
     <!-- Action Buttons -->
-    <div class="flex gap-1.5">
-      <button @click="viewService(service)" class="btn btn-primary text-xs flex-1 px-2.5 py-2">
+    <div class="flex gap-1.5 flex-wrap">
+      <button @click="viewService(service)" class="btn btn-primary text-xs flex-1 min-w-0 px-2 sm:px-2.5 py-1.5 sm:py-2">
         <i data-lucide="eye" class="w-3 h-3"></i>
-        View
+        <span class="hidden sm:inline">View</span>
       </button>
-      <button @click="editService(service)" class="btn btn-secondary text-xs flex-1 px-2.5 py-2">
+      <button @click="editService(service)" class="btn btn-secondary text-xs flex-1 min-w-0 px-2 sm:px-2.5 py-1.5 sm:py-2">
         <i data-lucide="edit" class="w-3 h-3"></i>
-        Edit
+        <span class="hidden sm:inline">Edit</span>
       </button>
-      <button @click="deleteService(service)" class="btn btn-secondary text-xs px-2.5 py-2"
+      <button @click="deleteService(service)" class="btn btn-secondary text-xs px-2 sm:px-2.5 py-1.5 sm:py-2"
         style="background: var(--error-500); color: white;">
         <i data-lucide="trash-2" class="w-3 h-3"></i>
       </button>
@@ -621,42 +658,42 @@
 
           <!-- Subscribers View -->
           <div v-if="activeView === 'subscribers'" class="subscribers-view">
-            <div class="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-6">
-              <h2 class="text-2xl font-bold" style="color: var(--neutral-900);">
+            <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-4 sm:mb-6">
+              <h2 class="text-xl sm:text-2xl font-bold" style="color: var(--neutral-900);">
                 Subscribers ({{ subscribers.length }})
               </h2>
-              <input v-model="subscriberSearch" type="text" placeholder="Search subscribers..." class="modern-input"
-                style="min-width: 250px;">
+              <input v-model="subscriberSearch" type="text" placeholder="Search subscribers..." class="modern-input w-full sm:w-auto"
+                style="min-width: 200px;">
             </div>
 
             <!-- Subscribers Table -->
-            <div v-if="filteredSubscribers.length > 0" class="data-table">
-              <table class="modern-table w-full">
+            <div v-if="filteredSubscribers.length > 0" class="data-table overflow-x-auto">
+              <table class="modern-table w-full min-w-[600px]">
                 <thead>
                   <tr>
-                    <th class="text-left p-4">#</th>
-                    <th class="text-left p-4">Name</th>
-                    <th class="text-left p-4">Email</th>
-                    <th class="text-left p-4">Status</th>
-                    <th class="text-left p-4">Joined</th>
+                    <th class="text-left p-2 sm:p-4 text-xs sm:text-sm">#</th>
+                    <th class="text-left p-2 sm:p-4 text-xs sm:text-sm">Name</th>
+                    <th class="text-left p-2 sm:p-4 text-xs sm:text-sm">Email</th>
+                    <th class="text-left p-2 sm:p-4 text-xs sm:text-sm">Status</th>
+                    <th class="text-left p-2 sm:p-4 text-xs sm:text-sm">Joined</th>
                   </tr>
                 </thead>
                 <tbody>
                   <tr v-for="(subscriber, idx) in filteredSubscribers" :key="subscriber._id" class="border-t"
                     style="border-color: var(--neutral-200);">
-                    <td class="p-4 text-sm">{{ idx + 1 }}</td>
-                    <td class="p-4 font-semibold text-sm" style="color: var(--neutral-900);">
+                    <td class="p-2 sm:p-4 text-xs sm:text-sm">{{ idx + 1 }}</td>
+                    <td class="p-2 sm:p-4 font-semibold text-xs sm:text-sm" style="color: var(--neutral-900);">
                       {{ subscriber.subscriber.fullName }}
                     </td>
-                    <td class="p-4 text-sm" style="color: var(--neutral-600);">
+                    <td class="p-2 sm:p-4 text-xs sm:text-sm truncate max-w-[150px] sm:max-w-none" style="color: var(--neutral-600);">
                       {{ subscriber.subscriber.email }}
                     </td>
-                    <td class="p-4">
+                    <td class="p-2 sm:p-4">
                       <span :class="getStatusBadgeClass(subscriber.status)" class="status-badge text-xs">
                         {{ subscriber.status }}
                       </span>
                     </td>
-                    <td class="p-4 text-sm" style="color: var(--neutral-600);">
+                    <td class="p-2 sm:p-4 text-xs sm:text-sm" style="color: var(--neutral-600);">
                       {{ formatDate(subscriber.joinedAt) }}
                     </td>
                   </tr>
@@ -674,24 +711,24 @@
 
           <!-- Bank Details View -->
           <div v-if="activeView === 'bank-details'" class="bank-details-view">
-            <div class="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-6">
-              <h2 class="text-2xl font-bold" style="color: var(--neutral-900);">Bank Accounts</h2>
-              <button @click="openAddBankModal" class="btn btn-primary">
-                <i data-lucide="plus" class="w-4 h-4"></i>
+            <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-4 sm:mb-6">
+              <h2 class="text-xl sm:text-2xl font-bold" style="color: var(--neutral-900);">Bank Accounts</h2>
+              <button @click="openAddBankModal" class="btn btn-primary text-sm sm:text-base">
+                <i data-lucide="plus" class="w-3 h-3 sm:w-4 sm:h-4"></i>
                 <span>Add Bank Account</span>
               </button>
             </div>
 
             <!-- Bank Accounts List -->
-            <div v-if="bankAccounts.length > 0" class="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <div v-if="bankAccounts.length > 0" class="grid grid-cols-1 sm:grid-cols-2 gap-4 sm:gap-6">
               <div v-for="account in bankAccounts" :key="account._id" class="modern-card">
                 <div class="flex items-start justify-between mb-4">
-                  <div class="flex-1">
-                    <h4 class="font-bold text-lg mb-2" style="color: var(--neutral-900);">{{ account.bankName }}</h4>
-                    <p class="text-sm mb-1" style="color: var(--neutral-600);">
+                  <div class="flex-1 min-w-0">
+                    <h4 class="font-bold text-base sm:text-lg mb-2 truncate" style="color: var(--neutral-900);">{{ account.bankName }}</h4>
+                    <p class="text-xs sm:text-sm mb-1 break-words" style="color: var(--neutral-600);">
                       Account: {{ account.accountNumber }}
                     </p>
-                    <p class="text-sm mb-3" style="color: var(--neutral-600);">
+                    <p class="text-xs sm:text-sm mb-3 break-words" style="color: var(--neutral-600);">
                       Name: {{ account.accountName }}
                     </p>
                     <span class="status-badge text-xs"
@@ -700,11 +737,11 @@
                     </span>
                   </div>
                 </div>
-                <div class="flex gap-2">
-                  <button @click="editBankAccount(account)" class="btn btn-secondary text-sm flex-1">
+                <div class="flex flex-col sm:flex-row gap-2">
+                  <button @click="editBankAccount(account)" class="btn btn-secondary text-xs sm:text-sm flex-1">
                     Edit
                   </button>
-                  <button @click="deleteBankAccount(account)" class="btn btn-secondary text-sm flex-1">
+                  <button @click="deleteBankAccount(account)" class="btn btn-secondary text-xs sm:text-sm flex-1">
                     Delete
                   </button>
                 </div>
@@ -723,13 +760,6 @@
             </div>
           </div>
 
-          <!-- Settings View -->
-          <div v-if="activeView === 'settings'" class="settings-view">
-            <h2 class="text-2xl font-bold mb-6" style="color: var(--neutral-900);">Settings</h2>
-            <div class="modern-card">
-              <p style="color: var(--neutral-600);">Settings page coming soon...</p>
-            </div>
-          </div>
         </div>
       </div>
 
@@ -774,7 +804,7 @@
                       placeholder="Describe what this payment service is for..."></textarea>
                   </div>
 
-                  <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
                     <div>
                       <label class="block text-sm font-bold mb-2" style="color: var(--neutral-700);">
                         Service Type
@@ -802,7 +832,7 @@
               <div class="form-section">
                 <h4 class="form-section-title">Payment Window</h4>
                 <div class="space-y-4">
-                  <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
                     <div>
                       <label class="block text-sm font-bold mb-2" style="color: var(--neutral-700);">
                         Start Date
@@ -980,17 +1010,17 @@
               </div>
 
               <!-- Form Actions -->
-              <div class="flex justify-end gap-3 pt-4 border-t" style="border-color: var(--neutral-200);">
-                <button type="button" @click="closeEditBankModal" class="btn btn-secondary">
+              <div class="flex flex-col sm:flex-row justify-end gap-2 sm:gap-3 pt-4 border-t" style="border-color: var(--neutral-200);">
+                <button type="button" @click="closeEditBankModal" class="btn btn-secondary w-full sm:w-auto">
                   Cancel
                 </button>
                 <button type="button" @click="verifyBankAccount" :disabled="isVerifyingAccount"
-                  class="btn btn-secondary">
+                  class="btn btn-secondary w-full sm:w-auto">
                   <i v-if="!isVerifyingAccount" data-lucide="check-circle" class="w-4 h-4"></i>
                   <span v-if="isVerifyingAccount">Verifying...</span>
                   <span v-else>Verify Account</span>
                 </button>
-                <button type="submit" class="btn btn-primary">
+                <button type="submit" class="btn btn-primary w-full sm:w-auto">
                   <i data-lucide="save" class="w-4 h-4"></i>
                   Update Bank
                 </button>
@@ -1035,31 +1065,31 @@
                     </p>
                   </div>
 
-                  <div class="grid grid-cols-2 gap-4">
+                  <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
                     <div>
                       <label class="block text-xs font-bold mb-1" style="color: var(--neutral-500);">Service
                         Cost</label>
-                      <p class="text-lg font-bold" style="color: var(--primary-600);">
+                      <p class="text-base sm:text-lg font-bold" style="color: var(--primary-600);">
                         ₦{{ formatCurrency(selectedService.serviceCost) }}
                       </p>
                     </div>
                     <div>
                       <label class="block text-xs font-bold mb-1" style="color: var(--neutral-500);">Total Usage</label>
-                      <p class="text-lg font-bold" style="color: var(--success-600);">
+                      <p class="text-base sm:text-lg font-bold" style="color: var(--success-600);">
                         {{ selectedService.totalUsage || 0 }} payments
                       </p>
                     </div>
                   </div>
 
-                  <div class="grid grid-cols-2 gap-4">
+                  <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
                     <div>
                       <label class="block text-xs font-bold mb-1" style="color: var(--neutral-500);">Start Date</label>
-                      <p class="text-sm" style="color: var(--neutral-900);">{{ formatDate(selectedService.startDate) }}
+                      <p class="text-xs sm:text-sm" style="color: var(--neutral-900);">{{ formatDate(selectedService.startDate) }}
                       </p>
                     </div>
                     <div>
                       <label class="block text-xs font-bold mb-1" style="color: var(--neutral-500);">Expiry Date</label>
-                      <p class="text-sm" style="color: var(--neutral-900);">{{ formatDate(selectedService.expiryDate) }}
+                      <p class="text-xs sm:text-sm" style="color: var(--neutral-900);">{{ formatDate(selectedService.expiryDate) }}
                       </p>
                     </div>
                   </div>
@@ -1069,22 +1099,22 @@
               <!-- Statistics -->
               <div class="form-section">
                 <h4 class="form-section-title">Performance</h4>
-                <div class="grid grid-cols-3 gap-4">
-                  <div class="p-4 rounded-lg" style="background: var(--primary-50);">
+                <div class="grid grid-cols-1 sm:grid-cols-3 gap-3 sm:gap-4">
+                  <div class="p-3 sm:p-4 rounded-lg" style="background: var(--primary-50);">
                     <p class="text-xs font-bold mb-1" style="color: var(--neutral-600);">Total Revenue</p>
-                    <p class="text-2xl font-bold" style="color: var(--primary-600);">
+                    <p class="text-xl sm:text-2xl font-bold" style="color: var(--primary-600);">
                       ₦{{ formatCurrency(selectedService.totalAmountPaid || 0) }}
                     </p>
                   </div>
-                  <div class="p-4 rounded-lg" style="background: var(--success-50);">
+                  <div class="p-3 sm:p-4 rounded-lg" style="background: var(--success-50);">
                     <p class="text-xs font-bold mb-1" style="color: var(--neutral-600);">Payments</p>
-                    <p class="text-2xl font-bold" style="color: var(--success-600);">
+                    <p class="text-xl sm:text-2xl font-bold" style="color: var(--success-600);">
                       {{ selectedService.totalUsage || 0 }}
                     </p>
                   </div>
-                  <div class="p-4 rounded-lg" style="background: var(--neutral-100);">
+                  <div class="p-3 sm:p-4 rounded-lg" style="background: var(--neutral-100);">
                     <p class="text-xs font-bold mb-1" style="color: var(--neutral-600);">Platform Fee</p>
-                    <p class="text-2xl font-bold" style="color: var(--neutral-700);">
+                    <p class="text-xl sm:text-2xl font-bold" style="color: var(--neutral-700);">
                       {{ selectedService.platformFee || 2 }}%
                     </p>
                   </div>
@@ -1108,21 +1138,21 @@
               </div>
 
               <!-- Actions with Full CRUD -->
-              <div class="flex justify-end gap-3 pt-4 border-t" style="border-color: var(--neutral-200);">
-                <button @click="showServiceModal = false" class="btn btn-secondary">
+              <div class="flex flex-col sm:flex-row justify-end gap-2 sm:gap-3 pt-4 border-t" style="border-color: var(--neutral-200);">
+                <button @click="showServiceModal = false" class="btn btn-secondary w-full sm:w-auto">
                   Close
                 </button>
                 <button v-if="selectedService.status === 'active'"
-                  @click="toggleServiceStatus(selectedService); showServiceModal = false" class="btn btn-secondary">
+                  @click="toggleServiceStatus(selectedService); showServiceModal = false" class="btn btn-secondary w-full sm:w-auto">
                   <i data-lucide="pause-circle" class="w-4 h-4"></i>
                   Suspend
                 </button>
                 <button v-else @click="toggleServiceStatus(selectedService); showServiceModal = false"
-                  class="btn btn-secondary" style="background: var(--success-600); color: white;">
+                  class="btn btn-secondary w-full sm:w-auto" style="background: var(--success-600); color: white;">
                   <i data-lucide="play-circle" class="w-4 h-4"></i>
                   Activate
                 </button>
-                <button @click="showServiceModal = false; editService(selectedService)" class="btn btn-primary">
+                <button @click="showServiceModal = false; editService(selectedService)" class="btn btn-primary w-full sm:w-auto">
                   <i data-lucide="edit" class="w-4 h-4"></i>
                   Edit Service
                 </button>
@@ -1230,17 +1260,17 @@
               </div>
 
               <!-- Form Actions -->
-              <div class="flex justify-end gap-3 pt-4 border-t" style="border-color: var(--neutral-200);">
-                <button type="button" @click="closeAddBankModal" class="btn btn-secondary">
+              <div class="flex flex-col sm:flex-row justify-end gap-2 sm:gap-3 pt-4 border-t" style="border-color: var(--neutral-200);">
+                <button type="button" @click="closeAddBankModal" class="btn btn-secondary w-full sm:w-auto">
                   Cancel
                 </button>
                 <button type="button" @click="verifyBankAccount" :disabled="isVerifyingAccount"
-                  class="btn btn-secondary">
+                  class="btn btn-secondary w-full sm:w-auto">
                   <i v-if="!isVerifyingAccount" data-lucide="check-circle" class="w-4 h-4"></i>
                   <span v-if="isVerifyingAccount">Verifying...</span>
                   <span v-else>Verify Account</span>
                 </button>
-                <button type="submit" class="btn btn-primary">
+                <button type="submit" class="btn btn-primary w-full sm:w-auto">
                   <i data-lucide="check" class="w-4 h-4"></i>
                   Add Bank
                 </button>
@@ -1329,11 +1359,11 @@
               </div>
 
               <!-- Form Actions -->
-              <div class="flex justify-end gap-3 pt-4 border-t" style="border-color: var(--neutral-200);">
-                <button type="button" @click="closeCustomFieldModal" class="btn btn-secondary">
+              <div class="flex flex-col sm:flex-row justify-end gap-2 sm:gap-3 pt-4 border-t" style="border-color: var(--neutral-200);">
+                <button type="button" @click="closeCustomFieldModal" class="btn btn-secondary w-full sm:w-auto">
                   Cancel
                 </button>
-                <button type="submit" class="btn btn-primary">
+                <button type="submit" class="btn btn-primary w-full sm:w-auto">
                   <i data-lucide="plus" class="w-4 h-4"></i>
                   Add Field
                 </button>
@@ -1408,6 +1438,15 @@
             },
             recentActivity: [],
             topServices: [],
+            selectedYear: 'all',
+            availableYears: (() => {
+              const currentYear = new Date().getFullYear();
+              const years = [];
+              for (let i = 0; i <= 5; i++) {
+                years.push(currentYear - i);
+              }
+              return years;
+            })(),
 
             // ========== PAYMENT SERVICES ==========
             paymentServices: [],
@@ -1604,8 +1643,8 @@
 
           async loadDashboardStats() {
             try {
-              const currentYear = new Date().getFullYear();
-              const response = await getOrgOverviewApi(currentYear, this.token);
+              const year = this.selectedYear === 'all' ? 'all' : this.selectedYear;
+              const response = await getOrgOverviewApi(year, this.token);
 
               if (response.success) {
                 this.stats = {
@@ -1620,6 +1659,9 @@
             } catch (error) {
               console.error('Error loading dashboard stats:', error);
             }
+          },
+          onYearChange() {
+            this.loadDashboardStats();
           },
 
           async loadRecentActivity() {
