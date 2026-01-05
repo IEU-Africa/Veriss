@@ -483,7 +483,12 @@
 
               // ✅ success path
               setCookie("auth_token", response.token, 1);
-              setCookie("user_data", JSON.stringify(response.user), 1);
+
+              if(this.userType === "organisation") {
+                setCookie("org_data", JSON.stringify(response.organization), 1);
+              } else {
+                setCookie("user_data", JSON.stringify(response.user), 1);
+              }
 
               localStorage.setItem(
                 "VerissApp",

@@ -436,7 +436,7 @@
               </div>
 
               <span class="hidden md:inline text-xs sm:text-sm" style="color: var(--neutral-700);">
-                {{ userName }}
+                {{ organizationName }}
               </span>
             </a>
 
@@ -1594,16 +1594,15 @@
                 return;
               }
 
-              // Get user data from cookie
-              const userData = getCookie('user_data');
-              if (userData) {
+              // Get org data from cookie
+              const orgData = getCookie('org_data');
+              if (orgData) {
                 try {
-                  this.currentUser = userData;
-                  this.organizationName = this.currentUser.name || this.currentUser.organizationName || 'Organization';
-                  this.userName = this.currentUser.fullName || this.currentUser.name || 'User';
-                  this.userInitials = this.userName.charAt(0).toUpperCase();
+                  this.currentOrg = orgData;
+                  this.organizationName = this.currentOrg.name || 'Organization';
+                  this.userInitials = this.organizationName.charAt(0).toUpperCase();
                 } catch (e) {
-                  console.error('Error parsing user data:', e);
+                  console.error('Error parsing org data:', e);
                 }
               }
             } catch (error) {
