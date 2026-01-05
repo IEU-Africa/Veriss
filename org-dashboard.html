@@ -2088,7 +2088,7 @@
           async addBankAccount() {
             try {
               // Validate fields
-              if (!this.newBankAccount.bankName || !this.newBankAccount.accountNumber || !this.newBankAccount.accountName) {
+              if (!this.newBankAccount.bankName || !this.newBankAccount.accountNumber || !this.newBankAccount.accountName || !this.newBankAccount.bankCode) {
                 showErrorAlert('Please fill in all required fields');
                 return;
               }
