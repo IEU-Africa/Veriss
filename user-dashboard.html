@@ -1196,7 +1196,7 @@
                 ? this.selectedService.customFields.map((field) => ({
                   name: field.name,
                   type: field.type,
-                  value: this.paymentForm[field.name] || field.default,
+                  value: this.paymentForm[field.name] || field.default || '',
                 }))
                 : [];
               const response = await initializePaymentApi(
