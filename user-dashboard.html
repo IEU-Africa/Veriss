@@ -279,80 +279,78 @@
 
           <!-- Organizations View -->
           <div v-else-if="activeView==='organizations'" class="organizations-view">
-            <div class="flex items-center justify-between mb-6">
-              <h2 class="text-xl font-bold text-gray-900">My Organizations</h2>
-              <button @click="openBrowseModal"
-                class="px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 text-sm flex items-center gap-2">
-                <i data-lucide="plus" class="w-4 h-4"></i>Browse Organizations
-              </button>
+            <div class="mb-6">
+              <h2 class="text-xl font-bold text-gray-900 mb-4">My Organizations</h2>
+              <!-- Search Bar for Organizations -->
+              <div class="relative">
+                <i data-lucide="search" class="absolute left-3 top-1/2 transform -translate-y-1/2 w-5 h-5 text-gray-400"></i>
+                <input v-model="orgSearchQuery" @input="searchOrganizations" type="text"
+                  placeholder="Search organizations to subscribe..."
+                  class="w-full pl-10 pr-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-transparent" />
+              </div>
             </div>
 
+            <!-- Search Results -->
+            <div v-if="orgSearchQuery" class="mb-6">
+              <h3 class="text-sm font-semibold text-gray-700 mb-3">Search Results</h3>
+              <div v-if="searchingOrgs" class="flex justify-center py-8">
+                <div class="spinner"></div>
+              </div>
+              <div v-else-if="orgSearchResults.length === 0" class="text-center py-8 text-gray-500">
+                <i data-lucide="search-x" class="w-12 h-12 mx-auto mb-2 text-gray-300"></i>
+                <p>No organizations found</p>
+              </div>
+              <div v-else class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div v-for="org in orgSearchResults" :key="org._id"
+                  class="bg-white rounded-lg p-4 shadow-sm border border-gray-200 hover:shadow-md transition-shadow">
+                  <div class="flex items-start justify-between">
+                    <div class="flex-1 cursor-pointer" @click="viewOrganizationDetail(org._id)">
+                      <h4 class="font-bold text-gray-900 mb-1 hover:text-blue-600">{{org.name}}</h4>
+                      <p class="text-xs text-gray-600 mb-2">{{org.type}}</p>
+                      <div class="flex items-center gap-4 text-xs text-gray-500">
+                        <span><i data-lucide="users" class="w-3 h-3 inline"></i> {{org.subscribers}} subscribers</span>
+                      </div>
+                    </div>
+                    <button v-if="!org.isSubscribed" @click="subscribeToOrg(org._id)" :disabled="subscribingOrg===org._id"
+                      class="px-3 py-1.5 bg-green-600 text-white rounded-lg hover:bg-green-700 text-xs disabled:opacity-50 whitespace-nowrap">
+                      <span v-if="subscribingOrg===org._id">Subscribing...</span>
+                      <span v-else>Subscribe</span>
+                    </button>
+                    <span v-else class="px-3 py-1.5 text-xs rounded bg-green-100 text-green-700 whitespace-nowrap">Subscribed</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Subscribed Organizations -->
             <div v-if="loadingSubscriptions" class="flex justify-center py-12">
               <div class="spinner"></div>
             </div>
 
-            <div v-else-if="subscriptions.length===0" class="text-center py-12 text-gray-500">
+            <div v-else-if="subscriptions.length===0 && !orgSearchQuery" class="text-center py-12 text-gray-500">
               <i data-lucide="building-2" class="w-16 h-16 mx-auto mb-4 text-gray-300"></i>
               <p class="text-lg font-medium mb-2">No organizations subscribed</p>
-              <p class="text-sm mb-4">Browse and subscribe to organizations to access their payment services</p>
-              <button @click="openBrowseModal" class="px-6 py-3 bg-green-600 text-white rounded-lg hover:bg-green-700">
-                Browse Organizations
-              </button>
+              <p class="text-sm mb-4">Search for organizations above to subscribe and access their payment services</p>
             </div>
 
-            <div v-else class="grid grid-cols-1 md:grid-cols-2 gap-6">
-              <div v-for="sub in subscriptions" :key="sub.subscriptionId"
-                class="bg-white rounded-lg p-6 shadow-sm border border-gray-200">
-                <div class="flex items-start justify-between mb-4">
-                  <div class="flex-1">
-                    <h3 class="text-base font-bold text-gray-900 mb-1 cursor-pointer hover:text-blue-600"
-                      @click="viewOrganizationDetail(sub.organization._id)">
-                      {{sub.organization.name}}
-                    </h3>
-                    <p class="text-xs text-gray-500">Joined: {{formatDate(sub.joinedAt)}}</p>
-                    <span
-                      class="inline-block mt-2 px-2 py-1 text-xs rounded bg-blue-100 text-blue-700">{{sub.role}}</span>
-                  </div>
-                  <button @click="unsubscribeFromOrg(sub.organization._id)"
-                    class="text-red-600 hover:text-red-700 text-xs flex items-center gap-1">
-                    <i data-lucide="x-circle" class="w-4 h-4"></i>Leave
-                  </button>
-                </div>
-
-                <div class="mb-4">
-                  <div class="flex items-center justify-between mb-3">
-                    <h4 class="text-xs font-semibold text-gray-700">Available Services</h4>
-                    <button @click="loadOrgServices(sub.organization._id)"
-                      class="text-blue-600 hover:text-blue-700 text-xs">
-                      <i data-lucide="refresh-cw" class="w-3 h-3 inline"></i>
-                    </button>
-                  </div>
-
-                  <div v-if="loadingServices[sub.organization._id]" class="flex justify-center py-4">
-                    <div class="spinner" style="width: 24px; height: 24px; border-width: 2px"></div>
-                  </div>
-
-                  <div v-else-if="!orgServices[sub.organization._id]||orgServices[sub.organization._id].length===0"
-                    class="text-center py-6 bg-gray-50 rounded-lg border border-dashed border-gray-300">
-                    <i data-lucide="package-x" class="w-10 h-10 mx-auto mb-2 text-gray-400"></i>
-                    <p class="text-xs text-gray-500">No active services available</p>
-                  </div>
-
-                  <div v-else class="space-y-2">
-                    <div v-for="service in orgServices[sub.organization._id]" :key="service._id" class="service-card">
-                      <div class="flex items-start justify-between mb-2">
-                        <div class="flex-1">
-                          <h5 class="font-semibold text-gray-900 text-sm mb-1">{{service.name}}</h5>
-                          <p class="text-xs text-gray-600 mb-2">{{service.description}}</p>
-                          <span
-                            class="inline-block px-2 py-1 text-xs rounded bg-blue-100 text-blue-700">{{service.type}}</span>
-                        </div>
-                      </div>
-                      <button @click="viewServiceDetail(service._id)"
-                        class="w-full mt-3 px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 text-xs">
-                        View & Pay
-                      </button>
+            <div v-else-if="subscriptions.length > 0" class="mb-6">
+              <h3 class="text-sm font-semibold text-gray-700 mb-3">Subscribed Organizations</h3>
+              <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                <div v-for="sub in subscriptions" :key="sub.subscriptionId"
+                  class="bg-white rounded-lg p-5 shadow-sm border border-gray-200 hover:shadow-md transition-shadow cursor-pointer"
+                  @click="viewOrganizationDetail(sub.organization._id)">
+                  <div class="flex items-start justify-between mb-3">
+                    <div class="flex-1">
+                      <h3 class="text-base font-bold text-gray-900 mb-1 hover:text-blue-600">
+                        {{sub.organization.name}}
+                      </h3>
+                      <p class="text-xs text-gray-500 mb-2">Joined: {{formatDate(sub.joinedAt)}}</p>
+                      <span class="inline-block px-2 py-1 text-xs rounded bg-blue-100 text-blue-700">{{sub.role}}</span>
                     </div>
+                  </div>
+                  <div class="flex items-center gap-2 text-xs text-gray-600">
+                    <i data-lucide="package" class="w-4 h-4"></i>
+                    <span>{{orgServices[sub.organization._id]?.length || 0}} services available</span>
                   </div>
                 </div>
               </div>
@@ -400,98 +398,145 @@
         </div>
       </div>
 
-      <!-- Browse Organizations Modal -->
-      <div v-if="showBrowseModal" class="modal-overlay" @click.self="closeBrowseModal">
-        <div class="modal-content" style="max-width: 800px">
-          <div class="modal-header">
-            <h3 class="text-lg font-bold">Browse Organizations</h3>
-            <button @click="closeBrowseModal" class="text-gray-500 hover:text-gray-900">
-              <i data-lucide="x"></i>
-            </button>
-          </div>
-          <div class="modal-body">
-            <div class="mb-4">
-              <input v-model="searchQuery" @input="searchOrganizations" type="text"
-                placeholder="Search organizations..."
-                class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-transparent" />
-            </div>
-
-            <div v-if="searchingOrgs" class="flex justify-center py-8">
-              <div class="spinner"></div>
-            </div>
-
-            <div v-else-if="searchResults.length===0&&searchQuery" class="text-center py-8 text-gray-500">
-              <p>No organizations found</p>
-            </div>
-
-            <div v-else-if="searchQuery" class="space-y-3 max-h-96 overflow-y-auto">
-              <div v-for="org in searchResults" :key="org._id"
-                class="p-4 border border-gray-200 rounded-lg hover:border-blue-300 transition-colors">
-                <div class="flex items-start justify-between">
-                  <div class="flex-1 cursor-pointer" @click="viewOrganizationDetail(org._id)">
-                    <h4 class="font-bold text-gray-900 mb-1 hover:text-blue-600">{{org.name}}</h4>
-                    <p class="text-xs text-gray-600 mb-2">{{org.type}}</p>
-                    <div class="flex items-center gap-4 text-xs text-gray-500">
-                      <span><i data-lucide="users" class="w-3 h-3 inline"></i> {{org.subscribers}} subscribers</span>
-                    </div>
-                  </div>
-                  <button v-if="!org.isSubscribed" @click="subscribeToOrg(org._id)" :disabled="subscribingOrg===org._id"
-                    class="px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 text-xs disabled:opacity-50">
-                    <span v-if="subscribingOrg===org._id">Subscribing...</span>
-                    <span v-else>Subscribe</span>
-                  </button>
-                  <span v-else class="px-3 py-2 text-xs rounded bg-green-100 text-green-700">Subscribed</span>
-                </div>
-              </div>
-            </div>
-
-            <div v-else class="text-center py-8 text-gray-500">
-              <p class="text-sm">Start typing to search for organizations</p>
-            </div>
-          </div>
-        </div>
-      </div>
-
       <!-- View Organization Modal -->
       <div v-if="showOrgModal&&selectedOrganization" class="modal-overlay" @click.self="closeOrgModal">
-        <div class="modal-content" style="max-width: 700px">
+        <div class="modal-content" style="max-width: 900px">
           <div class="modal-header">
-            <h3 class="text-lg font-bold">Organization Details</h3>
+            <h3 class="text-lg font-bold">{{selectedOrganization.name}}</h3>
             <button @click="closeOrgModal" class="text-gray-500 hover:text-gray-900">
               <i data-lucide="x"></i>
             </button>
           </div>
           <div class="modal-body">
-            <div class="space-y-6">
-              <div class="p-6 bg-blue-50 rounded-lg">
-                <h4 class="font-bold text-gray-900 text-xl mb-3">{{selectedOrganization.name}}</h4>
-                <div class="space-y-2 text-sm">
-                  <p><strong>Type:</strong> {{selectedOrganization.type}}</p>
-                  <p><strong>Email:</strong> {{selectedOrganization.email}}</p>
-                  <p v-if="selectedOrganization.city"><strong>City:</strong> {{selectedOrganization.city}}</p>
-                  <p><strong>Subscribers:</strong> {{selectedOrganization.subscribers}}</p>
-                  <p v-if="selectedOrganization.joinedAt"><strong>Joined:</strong>
-                    {{formatDate(selectedOrganization.joinedAt)}}</p>
-                  <p v-if="selectedOrganization.role">
-                    <strong>Role:</strong>
-                    <span class="px-2 py-1 rounded bg-blue-100 text-blue-700">{{selectedOrganization.role}}</span>
-                  </p>
+            <!-- Tabs -->
+            <div class="border-b border-gray-200 mb-6">
+              <nav class="flex space-x-8">
+                <button @click="orgModalTab = 'info'" :class="[
+                  'py-2 px-1 border-b-2 font-medium text-sm transition-colors',
+                  orgModalTab === 'info' 
+                    ? 'border-green-600 text-green-600' 
+                    : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300'
+                ]">
+                  <i data-lucide="info" class="w-4 h-4 inline mr-2"></i>Information
+                </button>
+                <button @click="orgModalTab = 'services'" :class="[
+                  'py-2 px-1 border-b-2 font-medium text-sm transition-colors',
+                  orgModalTab === 'services' 
+                    ? 'border-green-600 text-green-600' 
+                    : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300'
+                ]">
+                  <i data-lucide="package" class="w-4 h-4 inline mr-2"></i>Payment Services
+                </button>
+              </nav>
+            </div>
+
+            <!-- Info Tab -->
+            <div v-if="orgModalTab === 'info'" class="space-y-6">
+              <div class="p-6 bg-gradient-to-br from-blue-50 to-green-50 rounded-lg border border-blue-100">
+                <h4 class="font-bold text-gray-900 text-xl mb-4 flex items-center gap-2">
+                  <i data-lucide="building-2" class="w-6 h-6 text-blue-600"></i>
+                  {{selectedOrganization.name}}
+                </h4>
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4 text-sm">
+                  <div>
+                    <p class="text-gray-600 mb-1"><strong class="text-gray-900">Type:</strong></p>
+                    <p class="text-gray-800">{{selectedOrganization.type || 'N/A'}}</p>
+                  </div>
+                  <div>
+                    <p class="text-gray-600 mb-1"><strong class="text-gray-900">Email:</strong></p>
+                    <p class="text-gray-800">{{selectedOrganization.email || 'N/A'}}</p>
+                  </div>
+                  <div v-if="selectedOrganization.city">
+                    <p class="text-gray-600 mb-1"><strong class="text-gray-900">City:</strong></p>
+                    <p class="text-gray-800">{{selectedOrganization.city}}</p>
+                  </div>
+                  <div>
+                    <p class="text-gray-600 mb-1"><strong class="text-gray-900">Subscribers:</strong></p>
+                    <p class="text-gray-800 flex items-center gap-1">
+                      <i data-lucide="users" class="w-4 h-4"></i>
+                      {{selectedOrganization.subscribers || 0}}
+                    </p>
+                  </div>
+                  <div v-if="selectedOrganization.joinedAt">
+                    <p class="text-gray-600 mb-1"><strong class="text-gray-900">You Joined:</strong></p>
+                    <p class="text-gray-800 flex items-center gap-1">
+                      <i data-lucide="calendar" class="w-4 h-4"></i>
+                      {{formatDate(selectedOrganization.joinedAt)}}
+                    </p>
+                  </div>
+                  <div v-if="selectedOrganization.role">
+                    <p class="text-gray-600 mb-1"><strong class="text-gray-900">Your Role:</strong></p>
+                    <span class="inline-block px-3 py-1 rounded bg-blue-100 text-blue-700 font-semibold">
+                      {{selectedOrganization.role}}
+                    </span>
+                  </div>
                 </div>
               </div>
-              <div class="flex justify-end gap-3">
+
+              <div class="flex justify-end gap-3 pt-4 border-t border-gray-200">
                 <button @click="closeOrgModal"
                   class="px-4 py-2 bg-gray-200 text-gray-700 rounded-lg hover:bg-gray-300 text-sm">
                   Close
                 </button>
                 <button v-if="!selectedOrganization.isSubscribed" @click="subscribeToOrgFromModal"
-                  :disabled="subscribingOrg" class="px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700">
+                  :disabled="subscribingOrg" class="px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 flex items-center gap-2">
+                  <i data-lucide="user-plus" class="w-4 h-4"></i>
                   <span v-if="subscribingOrg">Subscribing...</span>
                   <span v-else>Subscribe</span>
                 </button>
                 <button v-else @click="unsubscribeFromOrgModal"
-                  class="px-4 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700">
+                  class="px-4 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700 flex items-center gap-2">
+                  <i data-lucide="log-out" class="w-4 h-4"></i>
                   Leave Organization
                 </button>
+              </div>
+            </div>
+
+            <!-- Services Tab -->
+            <div v-if="orgModalTab === 'services'" class="space-y-4">
+              <div class="flex items-center justify-between mb-4">
+                <h4 class="font-semibold text-gray-900">Available Payment Services</h4>
+                <button @click="loadOrgServices(selectedOrganization._id)"
+                  class="text-blue-600 hover:text-blue-700 text-sm flex items-center gap-2">
+                  <i data-lucide="refresh-cw" class="w-4 h-4"></i>
+                  Refresh
+                </button>
+              </div>
+
+              <div v-if="loadingServices[selectedOrganization._id]" class="flex justify-center py-12">
+                <div class="spinner"></div>
+              </div>
+
+              <div v-else-if="!orgServices[selectedOrganization._id] || orgServices[selectedOrganization._id].length === 0"
+                class="text-center py-12 bg-gray-50 rounded-lg border border-dashed border-gray-300">
+                <i data-lucide="package-x" class="w-16 h-16 mx-auto mb-4 text-gray-400"></i>
+                <p class="text-lg font-medium text-gray-700 mb-2">No services available</p>
+                <p class="text-sm text-gray-500">This organization hasn't added any payment services yet</p>
+              </div>
+
+              <div v-else class="grid grid-cols-1 gap-4 max-h-96 overflow-y-auto pr-2">
+                <div v-for="service in orgServices[selectedOrganization._id]" :key="service._id" 
+                  class="service-card hover:shadow-lg">
+                  <div class="flex items-start justify-between mb-3">
+                    <div class="flex-1">
+                      <h5 class="font-bold text-gray-900 text-base mb-2">{{service.name}}</h5>
+                      <p class="text-sm text-gray-600 mb-3">{{service.description || 'No description available'}}</p>
+                      <div class="flex items-center gap-3">
+                        <span class="inline-block px-3 py-1 text-xs rounded bg-blue-100 text-blue-700 font-semibold">
+                          {{service.type}}
+                        </span>
+                        <span class="text-lg font-bold text-green-600">
+                          ₦{{formatCurrency(service.serviceCost)}}
+                        </span>
+                      </div>
+                    </div>
+                  </div>
+                  <button @click="viewServiceDetail(service._id)"
+                    class="w-full mt-4 px-4 py-2.5 bg-green-600 text-white rounded-lg hover:bg-green-700 font-semibold flex items-center justify-center gap-2">
+                    <i data-lucide="credit-card" class="w-4 h-4"></i>
+                    View & Pay
+                  </button>
+                </div>
               </div>
             </div>
           </div>
@@ -672,10 +717,12 @@
             recentPayments: [],
             orgServices: {},
             searchResults: [],
+            orgSearchQuery: "",
+            orgSearchResults: [],
+            orgModalTab: "info",
             selectedService: null,
             selectedPayment: null,
             selectedOrganization: null,
-            showBrowseModal: false,
             showServiceModal: false,
             showPaymentDetailModal: false,
             showOrgModal: false,
@@ -799,15 +846,24 @@
             }
           },
           async searchOrganizations() {
-            if (!this.searchQuery || this.searchQuery.length < 2) return;
+            if (!this.orgSearchQuery || this.orgSearchQuery.length < 2) {
+              this.orgSearchResults = [];
+              return;
+            }
             this.searchingOrgs = true;
             try {
               const response = await searchOrganizationsApi(
-                this.searchQuery,
+                this.orgSearchQuery,
                 this.token
               );
               if (response.success) {
-                this.searchResults = response.data;
+                // Mark organizations as subscribed if they're in subscriptions
+                this.orgSearchResults = response.data.map(org => {
+                  const isSubscribed = this.subscriptions.some(
+                    sub => sub.organization._id === org._id
+                  );
+                  return { ...org, isSubscribed };
+                });
               }
             } catch (error) {
               console.error("Error searching organizations:", error);
@@ -828,6 +884,20 @@
               Swal.close();
               if (response.success) {
                 this.selectedOrganization = response.data;
+                // Check if user is subscribed to this organization
+                const subscription = this.subscriptions.find(
+                  sub => sub.organization._id === orgId
+                );
+                if (subscription) {
+                  this.selectedOrganization.isSubscribed = true;
+                  this.selectedOrganization.joinedAt = subscription.joinedAt;
+                  this.selectedOrganization.role = subscription.role;
+                  // Load services if not already loaded
+                  if (!this.orgServices[orgId]) {
+                    await this.loadOrgServices(orgId);
+                  }
+                }
+                this.orgModalTab = "info";
                 this.showOrgModal = true;
               }
             } catch (error) {
@@ -849,9 +919,14 @@
                 );
                 await this.loadSubscriptions();
                 await this.loadOverview();
-                this.searchResults = this.searchResults.map((org) =>
+                // Update search results
+                this.orgSearchResults = this.orgSearchResults.map((org) =>
                   org._id === orgId ? { ...org, isSubscribed: true } : org
                 );
+                // Update selected organization if modal is open
+                if (this.selectedOrganization && this.selectedOrganization._id === orgId) {
+                  this.selectedOrganization.isSubscribed = true;
+                }
               }
             } catch (error) {
               console.error("Error subscribing:", error);
@@ -872,9 +947,14 @@
                 await showSuccessAlert(
                   response.message || "Successfully subscribed!"
                 );
-                this.closeOrgModal();
                 await this.loadSubscriptions();
                 await this.loadOverview();
+                // Update the selected organization
+                this.selectedOrganization.isSubscribed = true;
+                // Load services for the newly subscribed organization
+                await this.loadOrgServices(this.selectedOrganization._id);
+                // Switch to services tab
+                this.orgModalTab = "services";
               }
             } catch (error) {
               console.error("Error subscribing:", error);
@@ -891,6 +971,10 @@
               await showSuccessAlert("Successfully unsubscribed");
               await this.loadSubscriptions();
               await this.loadOverview();
+              // Update search results if modal is open
+              this.orgSearchResults = this.orgSearchResults.map((org) =>
+                org._id === orgId ? { ...org, isSubscribed: false } : org
+              );
             } catch (error) {
               console.error("Error unsubscribing:", error);
               showErrorAlert("Failed to unsubscribe");
@@ -906,6 +990,10 @@
               this.closeOrgModal();
               await this.loadSubscriptions();
               await this.loadOverview();
+              // Update search results
+              this.orgSearchResults = this.orgSearchResults.map((org) =>
+                org._id === this.selectedOrganization._id ? { ...org, isSubscribed: false } : org
+              );
             } catch (error) {
               console.error("Error unsubscribing:", error);
               showErrorAlert("Failed to unsubscribe");
@@ -1048,14 +1136,6 @@
           toggleSidebar() {
             this.sidebarOpen = !this.sidebarOpen;
           },
-          openBrowseModal() {
-            this.showBrowseModal = true;
-            this.searchQuery = "";
-            this.searchResults = [];
-          },
-          closeBrowseModal() {
-            this.showBrowseModal = false;
-          },
           closeServiceModal() {
             this.showServiceModal = false;
             this.selectedService = null;
@@ -1068,6 +1148,7 @@
           closeOrgModal() {
             this.showOrgModal = false;
             this.selectedOrganization = null;
+            this.orgModalTab = "info";
           },
           formatCurrency(amount) {
             return (amount || 0).toLocaleString();
