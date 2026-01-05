@@ -970,14 +970,7 @@
 
               <!-- Bank Code -->
               <div>
-                <label class="block text-sm font-bold mb-2" style="color: var(--neutral-700);">
-                  Bank Code <span style="color: var(--error-500);">*</span>
-                </label>
-                <input v-model="newBankAccount.bankCode" type="text" required class="modern-input"
-                  placeholder="e.g., 057, 058, 044">
-                <p class="text-xs mt-1" style="color: var(--neutral-500);">
-                  Enter the bank's code (usually 3 digits)
-                </p>
+                <input type="hidden" v-model="newBankAccount.bankCode" />
               </div>
 
               <!-- Account Number -->
@@ -1203,14 +1196,7 @@
 
               <!-- Bank Code -->
               <div>
-                <label class="block text-sm font-bold mb-2" style="color: var(--neutral-700);">
-                  Bank Code <span style="color: var(--error-500);">*</span>
-                </label>
-                <input v-model="newBankAccount.bankCode" type="text" required class="modern-input"
-                  placeholder="e.g., 057, 058, 044">
-                <p class="text-xs mt-1" style="color: var(--neutral-500);">
-                  Enter the bank's code (usually 3 digits)
-                </p>
+                <input type="hidden" v-model="newBankAccount.bankCode" />
               </div>
 
               <!-- Account Number -->
